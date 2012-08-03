@@ -23,9 +23,10 @@ class LoggerSchema extends PluginSchema {
 			->PrimaryKey('AppenderID')
 			->Column('AppenderName', 'varchar(100)')
 			->Column('AppenderType', 'varchar(40)')
+			->Column('AppenderDescription', 'varchar(255)')
 			->Column('IsSystem', 'uint', 0, 'index')
 			->Column('IsEnabled', 'uint', 1, 'index')
-			->Column('Configuration', 'text', 1, 'index')
+			->Column('Configuration', 'text', TRUE)
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', FALSE)
@@ -45,7 +46,7 @@ class LoggerSchema extends PluginSchema {
 					"    ,A.IsSystem\n" .
 					"    ,A.IsEnabled\n" .
 					"FROM\n" .
-					"    {$Px}LoggerAppenders D";
+					"    {$Px}LoggerAppenders A";
 		$this->Construct->View('v_logger_appenders', $Sql);
 	}
 
