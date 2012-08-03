@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://logging.apache.org/log4php/">
+	<appender name="default" class="LoggerAppenderVanillaDB">
+		<param name="table" value="LoggerSysLog" />
+		<param name="createTable" value="true" />
+	</appender>
+	<appender name="console" class="LoggerAppenderConsole">
+	</appender>
+
+	<root>
+		<appender_ref ref="default" />
+	</root>
+	<user>
+		<appender_ref ref="console" />
+	</user>
+</configuration>

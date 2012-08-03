@@ -34,6 +34,26 @@ class LoggerSchema extends PluginSchema {
 			->Set(FALSE, FALSE);
 	}
 
+	///**
+	// * Create the System Log table, which will store all Log entries. Log messages
+	// * will always be saved to this table, whether other Appenders have been
+	// * configured or not.
+	// */
+	//protected function create_syslog_table() {
+	//	Gdn::Structure()
+	//		->Table('LoggerSysLog')
+	//		->PrimaryKey('LogEntryID')
+	//		->Column('LoggerName', 'varchar(100)')
+	//		->Column('Level', 'varchar(40)')
+	//		->Column('Message', 'varchar(9999)')
+	//		->Column('Thread', 'varchar(32)')
+	//		->Column('File', 'varchar(400)')
+	//		->Column('Line', 'varchar(6)')
+	//		->Column('TimeStamp', 'datetime', FALSE, 'index')
+	//		->Column('InsertUserID', 'int', TRUE)
+	//		->Set(FALSE, FALSE);
+	//}
+
 	/**
 	 * Creates a View that returns the list of the configured Appenders.
 	 */
@@ -55,6 +75,7 @@ class LoggerSchema extends PluginSchema {
 	 */
 	protected function CreateObjects() {
 		$this->create_logger_appenders_table();
+		//$this->create_syslog_table();
 		$this->create_logger_appenders_view();
 	}
 
@@ -64,5 +85,6 @@ class LoggerSchema extends PluginSchema {
 	protected function DropObjects() {
 		$this->DropView('v_logger_appenders');
 		$this->DropTable('LoggerAppenders');
+		//$this->DropTable('LoggerSysLog');
 	}
 }

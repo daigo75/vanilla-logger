@@ -52,6 +52,8 @@ class LoggerPlugin extends Gdn_Plugin {
 	 */
 	public function __construct() {
 		parent::__construct();
+
+		Logger::configure(PATH_PLUGINS . '/Logger/testconfig.xml');
 	}
 
 	/**
@@ -82,6 +84,9 @@ class LoggerPlugin extends Gdn_Plugin {
 	}
 
 	public function Controller_Index($Sender) {
+		$logger = Logger::getLogger('root');
+		$logger->info("foo");
+
 		// Prevent non-admins from accessing this page
 		$Sender->Permission('Plugins.Logger.Manage');
 
