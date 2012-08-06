@@ -39,7 +39,7 @@ Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 		</div>
 		<div class="FilterMenu">
 		<?php
-			echo Anchor(T('Add Appender'), LOGGER_APPENDER_ADDEDIT_URL, 'SmallButton');
+			echo Anchor(T('Add Appender'), LOGGER_APPENDER_ADD_URL, 'SmallButton');
 		?>
 		</div>
 		<table id="AppendersList" class="display AltRows">

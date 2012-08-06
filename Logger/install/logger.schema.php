@@ -21,7 +21,7 @@ class LoggerSchema extends PluginSchema {
 		Gdn::Structure()
 			->Table('LoggerAppenders')
 			->PrimaryKey('AppenderID')
-			->Column('AppenderName', 'varchar(100)')
+			->Column('AppenderName', 'varchar(100)', FALSE, 'unique')
 			->Column('AppenderType', 'varchar(40)')
 			->Column('AppenderDescription', 'varchar(255)')
 			->Column('IsSystem', 'uint', 0, 'index')

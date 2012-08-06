@@ -28,3 +28,11 @@
  */
 
 // TODO Export all these functions to an independent plugin, to allow other plugins to use them.
+if(!function_exists('ValidateAppenderType')){
+	/**
+	 * Checks if an Appender Class is amongst the available ones.
+	 */
+	function ValidateAppenderType($Value, $Field, $FormPostedValues){
+		return (LoggerConst::GetLoggerAppenderTypeLabel($Value) != null);
+	}
+}
