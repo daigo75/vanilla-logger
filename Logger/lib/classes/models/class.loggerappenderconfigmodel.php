@@ -9,24 +9,7 @@
 /**
  * This model is used to store Log entries to a table.
   */
-class LoggerAppendersModel extends Gdn_Model {
-	/**
-	 * Set Validation Rules that apply when saving a new row in Cron Jobs History.
-	 *
-	 * @return void
-	 */
-	protected function _SetLoggerAppendersValidationRules() {
-		$this->Validation = &new Gdn_Validation();
-
-		// Set additional Validation Rules here. Please note that formal validation
-		// is done automatically by base Model Class, by retrieving Schema
-		// Information.
-		$this->Validation->AddRule('ValidAppenderType', 'function:ValidateAppenderType');
-
-		// Validation rules for Appender Type
-		$this->Validation->ApplyRule('AppenderType', 'ValidAppenderType', T('Appender Type is not valid. Please select an Appender Type from the ones in the list.'));
-	}
-
+class LoggerAppenderConfigModel extends Gdn_Model {
 	/**
 	 * Build SQL query to retrieve data from the LoggerAppenders Table.
 	 */
@@ -44,10 +27,10 @@ class LoggerAppendersModel extends Gdn_Model {
 	/**
 	 * Defines the related database table name.
 	 */
-	public function __construct() {
+	public function __construct(LoggerAppenderConfigValidation $Validation) {
 		parent::__construct('LoggerAppenders');
 
-		$this->_SetLoggerAppendersValidationRules();
+		$this->Validation = $Validation;
 	}
 
 	/**

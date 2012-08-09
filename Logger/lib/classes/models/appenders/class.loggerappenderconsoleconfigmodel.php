@@ -1,12 +1,15 @@
 <?php if (!defined('APPLICATION')) exit();
 
-class LoggerAppenderConsoleConfigModel extends LoggerAppendersModel {
+class LoggerAppenderConsoleConfigModel extends LoggerAppenderConfigModel {
 
 	public function GetAppenderSettings($AppenderID) {
-		// Retrieve raw settings from configuration table
-		$RawSettings = &parent::GetAppenderSettings($AppenderID);
+		// Retrieve settings XML from configuration table
+		$SettingsXML = &parent::GetAppenderSettings($AppenderID);
 
-		// TODO Transform raw settings, contained in Config field, into an array of fields
+		// TODO Transform XML settings, contained in Config field, into an array of fields
+		$Settings = json_decode(json_encode($SettingsXML));
+		var_dump($Settings);
+		die();
 	}
 
 	public function Save(&$FormPostValues) {
