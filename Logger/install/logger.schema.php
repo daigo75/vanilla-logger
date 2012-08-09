@@ -29,7 +29,7 @@ class LoggerSchema extends PluginSchema {
 			->Column('Configuration', 'text', TRUE)
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
-			->Column('DateUpdated', 'datetime', FALSE)
+			->Column('DateUpdated', 'datetime', TRUE)
 			->Column('UpdateUserID', 'int', TRUE)
 			->Set(FALSE, FALSE);
 	}
