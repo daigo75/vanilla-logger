@@ -26,6 +26,10 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		foreach($Attributes as $ParamName => $ParamValue) {
 			$ParamNode->addAttribute($ParamName, $ParamValue);
 		}
+
+		//echo '<pre>';
+		//echo $Node->asXML();
+		//echo '</pre>';
 		return;
 	}
 
@@ -42,7 +46,8 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 			return;
 		}
 
-		$this->AddParameterNode($Node, 'layout', array('class' => $Layout,));
+		$this->AddParameterNode($Node, 'layout', array('class' => $Layout));
+
 		return;
 	}
 
@@ -61,8 +66,26 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 	protected function AddParamNodeFromField(SimpleXMLElement $Node, array $FormValues, $FieldName) {
 		$this->AddParameterNode($Node, 'param', array('name' => $FieldName,
 																									'value' => $FormValues[$FieldName]));
+		return;
 	}
 
+	/**
+	 * Transforms the Appender Configuration, which is stored in a SimpleXMLElement,
+	 * into XML and saves it into the Form Fields, so that it can be stored in
+	 * the database.
+	 *
+	 * @param Node The Node containing the configuration.
+	 * @param FormValues An associative array of fields. The key 'Configuration'
+	 * will be set to the XML content of the Node passed as a parameter.
+	 * @return void.
+	 */
+	protected function SetConfigXML(SimpleXMLElement $Node, &$FormValues) {
+		$FormValues['Configuration'] = $Node->asXML();
+
+		echo '<pre>';
+		echo $FormValues['Configuration'];
+		echo '</pre>';
+	}
 
 	/**
 	 * Build SQL query to retrieve data from the LoggerAppenders Table.
