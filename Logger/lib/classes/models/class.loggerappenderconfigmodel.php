@@ -10,83 +10,6 @@
  * This model is used to store Log entries to a table.
   */
 class LoggerAppenderConfigModel extends Gdn_Model {
-
-	/*** XML Convenience Functions ***/
-	/**
-	 * Adds a child node to a given SimpleXMLElement.
-	 *
-	 * @param Node The node to which the <layout> node should be added.
-	 * @param ChildNodeName The name to assign to the child node.
-	 * @param Attributes An associative array of attributes to assign to the child node.
-	 * @param Value The value to assign to the child node.
-	 * @return void.
-	 */
-	protected function AddParameterNode(SimpleXMLElement $Node, $ChildNodeName = 'param', array $Attributes, $Value = null) {
-		$ParamNode = $Node->addChild($ChildNodeName, $Value);
-		foreach($Attributes as $ParamName => $ParamValue) {
-			$ParamNode->addAttribute($ParamName, $ParamValue);
-		}
-
-		//echo '<pre>';
-		//echo $Node->asXML();
-		//echo '</pre>';
-		return;
-	}
-
-	/**
-	 * Adds a <layout> node to a given SimpleXMLElement.
-	 *
-	 * @param Node The node to which the <layout> node should be added.
-	 * @param Layout The name of the layout.
-	 * @return void.
-	 */
-	protected function AddLayoutNode(SimpleXMLElement $Node, $Layout) {
-		// There's no need to add a layout node if Layout name is empty.
-		if(empty($Layout)) {
-			return;
-		}
-
-		$this->AddParameterNode($Node, 'layout', array('class' => $Layout));
-
-		return;
-	}
-
-	/**
-	 *  Adds a child parameter node to a SimpleXMLElement, setting its "name" and
-	 *  "value" attributes by taking them from a field extracted from a list of
-	 *  fields. The "name" attribute will be set to the field name, while the
-	 *  "value" will be set to the Field value.
-	 *
-	 * @param Node The node to which the <param> node should be added.
-	 * @param FormValues An associative array of fields (usually the one received
-	 * when a Form is posted) from which the Field will be extracted.
-	 * @param FieldName The name of the field to extract.
-	 * @return void.
-	 */
-	protected function AddParamNodeFromField(SimpleXMLElement $Node, array $FormValues, $FieldName) {
-		$this->AddParameterNode($Node, 'param', array('name' => $FieldName,
-																									'value' => $FormValues[$FieldName]));
-		return;
-	}
-
-	/**
-	 * Transforms the Appender Configuration, which is stored in a SimpleXMLElement,
-	 * into XML and saves it into the Form Fields, so that it can be stored in
-	 * the database.
-	 *
-	 * @param Node The Node containing the configuration.
-	 * @param FormValues An associative array of fields. The key 'Configuration'
-	 * will be set to the XML content of the Node passed as a parameter.
-	 * @return void.
-	 */
-	protected function SetConfigXML(SimpleXMLElement $Node, &$FormValues) {
-		$FormValues['Configuration'] = $Node->asXML();
-
-		echo '<pre>';
-		echo $FormValues['Configuration'];
-		echo '</pre>';
-	}
-
 	/**
 	 * Build SQL query to retrieve data from the LoggerAppenders Table.
 	 */
@@ -98,6 +21,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 			->Select('VLA.AppenderDescription')
 			->Select('VLA.IsSystem')
 			->Select('VLA.IsEnabled')
+			->Select('VLA.Configuration')
 			->Select('VLA.DateInserted')
 			->From('v_logger_appenders VLA');
 		return $Query;
@@ -178,7 +102,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 	 * @return An array containing a single row with the settings for the Logger
 	 * Appender, or FALSE if no result is found.
 	 */
-	protected function GetAppenderSettings($AppenderID) {
+	protected function GetAppenderConfig($AppenderID) {
 		// Appender ID must be a number, therefore there's no point in running a
 		// query if it's empty or non-numeric.
 		if(empty($AppenderID) || !is_numeric($AppenderID)) {
@@ -210,7 +134,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		$AppenderID = GetValue($this->PrimaryKey, $FormPostValues, false);
 
 		// See if a Appender with the same ID already exists, to decide if ID was posted and decide how to save
-		$Insert = ($this->GetAppenderSettings($AppenderID) == null);
+		$Insert = ($this->GetAppenderConfig($AppenderID) == null);
 
 		// Prepare all the validated fields to be passed to an INSERT/UPDATE query
 		$Fields = &$this->Validation->ValidationFields();

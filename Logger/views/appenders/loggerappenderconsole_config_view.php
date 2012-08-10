@@ -27,7 +27,7 @@ $ConsoleTargets = array('stdout' => T('Standard Out (stdout)'),
 									of the same type and you need to distinguish between them.'),
 								'div',
 								array('class' => 'Info'));
-			echo $this->Form->DropDown('AppenderType',
+			echo $this->Form->DropDown('Target',
 																 $ConsoleTargets,
 																 array('name' => 'Target',));
 		?>

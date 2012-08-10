@@ -66,6 +66,7 @@ class LoggerSchema extends PluginSchema {
 					"    ,A.AppenderDescription\n" .
 					"    ,A.IsSystem\n" .
 					"    ,A.IsEnabled\n" .
+					"    ,A.Configuration\n" .
 					"    ,A.DateInserted\n" .
 					"    ,A.DateUpdated\n" .
 					"FROM\n" .

@@ -251,7 +251,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		// - Page has just been opened for an INSERT. In such case, we need the Appender Type
 	  //   to know which View to present to the User and how to validate them.
 		// - Page has just been opened for an UPDATE. In such case, we need the Appender Type
-	  //   to load the appropriate Model, which will decode the configuration XML into
+	  //   to load the appropriate Model, which will decode the configuration into
 		//   the values to populate the View.
 		//   Note: an UPDATE request always contains an Appender ID, which could theoretically
 		//   be used to retrieve the Appender Type. However, this would require several extra
@@ -284,7 +284,7 @@ class LoggerPlugin extends Gdn_Plugin {
 
 			if(isset($AppenderID)) {
 				// Load the data of the Client to be edited, if an Appender ID is passed
-				$AppenderSettings = $AppenderConfigModel->GetAppenderSettings($AppenderID);
+				$AppenderSettings = $AppenderConfigModel->GetAppenderConfig($AppenderID);
 
 				$Sender->Form->SetData($AppenderSettings);
 			}

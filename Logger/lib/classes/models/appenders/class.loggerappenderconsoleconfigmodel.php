@@ -2,24 +2,25 @@
 
 class LoggerAppenderConsoleConfigModel extends LoggerAppenderConfigModel {
 
-	public function GetAppenderSettings($AppenderID) {
-		// Retrieve settings XML from configuration table
-		$Settings = &parent::GetAppenderSettings($AppenderID);
-		$ConfigXML = $Settings['Configuration'];
+	public function GetAppenderConfig($AppenderID) {
+		// Retrieve settings from configuration table
+		$Config = parent::GetAppenderConfig($AppenderID);
+		// Retrieve the settings encoded as JSON
+		$AppenderParams = json_decode($Config['Configuration'], TRUE);
 
-		// TODO Transform XML settings, contained in Config field, into an array of fields
-		$Config = json_decode(json_encode($ConfigXML));
-		var_dump($Config);
+		$Config['Layout'] = $AppenderParams['layout']['class'];
+		$Config['Target'] = $AppenderParams['params']['target'];
 
-		return $Settings;
+		return $Config;
 	}
 
 	public function Save($FormPostValues) {
-		// TODO Transforms posted values into an array to populate Config field in Appenders configuration table
-		$ConfigXML = new SimpleXMLElement('<appender/>');
-		$this->AddLayoutNode($ConfigXML, $FormPostValues['Layout']);
+		// Transforms posted values into an array to populate Configuration field in
+		// LoggerAppenders configuration table
+		$Config = array('layout' => array('class' => $FormPostValues['Layout']),
+										'params' => array('target' => $FormPostValues['Target'],));
 
-		$this->AddParamNodeFromField($ConfigXML, $FormPostValues, 'Target');
+		$FormPostValues['Configuration'] = json_encode($Config);
 
 		parent::Save($FormPostValues);
 	}
