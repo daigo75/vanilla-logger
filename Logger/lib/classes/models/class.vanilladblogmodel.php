@@ -19,7 +19,7 @@ class VanillaDBLogModel extends Gdn_Model {
 	 * @return void
 	 */
 	protected function _SetVanillaDBLogValidationRules() {
-		$this->Validation = &new Gdn_Validation();
+		//$this->Validation = &new Gdn_Validation();
 
 		// Set additional Validation Rules here. Please note that formal validation
 		// is done automatically by base Model Class, by retrieving Schema
@@ -145,11 +145,13 @@ class VanillaDBLogModel extends Gdn_Model {
 
 		// Validate posted data
 		if(!$this->Validate($LogFields)) {
+			//var_dump($this->Validate->Results());
 			return false;
 		}
 
 		// Prepare all the validated fields to be passed to an INSERT/UPDATE query
 		$Fields = &$this->Validation->ValidationFields();
+
 
 		$this->AddInsertFields($Fields);
 		return $this->Insert($Fields);

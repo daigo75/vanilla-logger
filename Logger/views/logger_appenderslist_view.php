@@ -10,17 +10,18 @@ You should have received a copy of the GNU General Public License along with Log
 Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 */
 
-	// Indicates how many columns there are in the table that shows the list of
-	// configured Log Appenders. It's mainly used to set the "colspan" attributes of
-	// single-valued table rows, such as Title, or the "No Results Found" message.
-	define('APPENDERS_TABLE_COLUMNS', 4);
+// Indicates how many columns there are in the table that shows the list of
+// configured Log Appenders. It's mainly used to set the "colspan" attributes of
+// single-valued table rows, such as Title, or the "No Results Found" message.
+define('APPENDERS_TABLE_COLUMNS', 5);
 
-	// The following HTML will be displayed when the DataSet is empty.
-	$OutputForEmptyDataSet = Wrap(T('No Appenders configured.'),
-																'td',
-																array('colspan' => APPENDERS_TABLE_COLUMNS,
-																			'class' => 'NoResultsFound',)
-																);
+// The following HTML will be displayed when the DataSet is empty.
+$OutputForEmptyDataSet = Wrap(T('No Appenders configured.'),
+															'td',
+															array('colspan' => APPENDERS_TABLE_COLUMNS,
+																		'class' => 'NoResultsFound',)
+															);
+$AppendersDataSet = $this->Data['AppendersDataSet'];
 ?>
 <div class="Logger">
 	<div class="Header">
@@ -69,24 +70,27 @@ Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 					// TODO Implement Pager.
 					// Output the details of each row in the DataSet
 					foreach($AppendersDataSet as $Appender) {
+						//var_dump($Appender);
 						echo "<tr>\n";
 						// Output Appender Name
 						echo Wrap(Gdn_Format::Text($Appender->AppenderName), 'td', array('class' => 'AppenderName',));
-						// Output Appender Description
-						echo Wrap(Gdn_Format::Text($Appender->AppenderDescription), 'td', array('class' => 'AppenderDescription',));
 						// Output Appender Type
 						echo Wrap(Gdn_Format::Text($Appender->AppenderType), 'td', array('class' => 'AppenderType',));
+						// Output Appender Description
+						echo Wrap(Gdn_Format::Text($Appender->AppenderDescription), 'td', array('class' => 'AppenderDescription',));
 						// Output "Enabled" indicator
-						$EnabledText = ($Appender->Enabled == 1) ? 'Yes' : '';
+						$EnabledText = ($Appender->IsEnabled == 1) ? 'Yes' : '';
 						echo Wrap(Gdn_Format::Text($EnabledText), 'td', array('class' => 'Enabled',));
 
 						echo "<td>\n";
 						// Output Add/Edit button
 						echo Anchor(T('Edit'),
-												sprintf('%s?%s=%s',
-																LOGGER_APPENDER_ADDEDIT_URL,
+												sprintf('%s?%s=%s&%s=%s',
+																LOGGER_APPENDER_EDIT_URL,
 																LOGGER_ARG_APPENDERID,
-																Gdn_Format::Url($Appender->AppenderID)),
+																Gdn_Format::Url($Appender->AppenderID),
+																LOGGER_ARG_APPENDERTYPE,
+																Gdn_Format::Url($Appender->AppenderType)),
 												'SmallButton AddEditAppender');
 						// Output Delete button
 						echo Anchor(T('Delete'),

@@ -10,27 +10,101 @@
  * This model is used to store Log entries to a table.
   */
 class LoggerAppenderConfigModel extends Gdn_Model {
+
+	/*** XML Convenience Functions ***/
+	/**
+	 * Adds a child node to a given SimpleXMLElement.
+	 *
+	 * @param Node The node to which the <layout> node should be added.
+	 * @param ChildNodeName The name to assign to the child node.
+	 * @param Attributes An associative array of attributes to assign to the child node.
+	 * @param Value The value to assign to the child node.
+	 * @return void.
+	 */
+	protected function AddParameterNode(SimpleXMLElement $Node, $ChildNodeName = 'param', array $Attributes, $Value = null) {
+		$ParamNode = $Node->addChild($ChildNodeName, $Value);
+		foreach($Attributes as $ParamName => $ParamValue) {
+			$ParamNode->addAttribute($ParamName, $ParamValue);
+		}
+		return;
+	}
+
+	/**
+	 * Adds a <layout> node to a given SimpleXMLElement.
+	 *
+	 * @param Node The node to which the <layout> node should be added.
+	 * @param Layout The name of the layout.
+	 * @return void.
+	 */
+	protected function AddLayoutNode(SimpleXMLElement $Node, $Layout) {
+		// There's no need to add a layout node if Layout name is empty.
+		if(empty($Layout)) {
+			return;
+		}
+
+		$this->AddParameterNode($Node, 'layout', array('class' => $Layout,));
+		return;
+	}
+
+	/**
+	 *  Adds a child parameter node to a SimpleXMLElement, setting its "name" and
+	 *  "value" attributes by taking them from a field extracted from a list of
+	 *  fields. The "name" attribute will be set to the field name, while the
+	 *  "value" will be set to the Field value.
+	 *
+	 * @param Node The node to which the <param> node should be added.
+	 * @param FormValues An associative array of fields (usually the one received
+	 * when a Form is posted) from which the Field will be extracted.
+	 * @param FieldName The name of the field to extract.
+	 * @return void.
+	 */
+	protected function AddParamNodeFromField(SimpleXMLElement $Node, array $FormValues, $FieldName) {
+		$this->AddParameterNode($Node, 'param', array('name' => $FieldName,
+																									'value' => $FormValues[$FieldName]));
+	}
+
+
 	/**
 	 * Build SQL query to retrieve data from the LoggerAppenders Table.
 	 */
 	protected function PrepareLoggerAppendersQuery() {
 		$Query = $this->SQL
-			->Column('VLA.AppenderID')
-			->Column('VLA.AppenderName')
-			->Column('VLA.AppenderType')
-			->Column('VLA.IsSystem')
-			->Column('VLA.IsEnabled')
+			->Select('VLA.AppenderID')
+			->Select('VLA.AppenderName')
+			->Select('VLA.AppenderType')
+			->Select('VLA.AppenderDescription')
+			->Select('VLA.IsSystem')
+			->Select('VLA.IsEnabled')
+			->Select('VLA.DateInserted')
 			->From('v_logger_appenders VLA');
 		return $Query;
 	}
 
 	/**
 	 * Defines the related database table name.
+	 *
+	 * @param Validation An instance of LoggerAppenderConfigValidation. This will
+	 * be used for validation upon saving. It can also be NULL, in which case the
+	 * module will use the default Validation, which performs basic formal checks
+	 * against the Database fields.
+	 * @throws Logger_InvalidValidationException if the Validation parameters is
+	 * not NULL, but it's not an instance of LoggerAppenderConfigValidation.
 	 */
-	public function __construct(LoggerAppenderConfigValidation $Validation) {
+	public function __construct($Validation = null) {
 		parent::__construct('LoggerAppenders');
 
-		$this->Validation = $Validation;
+		// Simply skip the Validation parameter if it's empty
+		if(empty($Validation)) {
+			return;
+		}
+
+		// If not empty, Validation must be an instance of LoggerAppenderConfigValidation
+		if($Validation instanceof LoggerAppenderConfigValidation) {
+			$this->Validation = $Validation;
+		}
+		else {
+			throw new Logger_InvalidValidationException(T('Invalid Validation parameter. Parameter can only be NULL, or be an instance of LoggerAppenderConfigValidation'));
+		}
 	}
 
 	/**
@@ -82,9 +156,10 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 	 * Appender, or FALSE if no result is found.
 	 */
 	protected function GetAppenderSettings($AppenderID) {
-		// Return empty array if no Appender ID is passed
-		if(!is_numeric($AppenderID)) {
-			return false;
+		// Appender ID must be a number, therefore there's no point in running a
+		// query if it's empty or non-numeric.
+		if(empty($AppenderID) || !is_numeric($AppenderID)) {
+			return null;
 		}
 
 		// Retrieve and return the Appender Settings
@@ -112,7 +187,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		$AppenderID = GetValue($this->PrimaryKey, $FormPostValues, false);
 
 		// See if a Appender with the same ID already exists, to decide if ID was posted and decide how to save
-		$Insert = ($this->GetAppenderSettings($AppenderID) === false);
+		$Insert = ($this->GetAppenderSettings($AppenderID) == null);
 
 		// Prepare all the validated fields to be passed to an INSERT/UPDATE query
 		$Fields = &$this->Validation->ValidationFields();

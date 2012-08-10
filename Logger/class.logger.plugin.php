@@ -16,7 +16,7 @@ Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 require(PATH_PLUGINS . '/Logger/lib/logger.defines.php');
 // LOGGER_PLUGIN_LIB_PATH is defined in logger.defines.php.
 require(LOGGER_PLUGIN_LIB_PATH . '/logger.validation.php');
-
+// Main Log4PHP Library
 require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 
 // Plugin definition
@@ -35,19 +35,8 @@ $PluginInfo['Logger'] = array(
 );
 
 class LoggerPlugin extends Gdn_Plugin {
-	/**
-	 * Builds the full name of the View that handles the configuration of a
-	 * specific LoggerAppender.
-	 *
-	 * @param LoggerAppenderType The type of Appender for which to retrieve the
-	 * View.
-	 * @return The full path and file name of the View used to configure the
-	 * Appender.
-	 */
-	protected function GetAppenderConfigView($LoggerAppenderType) {
-		$ViewName = sprintf('%s_config_view.php', $LoggerAppenderType);
-		return sprintf('%s/appenders/%s', LOGGER_PLUGIN_VIEW_PATH, $ViewName);
-	}
+	protected $AppendersManager;
+
 
 	/**
 	 * Set Validation Rules related to Configuration Model.
@@ -82,7 +71,9 @@ class LoggerPlugin extends Gdn_Plugin {
 	public function __construct() {
 		parent::__construct();
 
-		//Logger::configure(PATH_PLUGINS . '/Logger/testconfig.xml');
+		Logger::configure(PATH_PLUGINS . '/Logger/testconfig.xml');
+		$logger = self::GetLogger();
+		$logger->info('Something here.');
 	}
 
 	/**
@@ -105,6 +96,10 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Sender->Title('Logger Plugin');
 		$Sender->AddSideMenu('plugin/logger');
 
+		// Logger Appenders Manager will be used to keep track of available
+		// appenders
+		$this->AppendersManager = new LoggerAppendersManager();
+
 		// Prepare form for sub-pages
 		$Sender->Form = new Gdn_Form();
 
@@ -113,17 +108,20 @@ class LoggerPlugin extends Gdn_Plugin {
 	}
 
 	public function Controller_Index($Sender) {
-		$logger = Logger::getLogger('root');
-		$logger->info("foo");
-
 		// Prevent non-admins from accessing this page
 		$Sender->Permission('Plugins.Logger.Manage');
 
 		// CSS And JavaScript for this specific page
 		$Sender->AddJsFile($this->GetResource('js/logger.js', FALSE, FALSE));
-
 		$Sender->SetData('CurrentPath', LOGGER_APPENDERS_LIST_URL);
 
+		$AppenderConfigModel = new LoggerAppenderConfigModel();
+		$AppendersDataSet = $AppenderConfigModel->Get();
+		// TODO Handle Limit and Offset
+
+		// TODO Add Pager
+
+		$Sender->SetData('AppendersDataSet', $AppendersDataSet);
 		$Sender->Render($this->GetView('logger_appenderslist_view.php'));
 	}
 
@@ -157,12 +155,11 @@ class LoggerPlugin extends Gdn_Plugin {
 			}
 		}
 
-		// TODO Implement management of General Settings
 		$Sender->Render($this->GetView('logger_generalsettings_view.php'));
 	}
 
-	public static function GetLogger($LoggerName) {
-		return Logger::getLogger("main");
+	public static function GetLogger($LoggerName = 'system') {
+		return Logger::getLogger($LoggerName);
 	}
 
 	/**
@@ -245,15 +242,41 @@ class LoggerPlugin extends Gdn_Plugin {
 		// TODO Implement function Appender Edit
 		//throw new Exception('Not implemented');
 
-		$AppenderType = $Sender->Request->GetValue(LOGGER_ARG_APPENDERTYPE, null);
+		// If it's a PostBack, then the AppenderType has been passed by the form. If
+		// not, it will have been passed as an argument with the Request.
+		$AppenderType = $Sender->Form->AuthenticatedPostBack() ? $Sender->Form->GetValue['AppenderType'] : $Sender->Request->GetValue(LOGGER_ARG_APPENDERTYPE, null);
+
+		// The Appender Type is always required. This is because we are in three
+		// possible scenarios when this page is opened:
+		// - Page has just been opened for an INSERT. In such case, we need the Appender Type
+	  //   to know which View to present to the User and how to validate them.
+		// - Page has just been opened for an UPDATE. In such case, we need the Appender Type
+	  //   to load the appropriate Model, which will decode the configuration XML into
+		//   the values to populate the View.
+		//   Note: an UPDATE request always contains an Appender ID, which could theoretically
+		//   be used to retrieve the Appender Type. However, this would require several extra
+		//   steps:
+		//   - Instantiate a generic LoggerAppenderConfigModel
+		//   - Run a query to get the Appender Type
+		//   - Instantiate the specific LoggerAppenderConfigModel
+		//   - Run another query to retrieve the configuration and decode it into
+		//     the various fields.
+		//   Therefore, it's simpler to just expect the Appender Type to be passed
+		//   with the request.
+		// - Page has been opened after the User clicked on Save. In such case, the
+		//   Appender Type is supposed to be part of the configuration form.
+		//
+		// For the above reasons, it's safe to assume that the page can't be opened
+		// if an Appender Type hasn't been specified.
+		if(empty($AppenderType)) {
+			throw new Logger_InvalidAppenderTypeException(sprintf(T('Invalid Request. Argument %s (Appender Type) is required.'), LOGGER_ARG_APPENDERTYPE));
+		}
 
 		// Load appropriate Appender Configuration Model, depending on Appender Type
-		// TODO Evaluate the possibility of using Gdn::Factory to install and load Appender Configuration Model class.
-		$AppenderConfigClass = sprintf('%sConfigModel', $AppenderType);
-		$AppenderConfigModel = &new $AppenderConfigClass();
+		$AppenderConfigModel = $this->AppendersManager->GetModel($AppenderType);
 
 		// Set the model on the form.
-		$Sender->Form->SetModel(&$AppenderConfigModel);
+		$Sender->Form->SetModel($AppenderConfigModel);
 
 		// If seeing the form for the first time...
 		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
@@ -262,39 +285,43 @@ class LoggerPlugin extends Gdn_Plugin {
 			if(isset($AppenderID)) {
 				// Load the data of the Client to be edited, if an Appender ID is passed
 				$AppenderSettings = $AppenderConfigModel->GetAppenderSettings($AppenderID);
+
 				$Sender->Form->SetData($AppenderSettings);
+			}
+			else {
+				// Set only the AppenderType, if Appender ID is null (i.e. it's an Add New Appender operation)
+				$Sender->Form->SetValue('AppenderType', $AppenderType);
 			}
 		}
 		else {
 			//var_dump($Sender->Form->FormValues());
 
-			// TODO Implement validation for specific Appender
+			// The field named "Save" is actually the Save button. If it exists, it means
+			// that the User chose to save the changes.
+			$Data = $Sender->Form->FormValues();
 
-			// If requested, generate a User ID and a Secret Key
-			//if($Sender->Form->GetFormValue(LOGGER_ARG_GENERATE_ID) || $Sender->Request->Post(LOGGER_ARG_GENERATE_ID)) {
-			//	$Sender->Form->SetFormValue('ClientID', mt_rand());
-			//	$Sender->Form->SetFormValue('SecretKey', sha1(uniqid('', TRUE)));
-			//}
-			//else {
-			//	// The field named "Save" is actually the Save button. If it exists, it means
-			//	// that the User chose to save the changes.
-			//	$Data = $Sender->Form->FormValues();
-			//	if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
-			//		// Save settings
-			//		$Saved = $Sender->Form->Save();
-			//
-			//		if ($Saved) {
-			//			$Sender->InformMessage(T('Your changes have been saved.'));
-			//		}
-			//	}
-			//
-			//	// Whether User Saved or Canceled, return to Client List page.
-			//	//Redirect(LOGGER_APPENDER_LIST_URL);
-			//	$this->Controller_Index($Sender);
-			//}
+			// If User Canceled, go back to the List
+			if($Data['Cancel']) {
+				Redirect(LOGGER_APPENDERS_LIST_URL);
+			}
+
+			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
+				// Save Appender settings
+				$Saved = $Sender->Form->Save();
+
+				if ($Saved) {
+					$Sender->InformMessage(T('Your changes have been saved.'));
+
+					// Once changes have been saved, render the main page
+					$this->Controller_Index($Sender);
+				}
+			}
 		}
 
-		$Sender->Render($this->GetAppenderConfigView($AppenderType));
+		// Retrieve the sub-View that will be used to configure the parameters
+		// specific to the selected Logger Appender.
+		$Sender->Data['AppenderConfigView'] = $this->AppendersManager->GetConfigView($AppenderType);
+		$Sender->Render($this->GetView('loggerappender_master_config_view.php'));
 	}
 
 	/**

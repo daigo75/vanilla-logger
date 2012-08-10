@@ -10,63 +10,26 @@ You should have received a copy of the GNU General Public License along with Log
 Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 */
 
-// TODO Implement View for Console Appender configuration
+$ConsoleTargets = array('stdout' => T('Standard Out (stdout)'),
+												'stderr' => T('Standard Error (stderr)'),);
+
 ?>
-<div class="Logger AppenderEdit">
+<ul id="LoggerAppenderConsole Params">
 	<?php
-		echo $this->Form->Open();
-		echo $this->Form->Errors();
+		// Load the View Snippet containing the interface for the configuration of the
+		// layout to be used by the Appender.
+		include 'loggerappender_layout_config_snippet.php';
 	?>
-	<fieldset>
-		<ul>
-			<li>
-				<?php
-					echo Wrap(sprintf(T('Appender Type: %s.'), $this->Form->GetValue('AppenderType')),
-										'div',
-										array('class' => 'Info',
-													));
-				?>
-			</li>
-			<li>
-				<?php
-					echo $this->Form->Label(T('Appender Name'), 'AppenderName');
-					echo Wrap(T('Enter a name for the Appender. This is just to help you identifying each Appender.'),
-										'div',
-										array('class' => 'Info',
-													'maxlength' => '100',
-													));
-					echo $this->Form->TextBox('AppenderName',
-																		array('maxlength' => '100',));
-				?>
-			</li>
-			<li>
-				<?php
-					echo $this->Form->Label(T('Description'), 'AppenderDescription');
-					echo Wrap(T('Enter a description for the Appender. This is useful if you have several Appenders
-											of the same type and you need to distinguish between them.'),
-										'div',
-										array('class' => 'Info'));
-					echo $this->Form->TextBox('AppenderDescription',
-																		array('maxlength' => '255',));
-				?>
-			</li>
-			<li>
-				<?php
-					echo $this->Form->CheckBox('IsEnabled',
-																		 T('Tick this box if you want to enable this Appender.'),
-																		 array('value' => 1,
-																					 'checked' => );
-				?>
-			</li>
-		</ul>
-		<div class="Buttons">
-			<?php
-				echo $this->Form->Hidden('AppenderID');
-				echo $this->Form->Hidden('AppenderType');
-				echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
-				echo $this->Form->Button(T('Cancel'));
-			?>
-		</div>
-	</fieldset>
-	<?php echo $this->Form->Close(); ?>
-</div>
+	<li>
+		<?php
+			echo $this->Form->Label(T('Target'), 'Target');
+			echo Wrap(T('Enter a description for the Appender. This is useful if you have several Appenders
+									of the same type and you need to distinguish between them.'),
+								'div',
+								array('class' => 'Info'));
+			echo $this->Form->DropDown('AppenderType',
+																 $ConsoleTargets,
+																 array('name' => 'Target',));
+		?>
+	</li>
+</ul>

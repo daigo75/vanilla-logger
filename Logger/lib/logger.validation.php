@@ -20,13 +20,10 @@
  * @license http://opensource.org/licenses/GPL-2.0 GPL 2.0
 */
 
-
 /**
- * Validation functions for Logger Plugin.
+ * Validation functions for Logger Appender Configuration.
  *
- * @package LoggerPlugin
  */
-
 // TODO Export all these functions to an independent plugin, to allow other plugins to use them.
 if(!function_exists('ValidateAppenderType')){
 	/**

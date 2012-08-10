@@ -63,8 +63,11 @@ class LoggerSchema extends PluginSchema {
 					"    A.AppenderID\n" .
 					"    ,A.AppenderName\n" .
 					"    ,A.AppenderType\n" .
+					"    ,A.AppenderDescription\n" .
 					"    ,A.IsSystem\n" .
 					"    ,A.IsEnabled\n" .
+					"    ,A.DateInserted\n" .
+					"    ,A.DateUpdated\n" .
 					"FROM\n" .
 					"    {$Px}LoggerAppenders A";
 		$this->Construct->View('v_logger_appenders', $Sql);
