@@ -72,20 +72,23 @@ $IsNewAppender = empty($AppenderID) ? true : false;
 		<?php
 			// If Controller passed the name of a specific configuration View for
 			// the Appender, load it. Else, display a simple texarea where User
-			// can enter raw XML.
+			// can enter raw JSON.
 			if($AppenderConfigView) {
 				echo $this->FetchView($AppenderConfigView);
 			}
 			else {
 				echo "<ul>\n";
 				echo "<li>\n";
-				echo $this->Form->Label(T('XML Configuration'), 'Configuration');
-				echo Wrap(T('Enter the XML configuration for the Appender. Specifications for the XML ' .
-										'can be found on <a href="http://logging.apache.org/log4php/docs/configuration.html">Log4php website</a>.'),
+				echo $this->Form->Label(T('JSON Configuration'), 'Configuration');
+				echo Wrap(T('Enter the parameters for the Appender, in JSON format. You can use specifications for the XML ' .
+										'on <a href="http://logging.apache.org/log4php/docs/configuration.html">Log4php website</a>. as ' .
+										'a reference.'
+										),
 									'div',
 									array('class' => 'Info'));
-				echo Wrap(T('<strong>Important:</strong> in this box, you only have to enter the <code>&lt;appender&gt;</code> ' .
-										'section of the configuration. The rest of the XML will be built automatically'),
+				echo Wrap(T('<strong>Important:</strong> in this box, you only have to enter the parameters and the layout ' .
+										'for the appender (i.e. the equivalent of the <code>&lt;layout&gt;</code> and <code>&lt;param&gt;</code> ' .
+										'nodes of the XML configuration for an Appender. The rest of the configuration will be built automatically.'),
 									'div',
 									array('class' => 'Info'));
 				echo $this->Form->TextBox('Configuration',
