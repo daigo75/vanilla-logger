@@ -22,7 +22,7 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 // Plugin definition
 $PluginInfo['Logger'] = array(
 	'Description' => 'Logger for Vanilla',
-	'Version' => '0.1',
+	'Version' => '0.5 Alpha',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
