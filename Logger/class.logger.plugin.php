@@ -76,6 +76,25 @@ class LoggerPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Performs several initialization steps needed for the plugin to work
+	 * correctly. These steps have been moved from method
+	 * PluginController_Logger_Create().
+	 *
+	 * @return void.
+	 */
+	protected function Initialize() {
+		// Logger Appenders Manager will be used to keep track of available
+		// appenders
+		self::$AppendersManager = new LoggerAppendersManager();
+
+		// Load Logger Configuration and use it to initialize Log4php
+		$LoggerCfgModel = new LoggerConfigModel();
+		Logger::configure($LoggerCfgModel->Get());
+		//$logger = self::GetLogger();
+		//$logger->info('Something here.');
+	}
+
+	/**
 	 * Base_Render_Before Event Hook
 	 *
 	 * @param $Sender Sending controller instance
@@ -94,22 +113,11 @@ class LoggerPlugin extends Gdn_Plugin {
 		// Basic plugin properties
 		$Sender->Title('Logger Plugin');
 		$Sender->AddSideMenu('plugin/logger');
-
-		// Logger Appenders Manager will be used to keep track of available
-		// appenders
-		self::$AppendersManager = new LoggerAppendersManager();
-
-		// Load Logger Configuration
-		$LoggerCfgModel = new LoggerConfigModel();
-		$LoggerConfig = $LoggerCfgModel->Get();
-
-		//Logger::configure(PATH_PLUGINS . '/Logger/testconfig.xml');
-		//$logger = self::GetLogger();
-		//$logger->info('Something here.');
-
-
 		// Prepare form for sub-pages
 		$Sender->Form = new Gdn_Form();
+
+		// Perform initialization steps
+		$this->Initialize();
 
 		// Forward the call to the appropriate method.
 		$this->Dispatch($Sender, $Sender->RequestArgs);
@@ -165,6 +173,12 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Sender->Render($this->GetView('logger_generalsettings_view.php'));
 	}
 
+	/**
+	 * Returns an instance of the Log4php Logger.
+	 *
+	 * @param LoggerName The name of the Logger to retrieve.
+	 * @return An instance of a Log4php Logger.
+	 */
 	public static function GetLogger($LoggerName = 'system') {
 		return Logger::getLogger($LoggerName);
 	}
@@ -231,8 +245,8 @@ class LoggerPlugin extends Gdn_Plugin {
 			}
 		}
 
-		$Sender->SetData('AppenderClasses', self::$AppendersManager->GetAppendersLabels());
-		$Sender->SetData('AppenderClassesDescriptions', self::$AppendersManager->GetAppendersDescriptions());
+		$Sender->SetData('AppenderClasses', self::AppendersManager()->GetAppendersLabels());
+		$Sender->SetData('AppenderClassesDescriptions', self::AppendersManager()->GetAppendersDescriptions());
 		$Sender->Render($this->GetView('logger_appender_add_view.php'));
 	}
 
@@ -277,7 +291,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		}
 
 		// Load appropriate Appender Configuration Model, depending on Appender Type
-		$AppenderConfigModel = self::$AppendersManager->GetModel($AppenderClass);
+		$AppenderConfigModel = self::AppendersManager()->GetModel($AppenderClass);
 
 		// Set the model on the form.
 		$Sender->Form->SetModel($AppenderConfigModel);
@@ -324,7 +338,7 @@ class LoggerPlugin extends Gdn_Plugin {
 
 		// Retrieve the sub-View that will be used to configure the parameters
 		// specific to the selected Logger Appender.
-		$Sender->Data['AppenderConfigView'] = self::$AppendersManager->GetConfigView($AppenderClass);
+		$Sender->Data['AppenderConfigView'] = self::AppendersManager()->GetConfigView($AppenderClass);
 		$Sender->Render($this->GetView('loggerappender_edit_config_view.php'));
 	}
 

@@ -125,6 +125,28 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 	}
 
 	/**
+	 * Processes the "Configuration" field from the settings of a Logger Appender
+	 * and returns an associative array that can be passed "as is" to Log4php to
+	 * configure an Appender.
+	 *
+	 * @param AppenderID The ID of the Appender for which the settings should be retrieved.
+	 * @return An associative array of settings compatible with Log4php format, or
+	 * an empty string if configuration was not found, or invalid.
+	 */
+	public function GetLog4phpSettings($AppenderID) {
+		$AppenderConfig = $this->GetAppenderConfig($AppenderID);
+		if(empty($AppenderConfig)) {
+			return '';
+		}
+		// Decode the settings saved in Configuration field
+		$Settings = json_decode($AppenderConfig['Configuration'], true);
+		// Add the LoggerAppender Class, which is stored in a separate field
+		$Settings['class'] = $AppenderConfig['AppenderClass'];
+
+		return $Settings;
+	}
+
+	/**
 	 * Save an Appender's Configuration into the LoggerAppenders.
 	 *
    * @param array $FormPostValues An associative array of $Field => $Value pairs

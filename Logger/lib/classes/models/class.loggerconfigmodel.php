@@ -1,15 +1,20 @@
 <?php if (!defined('APPLICATION')) exit();
 
 /**
- * Logger Appenders Model
+ * Logger Configuration Model
  *
  * @package LoggerPlugin
  */
 
 /**
- * This model is used to store Log entries to a table.
-  */
+ * This model is used to retrieve the configuration of Appenders, Filters,
+ * Loggers, etc. and use them produce an associative array that can be passed
+ * to Log4php for initialization.
+ */
 class LoggerConfigModel extends Gdn_Model {
+	/// Stores the configuration that will be passed to Log4php
+	private $LoggerConfig = array();
+
 	/**
 	 * Defines the related database table name.
 	 *
@@ -18,20 +23,73 @@ class LoggerConfigModel extends Gdn_Model {
 		parent::__construct('LoggerConfig');
 	}
 
-	public function LoadAppendersConfig(array &$LoggerConfig) {
-		return;
-		// TODO Retrieve configuration for each Appender
-		$AppenderCfgModel = new LoggerAppenderConfigModel();
-		$ActiveAppenders = $AppenderCfgModel->GetActiveAppenders();
-
-		foreach($ActiveAppenders as $AppenderCfg) {
-			var_dump($AppenderCfg->AppenderClass);;
-		}
-
-		$LoggerConfig['appenders'] = '';
+	/**
+	 * Initializes the associative array containing Logger Configuration by adding
+	 * and setting the entries that must always appear in it.
+	 *
+	 * @return void.
+	 */
+	protected function InitializeLoggerSection($LoggerName = LOGGER_LOG4PHP_ROOTLOGGER) {
+		// Initialize
+		$this->LoggerConfig[$LoggerName] = array();
+		$this->LoggerConfig[$LoggerName]['appenders'] = array();
 	}
 
-	public function GetLoggerFilters() {
+	/**
+	 * Adds the settings for a Log Appender to the global Logger configuration.
+	 *
+	 * @param AppenderName The name of the Appender to whom the settings belong.
+	 * @param Settings An associative array of settings, in the format specified
+	 * in <a href="http://logging.apache.org/log4php/docs/configuration.html">Log4php documentation</a>.
+	 * @return void.
+	 */
+	protected function AddAppenderSettings($AppenderName, array $Settings) {
+		// Add the Appender to the global list of configured Appenders
+		$this->LoggerConfig[LOGGER_LOG4PHP_APPENDERS][$AppenderName] = $Settings;
+	}
+
+	/**
+	 * Loads the settings of all active Appenders in the associative array that
+	 * will contain the global Logger configuration.
+	 *
+	 * @return void.
+	 */
+	protected function LoadAppendersSettings() {
+		$BaseAppenderCfgModel = new LoggerAppenderConfigModel();
+		$ActiveAppenders = $BaseAppenderCfgModel->GetActiveAppenders();
+
+		foreach($ActiveAppenders as $AppenderCfg) {
+			// Load the model that will retrieve the Appender's settings
+			$AppenderConfigModel = LoggerPlugin::AppendersManager()->GetModel($AppenderCfg->AppenderClass);
+
+			// Get Appender's settings in the format expected by Log4php and add them
+			// to the global configuration array
+			$this->AddAppenderSettings($AppenderCfg->AppenderName,
+																 $AppenderConfigModel->GetLog4phpSettings($AppenderCfg->AppenderID));
+		}
+	}
+
+	/**
+	 * Associates all configured Appenders with the Root Logger.
+	 *
+	 * @return void.
+	 */
+	public function AssociateAppenders() {
+		// TODO Add support for multiple loggers by extracting the associations from a configuration table in the Database
+
+		foreach($this->LoggerConfig[LOGGER_LOG4PHP_APPENDERS] as $AppenderName => $AppenderSettings) {
+			// Associate the Appenders to the Root Logger
+			$this->LoggerConfig[LOGGER_LOG4PHP_ROOTLOGGER][LOGGER_LOG4PHP_APPENDERS][] = $AppenderName;
+		}
+	}
+
+	/**
+	 * Retrieves the configuration of all the Logger-level filters and stores it
+	 * in the configuration array.
+	 *
+	 * @return void.
+	 */
+	protected function GetLoggerFilters() {
 		// TODO Retrieve Logger-level Filters
 		return '';
 	}
@@ -42,41 +100,25 @@ class LoggerConfigModel extends Gdn_Model {
 	 *
 	 */
 	public function Get() {
-		$LoggerConfig = array();
+		$this->LoggerConfig = array(
+													LOGGER_LOG4PHP_APPENDERS => array() // Section containing the list of all configured Appenders
+													);
 
+		// Initialize the arrays that will contain the configuration for Root Logger
 		// TODO Allow to specify more than one Logger
-		// LoggerPlugin will use a single logger
-		$LoggerConfig['rootLogger'] = array();
-		//$LoggerConfig['rootLogger']['appenders'] = $this->GetAppendersForLogger('rootLogger');
+		$this->InitializeLoggerSection(LOGGER_LOG4PHP_ROOTLOGGER);
 
 		// Load setting of Appenders
-		$this->LoadAppendersConfig($LoggerConfig);
+		$this->LoadAppendersSettings();
 
+		// Associate Appenders to the Loggers
+		$this->AssociateAppenders();
 
+		// Load filters to apply at a Logger level
 		$this->GetLoggerFilters();
 
-		$LoggerConfig = '';
+		//printf('<pre>%s</pre>', print_r($this->LoggerConfig, true));
 
-		return $LoggerConfig;
-	}
-
-	/**
-	 * Returns an array containing a single row with the settings for a specific
-	 * Logger Appender.
-	 *
-	 * @param AppenderID The Id of the Appender for which the data should be
-	 * retrieved.
-	 * @return An array containing a single row with the settings for the Logger
-	 * Appender, or FALSE if no result is found.
-	 */
-	protected function GetLoggerConfig($LoggerName) {
-		// Appender ID must be a number, therefore there's no point in running a
-		// query if it's empty or non-numeric.
-		if(empty($AppenderID) || !is_numeric($AppenderID)) {
-			return null;
-		}
-
-		// Retrieve and return the Appender Settings
-		return $this->Get(array('AppenderID' => $AppenderID,))->FirstRow(DATASET_TYPE_ARRAY);
+		return $this->LoggerConfig;
 	}
 }

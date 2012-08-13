@@ -56,53 +56,9 @@ define('LOGGER_ARG_APPENDERID', 'apd_id');
 define('LOGGER_ARG_APPENDERTYPE', 'apd_type');
 //define('LOGGER_ARG_APPENDERDESCRIPTION', 'email');
 
-
-//define('LOGGER_APPENDER_TYPES_OLD',
-//			 serialize(array(// Plugin Appenders
-//												'LoggerAppenderGraylog2' => 'Graylog2 Log Server',
-//												'LoggerAppenderVanillaDB' => 'Forum\'s Database',
-//
-//												// Standard Log4php Appenders
-//												'LoggerAppenderConsole' => 'Console',
-//												'LoggerAppenderDailyFile' => 'Daily File',
-//												'LoggerAppenderEcho' => 'PHP\'s echo',
-//												'LoggerAppenderFile' => 'File',
-//												'LoggerAppenderMail' => 'Email',
-//												'LoggerAppenderMailEvent' => 'Email (Individual Log Events)',
-//												'LoggerAppenderMongoDB' => 'MongoDB',
-//												'LoggerAppenderNull' => 'Null',
-//												'LoggerAppenderPDO' => 'External Database',
-//												'LoggerAppenderPhp' => 'PHP User-Level message',
-//												'LoggerAppenderRollingFile' => 'Rolling file',
-//												'LoggerAppenderSocket' => 'Network Socket',
-//												'LoggerAppenderSyslog' => 'Syslog',
-//											 )
-//								)
-//			);
-//
-//// List of the Appenders Types descriptions
-//define('LOGGER_APPENDER_TYPES_DESCRIPTIONS',
-//			 serialize(array(// Plugin Appenders
-//												'LoggerAppenderGraylog2' => 'Sends Log to a <a href="http://graylog2.org/">Graylog2</a> instance.',
-//												'LoggerAppenderVanillaDB' => 'Saves Log to a table in Vanilla Database',
-//
-//												// Standard Log4php Appenders
-//												'LoggerAppenderConsole' => 'Writes logging events to the <code>php://stdout</code> or the <code>php://stderr</code> stream, the former being the default target.',
-//												'LoggerAppenderDailyFile' => 'Writes logging events to a file. The file is rolled over once a day. In other words, for each day a new file is created.',
-//												'LoggerAppenderEcho' => 'Writes logging events using PHP\'s <code>echo()</code> function. Echo outputs may be buffered.',
-//												'LoggerAppenderFile' => 'Writes logging events to a file.',
-//												'LoggerAppenderMail' => 'Appends log events via email.',
-//												'LoggerAppenderMailEvent' => 'Appends individual log events via email.',
-//												'LoggerAppenderMongoDB' => 'Appends log events to a mongoDB instance.',
-//												'LoggerAppenderNull' => 'Ignores all logging requests; it never outputs a message to any device.',
-//												'LoggerAppenderPDO' => 'Appender logs to a database using the PHP\'s PDO extension. Use this Appender to connect to a Database which is not Vanilla\'s one.',
-//												'LoggerAppenderPhp' => 'Logs events by creating a PHP user-level message using the PHP\'s <code>trigger_error()</code> function.',
-//												'LoggerAppenderRollingFile' => 'Writes logging events to a specified file. The file is rolled over after a specified size has been reached.',
-//												'LoggerAppenderSocket' => 'Appends to a network socket.',
-//												'LoggerAppenderSyslog' => 'Logs events to the syslog. It is not recommended to use this logger if your websites runs on a shared server, as the SysLog is a single one on each server and could be accessible by other Users.',
-//											 )
-//								)
-//			);
+// Definitions for Log4php configuration files
+define('LOGGER_LOG4PHP_ROOTLOGGER', 'rootLogger');
+define('LOGGER_LOG4PHP_APPENDERS', 'appenders');
 
 /**
  * Auxiliary class to handled serialized arrays declared using "define".

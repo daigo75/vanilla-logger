@@ -19,6 +19,15 @@ class LoggerAppendersManager {
 	public function Add($AppenderClass, $Label, $Description) {
 		$this->Appenders[$AppenderClass] = array('Label' => $Label,
 																						 'Description' => $Description,);
+
+		// Install Appender's Model and Validation class names into Vanilla built-in
+		// factory. This will allow to leverage Vanilla's mechanisms for the
+		// management of Singletons
+		$ModelClass = $this->GetModelClass($AppenderClass);
+		$ValidationClass = $this->GetValidationClass($AppenderClass);
+
+		Gdn::FactoryInstall($ModelClass, $ModelClass, '', Gdn::FactorySingleton);
+		Gdn::FactoryInstall($ValidationClass, $ValidationClass, '', Gdn::FactorySingleton);
 	}
 
 	/**
@@ -92,11 +101,10 @@ class LoggerAppendersManager {
 			$ValidationClass = $this->GetValidationClass($AppenderClass);
 
 			try {
-				$Validation = new $ValidationClass();
 				// The Validation is passed to the Model to "assemble" a complete model,
 				// which will automatically perform appropriate validation of the
 				// configuration.
-				$Model = new $ModelClass($Validation);
+				$Model = Gdn::Factory($ModelClass, Gdn::Factory($ValidationClass));
 
 				return $Model;
 			}
