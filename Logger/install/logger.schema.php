@@ -22,7 +22,7 @@ class LoggerSchema extends PluginSchema {
 			->Table('LoggerAppenders')
 			->PrimaryKey('AppenderID')
 			->Column('AppenderName', 'varchar(100)', FALSE, 'unique')
-			->Column('AppenderType', 'varchar(40)')
+			->Column('AppenderClass', 'varchar(40)')
 			->Column('AppenderDescription', 'varchar(255)')
 			->Column('IsSystem', 'uint', 0, 'index')
 			->Column('IsEnabled', 'uint', 1, 'index')
@@ -62,7 +62,7 @@ class LoggerSchema extends PluginSchema {
 		$Sql = "SELECT\n" .
 					"    A.AppenderID\n" .
 					"    ,A.AppenderName\n" .
-					"    ,A.AppenderType\n" .
+					"    ,A.AppenderClass\n" .
 					"    ,A.AppenderDescription\n" .
 					"    ,A.IsSystem\n" .
 					"    ,A.IsEnabled\n" .

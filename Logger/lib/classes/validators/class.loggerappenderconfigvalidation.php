@@ -12,11 +12,11 @@ class LoggerAppenderConfigValidation extends Gdn_Validation {
 	 * LoggerAppender.
 	 */
 	protected function SetValidationRules() {
-		$this->AddRule('ValidAppenderType', 'function:ValidateAppenderType');
+		$this->AddRule('ValidAppenderClass', 'function:ValidateAppenderClass');
 		$this->AddRule('ValidJSON', 'function:ValidateJSON');
 
 		// Validation rules for Appender Type
-		$this->ApplyRule('AppenderType', 'ValidAppenderType', T('Appender Type is not valid. Please select an Appender Type from the ones in the list.'));
+		$this->ApplyRule('AppenderClass', 'ValidAppenderClass', T('Appender Type is not valid. Please select an Appender Type from the ones in the list.'));
 		// Validation rules for JSON encoded parameters
 		$this->ApplyRule('Configuration', 'ValidJSON', T('The value contained in Configuration field is not valid JSON. This field can only accept valid JSON, or NULL.'));
 	}

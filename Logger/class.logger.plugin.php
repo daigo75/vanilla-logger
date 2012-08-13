@@ -61,10 +61,10 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @return void
 	 */
 	protected function _SetAppenderAddValidationRules(Gdn_Validation $Validation) {
-		$Validation->AddRule('ValidAppenderType', 'function:ValidateAppenderType');
+		$Validation->AddRule('ValidAppenderClass', 'function:ValidateAppenderClass');
 
 		// Validation rules for Appender Type
-		$Validation->ApplyRule('AppenderType', 'ValidAppenderType', T('Appender Type is not valid. Please select an Appender Type from the ones in the list.'));
+		$Validation->ApplyRule('AppenderClass', 'ValidAppenderClass', T('Appender Type is not valid. Please select an Appender Type from the ones in the list.'));
 	}
 
 	/**
@@ -73,13 +73,6 @@ class LoggerPlugin extends Gdn_Plugin {
 	 */
 	public function __construct() {
 		parent::__construct();
-
-		$LoggerCfgModel = new LoggerConfigModel();
-		$LoggerConfig = $LoggerCfgModel->Get();
-
-		//Logger::configure(PATH_PLUGINS . '/Logger/testconfig.xml');
-		//$logger = self::GetLogger();
-		//$logger->info('Something here.');
 	}
 
 	/**
@@ -105,6 +98,15 @@ class LoggerPlugin extends Gdn_Plugin {
 		// Logger Appenders Manager will be used to keep track of available
 		// appenders
 		self::$AppendersManager = new LoggerAppendersManager();
+
+		// Load Logger Configuration
+		$LoggerCfgModel = new LoggerConfigModel();
+		$LoggerConfig = $LoggerCfgModel->Get();
+
+		//Logger::configure(PATH_PLUGINS . '/Logger/testconfig.xml');
+		//$logger = self::GetLogger();
+		//$logger->info('Something here.');
+
 
 		// Prepare form for sub-pages
 		$Sender->Form = new Gdn_Form();
@@ -224,13 +226,13 @@ class LoggerPlugin extends Gdn_Plugin {
 					Redirect(sprintf('%s?%s=%s',
 													 LOGGER_APPENDER_EDIT_URL,
 													 LOGGER_ARG_APPENDERTYPE,
-													 $FormValues['AppenderType']));
+													 $FormValues['AppenderClass']));
 				}
 			}
 		}
 
-		$Sender->SetData('AppenderTypes', self::$AppendersManager->GetAppendersLabels());
-		$Sender->SetData('AppenderTypesDescriptions', self::$AppendersManager->GetAppendersDescriptions());
+		$Sender->SetData('AppenderClasses', self::$AppendersManager->GetAppendersLabels());
+		$Sender->SetData('AppenderClassesDescriptions', self::$AppendersManager->GetAppendersDescriptions());
 		$Sender->Render($this->GetView('logger_appender_add_view.php'));
 	}
 
@@ -244,9 +246,9 @@ class LoggerPlugin extends Gdn_Plugin {
 		// Prevent Users without proper permissions from accessing this page.
 		$Sender->Permission('Plugins.Logger.Manage');
 
-		// If it's a PostBack, then the AppenderType has been passed by the form. If
+		// If it's a PostBack, then the AppenderClass has been passed by the form. If
 		// not, it will have been passed as an argument with the Request.
-		$AppenderType = $Sender->Form->AuthenticatedPostBack() ? $Sender->Form->GetValue['AppenderType'] : $Sender->Request->GetValue(LOGGER_ARG_APPENDERTYPE, null);
+		$AppenderClass = $Sender->Form->AuthenticatedPostBack() ? $Sender->Form->GetValue['AppenderClass'] : $Sender->Request->GetValue(LOGGER_ARG_APPENDERTYPE, null);
 
 		// The Appender Type is always required. This is because we are in three
 		// possible scenarios when this page is opened:
@@ -270,12 +272,12 @@ class LoggerPlugin extends Gdn_Plugin {
 		//
 		// For the above reasons, it's safe to assume that the page can't be opened
 		// if an Appender Type hasn't been specified.
-		if(empty($AppenderType)) {
-			throw new Logger_InvalidAppenderTypeException(sprintf(T('Invalid Request. Argument %s (Appender Type) is required.'), LOGGER_ARG_APPENDERTYPE));
+		if(empty($AppenderClass)) {
+			throw new Logger_InvalidAppenderClassException(sprintf(T('Invalid Request. Argument %s (Appender Type) is required.'), LOGGER_ARG_APPENDERTYPE));
 		}
 
 		// Load appropriate Appender Configuration Model, depending on Appender Type
-		$AppenderConfigModel = self::$AppendersManager->GetModel($AppenderType);
+		$AppenderConfigModel = self::$AppendersManager->GetModel($AppenderClass);
 
 		// Set the model on the form.
 		$Sender->Form->SetModel($AppenderConfigModel);
@@ -291,8 +293,8 @@ class LoggerPlugin extends Gdn_Plugin {
 				$Sender->Form->SetData($AppenderSettings);
 			}
 			else {
-				// Set only the AppenderType, if Appender ID is null (i.e. it's an Add New Appender operation)
-				$Sender->Form->SetValue('AppenderType', $AppenderType);
+				// Set only the AppenderClass, if Appender ID is null (i.e. it's an Add New Appender operation)
+				$Sender->Form->SetValue('AppenderClass', $AppenderClass);
 			}
 		}
 		else {
@@ -322,7 +324,7 @@ class LoggerPlugin extends Gdn_Plugin {
 
 		// Retrieve the sub-View that will be used to configure the parameters
 		// specific to the selected Logger Appender.
-		$Sender->Data['AppenderConfigView'] = self::$AppendersManager->GetConfigView($AppenderType);
+		$Sender->Data['AppenderConfigView'] = self::$AppendersManager->GetConfigView($AppenderClass);
 		$Sender->Render($this->GetView('loggerappender_edit_config_view.php'));
 	}
 

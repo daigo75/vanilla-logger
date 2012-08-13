@@ -75,7 +75,7 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 						// Output Appender Name
 						echo Wrap(Gdn_Format::Text($Appender->AppenderName), 'td', array('class' => 'AppenderName',));
 						// Output Appender Type
-						echo Wrap(Gdn_Format::Text($Appender->AppenderType), 'td', array('class' => 'AppenderType',));
+						echo Wrap(Gdn_Format::Text($Appender->AppenderClass), 'td', array('class' => 'AppenderClass',));
 						// Output Appender Description
 						echo Wrap(Gdn_Format::Text($Appender->AppenderDescription), 'td', array('class' => 'AppenderDescription',));
 						// Output "Enabled" indicator
@@ -90,7 +90,7 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 																LOGGER_ARG_APPENDERID,
 																Gdn_Format::Url($Appender->AppenderID),
 																LOGGER_ARG_APPENDERTYPE,
-																$Appender->AppenderType),
+																$Appender->AppenderClass),
 												'SmallButton AddEditAppender');
 						// Output Delete button
 						echo Anchor(T('Delete'),

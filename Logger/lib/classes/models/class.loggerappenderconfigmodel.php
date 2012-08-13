@@ -17,7 +17,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		$Query = $this->SQL
 			->Select('VLA.AppenderID')
 			->Select('VLA.AppenderName')
-			->Select('VLA.AppenderType')
+			->Select('VLA.AppenderClass')
 			->Select('VLA.AppenderDescription')
 			->Select('VLA.IsSystem')
 			->Select('VLA.IsEnabled')

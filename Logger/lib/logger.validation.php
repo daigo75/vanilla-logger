@@ -25,11 +25,11 @@
  *
  */
 // TODO Export all these functions to an independent plugin, to allow other plugins to use them.
-if(!function_exists('ValidateAppenderType')){
+if(!function_exists('ValidateAppenderClass')){
 	/**
 	 * Checks if an Appender Class is amongst the available ones.
 	 */
-	function ValidateAppenderType($Value, $Field, $FormPostedValues){
+	function ValidateAppenderClass($Value, $Field, $FormPostedValues){
 		return LoggerPlugin::AppendersManager()->AppenderExists($Value);
 	}
 }

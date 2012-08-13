@@ -27,7 +27,7 @@ $IsNewAppender = empty($AppenderID) ? true : false;
 			<li>
 				<?php
 					echo $this->Form->Label(T('Appender Type'));
-					echo Wrap($this->Form->GetValue('AppenderType'),
+					echo Wrap($this->Form->GetValue('AppenderClass'),
 										'div',
 										array('class' => 'Info',
 													));
@@ -99,7 +99,7 @@ $IsNewAppender = empty($AppenderID) ? true : false;
 		<div class="Buttons">
 			<?php
 				echo $this->Form->Hidden('AppenderID');
-				echo $this->Form->Hidden('AppenderType');
+				echo $this->Form->Hidden('AppenderClass');
 				echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
 				echo $this->Form->Button(T('Cancel'), array('Name' => 'Cancel',));
 			?>

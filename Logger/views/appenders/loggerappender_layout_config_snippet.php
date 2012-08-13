@@ -12,7 +12,7 @@
 		//echo Wrap(T('Please select the layout that will be used by the Appender.'),
 		//					'div',
 		//					array('class' => 'Info',));
-		//echo $this->Form->DropDown('AppenderType',
+		//echo $this->Form->DropDown('AppenderClass',
 		//													 $this->Data['Layouts'],
 		//													 array('id' => 'Layout',));
 	?>

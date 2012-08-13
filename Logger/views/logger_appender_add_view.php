@@ -12,34 +12,34 @@ Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 ?>
 <script type="text/javascript">
 	/// A list of Appender Type descriptions
-	var AppenderTypesDescriptions = new Array();
+	var AppenderClassesDescriptions = new Array();
 	<?php
-		foreach($this->Data['AppenderTypesDescriptions'] as $AppenderType => $AppenderDescription) {
-			printf("AppenderTypesDescriptions['%s'] = '%s';\n", $AppenderType, addslashes($AppenderDescription));
+		foreach($this->Data['AppenderClassesDescriptions'] as $AppenderClass => $AppenderDescription) {
+			printf("AppenderClassesDescriptions['%s'] = '%s';\n", $AppenderClass, addslashes($AppenderDescription));
 		}
 	?>
 
 	/**
 	 * Display the Description of an Appender Type.
 	 *
-	 * @param AppenderType The Appender Type for which to show the description.
+	 * @param AppenderClass The Appender Type for which to show the description.
 	 * @return void.
 	 */
-	function ShowAppenderTypeDescription(AppenderType) {
-		$('#AppenderDescription').html(AppenderTypesDescriptions[AppenderType]);
+	function ShowAppenderClassDescription(AppenderClass) {
+		$('#AppenderDescription').html(AppenderClassesDescriptions[AppenderClass]);
 	}
 
 	/**
 	 * Initialization.
 	 */
 	$(document).ready(function(){
-		$('#AppenderType').change(function() {
+		$('#AppenderClass').change(function() {
 			// Show the description of currently selected Appender Type
-			ShowAppenderTypeDescription(this.value);
+			ShowAppenderClassDescription(this.value);
 		})
 
 		// Show description of the Appender type selected by default
-		ShowAppenderTypeDescription($('#AppenderType').val());
+		ShowAppenderClassDescription($('#AppenderClass').val());
 	});
 </script>
 
@@ -52,13 +52,13 @@ Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 		<ul>
 			<li>
 				<?php
-					echo $this->Form->Label(T('Appender Type'), 'AppenderType');
+					echo $this->Form->Label(T('Appender Type'), 'AppenderClass');
 					echo Wrap(T('Please select the type of Appender you want to add.'),
 										'div',
 										array('class' => 'Info',));
-					echo $this->Form->DropDown('AppenderType',
-																		 $this->Data['AppenderTypes'],
-																		 array('id' => 'AppenderType',));
+					echo $this->Form->DropDown('AppenderClass',
+																		 $this->Data['AppenderClasses'],
+																		 array('id' => 'AppenderClass',));
 					echo Wrap(T('Info'),
 										'div',
 										array('id' => 'AppenderDescription',

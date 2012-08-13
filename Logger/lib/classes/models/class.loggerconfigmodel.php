@@ -19,12 +19,13 @@ class LoggerConfigModel extends Gdn_Model {
 	}
 
 	public function LoadAppendersConfig(array &$LoggerConfig) {
+		return;
 		// TODO Retrieve configuration for each Appender
 		$AppenderCfgModel = new LoggerAppenderConfigModel();
 		$ActiveAppenders = $AppenderCfgModel->GetActiveAppenders();
 
 		foreach($ActiveAppenders as $AppenderCfg) {
-			var_dump($AppenderCfg->AppenderType);;
+			var_dump($AppenderCfg->AppenderClass);;
 		}
 
 		$LoggerConfig['appenders'] = '';
