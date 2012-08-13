@@ -70,7 +70,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		$Limit = (is_numeric($Limit) && $Limit > 0) ? $Limit : 1000;
 		$Offset = (is_numeric($Offset) && $Offset > 0) ? $Offset : 0;
 
-		// Return the Jobs Started within the Date Range.
+		// Return the configured Appenders
 		$this->PrepareLoggerAppendersQuery();
 
 		// Add WHERE clauses, if provided
@@ -90,7 +90,18 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 	 * @return A dataset containing the details of all the active Appenders.
 	 */
 	public function GetActiveAppenders() {
-		return $this->Get(array('IsEnabled' => '1',));
+		// Return the configured Appenders
+		$this->SQL
+			->Select('VLA.AppenderID')
+			->Select('VLA.AppenderName')
+			->Select('VLA.AppenderClass')
+			->From('v_logger_appenders VLA')
+			->Where('VLA.IsEnabled', 1)
+			->OrderBy('VLA.AppenderID', 'asc');
+
+		$Result = $this->SQL->Get();
+
+		return $Result;
 	}
 
 	/**
