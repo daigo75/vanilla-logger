@@ -74,9 +74,12 @@ class LoggerPlugin extends Gdn_Plugin {
 	public function __construct() {
 		parent::__construct();
 
-		Logger::configure(PATH_PLUGINS . '/Logger/testconfig.xml');
-		$logger = self::GetLogger();
-		$logger->info('Something here.');
+		$LoggerCfgModel = new LoggerConfigModel();
+		$LoggerConfig = $LoggerCfgModel->Get();
+
+		//Logger::configure(PATH_PLUGINS . '/Logger/testconfig.xml');
+		//$logger = self::GetLogger();
+		//$logger->info('Something here.');
 	}
 
 	/**

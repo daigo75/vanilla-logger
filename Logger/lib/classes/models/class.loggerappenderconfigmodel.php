@@ -79,7 +79,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		}
 
 		$Result = $this->SQL
-			->OrderBy('DateInserted', 'desc')
+			->OrderBy('DateInserted', 'asc')
 			->Get();
 
 		return $Result;
@@ -90,7 +90,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 	 * @return A dataset containing the details of all the active Appenders.
 	 */
 	public function GetActiveAppenders() {
-		return $this->Get(array('IsEnabled' => 'True',));
+		return $this->Get(array('IsEnabled' => '1',));
 	}
 
 	/**
