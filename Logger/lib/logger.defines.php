@@ -57,21 +57,6 @@ define('LOGGER_ARG_APPENDERTYPE', 'apd_type');
 //define('LOGGER_ARG_APPENDERDESCRIPTION', 'email');
 
 
-
-// List of the Appenders made available by the plugin
-// TODO Move the list of plugins to a single multi-dimensional array
-//define('LOGGER_APPENDER_TYPES',
-//			 serialize(array(
-//											 // Console Appender
-//											 'LoggerAppenderConsole' =>
-//													array('Alias' => 'ApdConsole',
-//																'Label' => 'Console',
-//																'Description' => 'Writes logging events to the <code>php://stdout</code> or the <code>php://stderr</code> stream, the former being the default target.',),
-//											 )
-//								)
-//			);
-//
-//
 //define('LOGGER_APPENDER_TYPES_OLD',
 //			 serialize(array(// Plugin Appenders
 //												'LoggerAppenderGraylog2' => 'Graylog2 Log Server',

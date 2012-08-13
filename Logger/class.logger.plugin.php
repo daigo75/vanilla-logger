@@ -129,7 +129,6 @@ class LoggerPlugin extends Gdn_Plugin {
 	}
 
 	public function Controller_Settings(&$Sender) {
-		// TODO Implement Plugin's Settings page
 		throw new Exception('Not implemented');
 
 		// Prevent non-admins from accessing this page
@@ -242,9 +241,6 @@ class LoggerPlugin extends Gdn_Plugin {
 		// Prevent Users without proper permissions from accessing this page.
 		$Sender->Permission('Plugins.Logger.Manage');
 
-		// TODO Implement function Appender Edit
-		//throw new Exception('Not implemented');
-
 		// If it's a PostBack, then the AppenderType has been passed by the form. If
 		// not, it will have been passed as an argument with the Request.
 		$AppenderType = $Sender->Form->AuthenticatedPostBack() ? $Sender->Form->GetValue['AppenderType'] : $Sender->Request->GetValue(LOGGER_ARG_APPENDERTYPE, null);
@@ -339,7 +335,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Sender->Permission('Plugins.Logger.Manage');
 
 		// TODO Implement function Appender-Delete
-		throw new Exception('Not implemented');
+		throw new Logger_NotImplementedException('Not implemented');
 
 		//$APIClientsModel = new LoggerAPIClientsModel();
 		//$Sender->Form->SetModel(&$APIClientsModel);
@@ -387,7 +383,6 @@ class LoggerPlugin extends Gdn_Plugin {
 		// TODO Set up plugin's default values
 
 		// Create Database Objects needed by the Plugin
-		// TODO Implement Plugin's Schema class
 		require('install/logger.schema.php');
 		LoggerSchema::Install();
 	}

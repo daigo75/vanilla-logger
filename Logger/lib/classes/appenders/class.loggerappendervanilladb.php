@@ -8,7 +8,6 @@
  * be exported as standalone.
  */
 
-// TODO Implement Appender to Database using Vanilla Database Objects.
 class LoggerAppenderVanillaDB extends LoggerAppender {
 	// Log Table Model
 	protected $LogModel;
@@ -16,22 +15,37 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 	protected $Table;
 	protected $CreateTable;
 
+	/**
+	 * Getter for CreateTable property.
+	 */
 	public function getCreateTable() {
 		return $this->CreateTable;
 	}
 
+	/**
+	 * Setter for CreateTable property.
+	 */
 	public function setCreateTable($Value) {
 		$this->CreateTable = $Value;
 	}
 
+	/**
+	 * Getter for Table property.
+	 */
 	public function getTable() {
 		return $this->Table;
 	}
 
+	/**
+	 * Setter for Table property.
+	 */
 	public function setTable($Value) {
 		$this->Table = $Value;
 	}
 
+	/**
+	 * Class constructor.
+	 */
 	public function __construct() {
 		parent::__construct();
 
@@ -39,6 +53,14 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 		$this->Database = &Gdn::Database();
 	}
 
+	/**
+	 * Transforms a Log4php Log Event into an associative array of fields, which
+	 * will be saved to a database table.
+	 *
+	 * @param event A Log4php Event.
+	 * @return An associative array of fields containing the information passed by
+	 * the Log Event.
+	 */
 	protected function PrepareLogFields(LoggerLoggingEvent $event) {
 		$Fields = array();
 
@@ -85,7 +107,6 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 	 * @return void.
 	 */
 	public function append(LoggerLoggingEvent $event) {
-		//var_dump($event->getLocationInformation());
 		$this->LogModel->Save($this->PrepareLogFields($event));
 	}
 }
