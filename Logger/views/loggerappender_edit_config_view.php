@@ -16,7 +16,6 @@ $AppenderConfigView = $this->Data['AppenderConfigView'];
 // Indicates if we're configuring a new appender or editing an existing one.
 $AppenderID = $this->Form->GetValue('AppenderID');
 $IsNewAppender = empty($AppenderID) ? true : false;
-
 ?>
 <div class="Logger AppenderEdit">
 	<?php

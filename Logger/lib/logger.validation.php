@@ -30,6 +30,6 @@ if(!function_exists('ValidateAppenderType')){
 	 * Checks if an Appender Class is amongst the available ones.
 	 */
 	function ValidateAppenderType($Value, $Field, $FormPostedValues){
-		return (LoggerConst::GetLoggerAppenderTypeLabel($Value) != null);
+		return LoggerPlugin::AppendersManager()->AppenderExists($Value);
 	}
 }

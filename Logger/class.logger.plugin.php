@@ -35,8 +35,11 @@ $PluginInfo['Logger'] = array(
 );
 
 class LoggerPlugin extends Gdn_Plugin {
-	protected $AppendersManager;
+	protected static $AppendersManager;
 
+	public static function AppendersManager() {
+		return self::$AppendersManager;
+	}
 
 	/**
 	 * Set Validation Rules related to Configuration Model.
@@ -98,7 +101,7 @@ class LoggerPlugin extends Gdn_Plugin {
 
 		// Logger Appenders Manager will be used to keep track of available
 		// appenders
-		$this->AppendersManager = new LoggerAppendersManager();
+		self::$AppendersManager = new LoggerAppendersManager();
 
 		// Prepare form for sub-pages
 		$Sender->Form = new Gdn_Form();
@@ -224,8 +227,8 @@ class LoggerPlugin extends Gdn_Plugin {
 			}
 		}
 
-		$Sender->SetData('AppenderTypes', LoggerConst::GetAppenderTypes());
-		$Sender->SetData('AppenderTypesDescriptions', LoggerConst::GetAppenderTypesDescriptions());
+		$Sender->SetData('AppenderTypes', self::$AppendersManager->GetAppendersLabels());
+		$Sender->SetData('AppenderTypesDescriptions', self::$AppendersManager->GetAppendersDescriptions());
 		$Sender->Render($this->GetView('logger_appender_add_view.php'));
 	}
 
@@ -273,7 +276,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		}
 
 		// Load appropriate Appender Configuration Model, depending on Appender Type
-		$AppenderConfigModel = $this->AppendersManager->GetModel($AppenderType);
+		$AppenderConfigModel = self::$AppendersManager->GetModel($AppenderType);
 
 		// Set the model on the form.
 		$Sender->Form->SetModel($AppenderConfigModel);
@@ -320,8 +323,8 @@ class LoggerPlugin extends Gdn_Plugin {
 
 		// Retrieve the sub-View that will be used to configure the parameters
 		// specific to the selected Logger Appender.
-		$Sender->Data['AppenderConfigView'] = $this->AppendersManager->GetConfigView($AppenderType);
-		$Sender->Render($this->GetView('loggerappender_master_config_view.php'));
+		$Sender->Data['AppenderConfigView'] = self::$AppendersManager->GetConfigView($AppenderType);
+		$Sender->Render($this->GetView('loggerappender_edit_config_view.php'));
 	}
 
 	/**
@@ -331,7 +334,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @return void.
 	 *
 	 */
-	public function Controller_Delete(&$Sender) {
+	public function Controller_AppenderDelete(&$Sender) {
 		// Prevent Users without proper permissions from accessing this page.
 		$Sender->Permission('Plugins.Logger.Manage');
 

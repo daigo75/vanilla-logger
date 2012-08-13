@@ -5,6 +5,10 @@ class LoggerAppenderConsoleConfigModel extends LoggerAppenderConfigModel {
 	public function GetAppenderConfig($AppenderID) {
 		// Retrieve settings from configuration table
 		$Config = parent::GetAppenderConfig($AppenderID);
+		if(empty($Config)) {
+			return false;
+		}
+
 		// Retrieve the settings encoded as JSON
 		$AppenderParams = json_decode($Config['Configuration'], TRUE);
 
@@ -22,9 +26,6 @@ class LoggerAppenderConsoleConfigModel extends LoggerAppenderConfigModel {
 
 		$FormPostValues['Configuration'] = json_encode($Config);
 
-		parent::Save($FormPostValues);
+		return parent::Save($FormPostValues);
 	}
 }
-
-// Install Model in Vanilla's factory so it can be instantiated by using its Alias
-//Gdn::FactoryInstall('ApdConsoleConfigModel', 'LoggerConsoleAppenderConfigModel');

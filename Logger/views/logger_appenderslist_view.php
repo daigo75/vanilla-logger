@@ -90,7 +90,7 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 																LOGGER_ARG_APPENDERID,
 																Gdn_Format::Url($Appender->AppenderID),
 																LOGGER_ARG_APPENDERTYPE,
-																Gdn_Format::Url($Appender->AppenderType)),
+																$Appender->AppenderType),
 												'SmallButton AddEditAppender');
 						// Output Delete button
 						echo Anchor(T('Delete'),

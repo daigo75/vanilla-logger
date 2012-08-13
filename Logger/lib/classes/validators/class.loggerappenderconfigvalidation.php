@@ -21,6 +21,10 @@ class LoggerAppenderConfigValidation extends Gdn_Validation {
 		$this->ApplyRule('Configuration', 'ValidJSON', T('The value contained in Configuration field is not valid JSON. This field can only accept valid JSON, or NULL.'));
 	}
 
+	public function Validate($PostedFields, $Insert) {
+		return parent::Validate($PostedFields, $Insert);
+	}
+
 	/**
 	 * Class constructor.
 	 */
