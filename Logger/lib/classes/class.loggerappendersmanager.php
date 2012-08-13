@@ -9,9 +9,16 @@ class LoggerAppendersManager {
 	// TODO Extract to an ancestor class all methods and properties that could be reusable for Layout Manager, Filter Manager and so on
 	protected $Appenders = array();
 
+	/**
+	 * Add an Appender to the list of the available ones.
+	 *
+	 * @param AppenderClass The Class of the Appender.
+	 * @param Label A Label used to quickly identify the Appender Type.
+	 * @param Description An extended description of the Appender Type.
+	 */
 	public function Add($AppenderClass, $Label, $Description) {
-		$this->Appenders[strtolower($AppenderClass)] = array('Label' => $Label,
-																												 'Description' => $Description,);
+		$this->Appenders[$AppenderClass] = array('Label' => $Label,
+																						 'Description' => $Description,);
 	}
 
 	/**
@@ -21,7 +28,7 @@ class LoggerAppendersManager {
 	 * @return True if the class exists in the list of configured Appenders, False otherwise.
 	 */
 	function AppenderExists($AppenderClass) {
-		return array_key_exists(strtolower($AppenderClass), $this->Appenders);
+		return array_key_exists($AppenderClass, $this->Appenders);
 	}
 
 	/**
@@ -107,6 +114,45 @@ class LoggerAppendersManager {
 		}
 	}
 
+	/**
+	 * Given an Attribute Name, it returns a list of all the Appender Classes and
+	 * the value of the specified Attribute for each class.
+	 *
+	 * @return An associative array having Appender Classes as Keys and the
+	 * specified Attribute as Values.
+	 */
+	protected function GetAppendersListWithAttribute($AttributeName) {
+		$result = array();
+		foreach($this->Appenders as $AppenderClass => $Attributes) {
+			$result[$AppenderClass] = $Attributes[$AttributeName];
+		}
+		return $result;
+	}
+
+	/**
+	 * Returns a list of all the Appender Classes with their Labels.
+	 *
+	 * @return An associative array having Appender Classes as Keys and their
+	 * Labels as Values.
+	 */
+	public function GetAppendersLabels() {
+		return $this->GetAppendersListWithAttribute('Label');
+	}
+
+	/**
+	 * Returns a list of all the Appender Classes with their descriptions.
+	 *
+	 * @return An associative array having Appender Classes as Keys and their
+	 * Descriptions as Values.
+	 */
+	public function GetAppendersDescriptions() {
+		return $this->GetAppendersListWithAttribute('Description');
+	}
+
+	/**
+	 * Constructor. It initializes the class and populates the list of available
+	 * Appenders.
+	 */
 	public function __construct() {
 		// Get System (root) Logger
 		$this->Logger = LoggerPlugin::GetLogger();
@@ -116,5 +162,9 @@ class LoggerAppendersManager {
 							 T('Console'),
 							 T('Writes logging events to the <code>php://stdout</code> or the ' .
 								 '<code>php://stderr</code> stream, the former being the default target.'));
+		// VanillaDB Appender
+		$this->Add('LoggerAppenderVanillaDB',
+							 T('Vanilla Forum Database'),
+							 T('Writes logging events to a table in Vanilla Forum Database.'));
 	}
 }
