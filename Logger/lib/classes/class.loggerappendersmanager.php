@@ -117,7 +117,7 @@ class LoggerAppendersManager {
 																			$AppenderClass,
 																			$e->getMessage());
 				$this->Logger->Error($Message);
-				throw new Logger_AppenderModelException($Message, null, $e);
+				throw new Exception($Message, null, $e);
 			}
 		}
 	}

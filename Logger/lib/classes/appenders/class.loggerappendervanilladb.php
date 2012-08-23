@@ -94,7 +94,7 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 			$this->LogModel = &new VanillaDBLogModel($this->Table);
 		}
 		catch (Exception $e) {
-			throw new LoggerException($e);
+			throw new Exception($e);
 		}
 		return true;
 	}

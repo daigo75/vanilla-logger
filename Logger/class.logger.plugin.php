@@ -287,7 +287,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		// For the above reasons, it's safe to assume that the page can't be opened
 		// if an Appender Type hasn't been specified.
 		if(empty($AppenderClass)) {
-			throw new Logger_InvalidAppenderClassException(sprintf(T('Invalid Request. Argument %s (Appender Type) is required.'), LOGGER_ARG_APPENDERTYPE));
+			throw new InvalidArgumentException(sprintf(T('Invalid Request. Argument %s (Appender Type) is required.'), LOGGER_ARG_APPENDERTYPE));
 		}
 
 		// Load appropriate Appender Configuration Model, depending on Appender Type
@@ -354,7 +354,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Sender->Permission('Plugins.Logger.Manage');
 
 		// TODO Implement function Appender-Delete
-		throw new Logger_NotImplementedException('Not implemented');
+		throw new Exception('Not implemented');
 
 		//$APIClientsModel = new LoggerAPIClientsModel();
 		//$Sender->Form->SetModel(&$APIClientsModel);

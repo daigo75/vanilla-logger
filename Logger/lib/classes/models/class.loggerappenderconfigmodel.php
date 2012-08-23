@@ -50,7 +50,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 			$this->Validation = $Validation;
 		}
 		else {
-			throw new Logger_InvalidValidationException(T('Invalid Validation parameter. Parameter can only be NULL, or be an instance of LoggerAppenderConfigValidation'));
+			throw new InvalidArgumentException(T('Invalid Validation parameter. Parameter can only be NULL, or be an instance of LoggerAppenderConfigValidation'));
 		}
 	}
 
