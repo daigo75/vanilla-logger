@@ -22,7 +22,11 @@ if (function_exists('__autoload')) {
 	trigger_error("log4php: It looks like your code is using an __autoload() function. log4php uses spl_autoload_register() which will bypass your __autoload() function and may break autoloading.", E_USER_WARNING);
 }
 
-spl_autoload_register(array('LoggerAutoloader', 'autoload'));
+// IMPORTANT - Changed for integration with Vanilla Forums.
+// The Autoload function MUST be prepended to the existing list of Autoloaders, or
+// Vanilla's Autoloader will kick in, attempting to load the classes needed by Log4php,
+// causing serious performance issues.
+spl_autoload_register(array('LoggerAutoloader', 'autoload'), true, true);
 
 /**
  * Class autoloader.

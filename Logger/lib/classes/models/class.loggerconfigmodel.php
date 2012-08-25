@@ -95,11 +95,13 @@ class LoggerConfigModel extends Gdn_Model {
 	}
 
 	/**
-	 * Returns an associative array containing the full configuraiton to be used
-	 * by the Logger.
+	 * Processes the settings of all Logger parts and builds an array containing
+	 * the complete configuration. This array is then saved in Vanilla
+	 * configuration, so that loading it will simply involve reading it back.
 	 *
+	 * @return void.
 	 */
-	public function Get() {
+	public function RebuildConfiguration() {
 		$this->LoggerConfig = array(
 													LOGGER_LOG4PHP_APPENDERS => array() // Section containing the list of all configured Appenders
 													);
@@ -117,8 +119,16 @@ class LoggerConfigModel extends Gdn_Model {
 		// Load filters to apply at a Logger level
 		$this->GetLoggerFilters();
 
-		//printf('<pre>%s</pre>', print_r($this->LoggerConfig, true));
+		// Save the configuration array to Vanilla's configuration
+		SaveToConfig('LoggerPlugin.Logger.Config', $this->LoggerConfig);
+	}
 
-		return $this->LoggerConfig;
+	/**
+	 * Returns an associative array containing the full configuraiton to be used
+	 * by the Logger.
+	 *
+	 */
+	public function Get() {
+		return C('LoggerPlugin.Logger.Config');
 	}
 }
