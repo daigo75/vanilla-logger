@@ -21,6 +21,7 @@ $OutputForEmptyDataSet = Wrap(T('No Appenders configured.'),
 															array('colspan' => APPENDERS_TABLE_COLUMNS,
 																		'class' => 'NoResultsFound',)
 															);
+
 $AppendersDataSet = $this->Data['AppendersDataSet'];
 ?>
 <div class="Logger">
@@ -45,10 +46,7 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 		</div>
 		<table id="AppendersList" class="display AltRows">
 			<thead>
-<!--				<tr>
-					<th colspan="<?php echo APPENDERS_TABLE_COLUMNS ?>" class="Title"><?php echo T('Configured Appenders'); ?></th>
-				</tr>
--->				<tr>
+				<tr>
 					<th><?php echo T('Name'); ?></th>
 					<th><?php echo T('Type'); ?></th>
 					<th><?php echo T('Description'); ?></th>
@@ -71,7 +69,13 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 					// Output the details of each row in the DataSet
 					foreach($AppendersDataSet as $Appender) {
 						//var_dump($Appender);
-						echo "<tr>\n";
+						if($Appender->IsSystem) {
+							echo "<tr class=\"SystemAppender\">\n";
+						}
+						else {
+							echo "<tr>\n";
+						}
+
 						// Output Appender Name
 						echo Wrap(Gdn_Format::Text($Appender->AppenderName), 'td', array('class' => 'AppenderName',));
 						// Output Appender Type
@@ -79,26 +83,32 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 						// Output Appender Description
 						echo Wrap(Gdn_Format::Text($Appender->AppenderDescription), 'td', array('class' => 'AppenderDescription',));
 						// Output "Enabled" indicator
-						$EnabledText = ($Appender->IsEnabled == 1) ? 'Yes' : '';
+						$EnabledText = ($Appender->IsEnabled == 1) ? T('Yes') : '';
 						echo Wrap(Gdn_Format::Text($EnabledText), 'td', array('class' => 'Enabled',));
 
 						echo "<td>\n";
-						// Output Add/Edit button
-						echo Anchor(T('Edit'),
-												sprintf('%s?%s=%s&%s=%s',
-																LOGGER_APPENDER_EDIT_URL,
-																LOGGER_ARG_APPENDERID,
-																Gdn_Format::Url($Appender->AppenderID),
-																LOGGER_ARG_APPENDERTYPE,
-																$Appender->AppenderClass),
-												'SmallButton AddEditAppender');
-						// Output Delete button
-						echo Anchor(T('Delete'),
-												sprintf('%s?%s=%s',
-																LOGGER_APPENDER_DELETE_URL,
-																LOGGER_ARG_APPENDERID,
-																Gdn_Format::Url($Appender->AppenderID)),
-												'SmallButton DeleteAppender');
+						// Show Edit/Delete Buttons only if Appender is not a System
+						// Appender. System Appenders are not supposed to be reconfigured by
+						// the Admins
+						// TODO Add a "View" button, which allows an Admin to go to a read-only Edit Page to see Appender's Settings
+						if(!$Appender->IsSystem) {
+							// Output Add/Edit button
+							echo Anchor(T('Edit'),
+													sprintf('%s?%s=%s&%s=%s',
+																	LOGGER_APPENDER_EDIT_URL,
+																	LOGGER_ARG_APPENDERID,
+																	Gdn_Format::Url($Appender->AppenderID),
+																	LOGGER_ARG_APPENDERTYPE,
+																	$Appender->AppenderClass),
+													'SmallButton AddEditAppender');
+							// Output Delete button
+							echo Anchor(T('Delete'),
+													sprintf('%s?%s=%s',
+																	LOGGER_APPENDER_DELETE_URL,
+																	LOGGER_ARG_APPENDERID,
+																	Gdn_Format::Url($Appender->AppenderID)),
+													'SmallButton DeleteAppender');
+						}
 						echo "</td>\n";
 						echo "</tr>\n";
 					}

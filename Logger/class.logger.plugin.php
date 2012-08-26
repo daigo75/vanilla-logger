@@ -36,7 +36,8 @@ $PluginInfo['Logger'] = array(
 
 class LoggerPlugin extends Gdn_Plugin {
 	private static $_AppendersManager;
-	private $_LoggerConfigModel;
+	private static $_LoggerConfigModel;
+	private static $_LoggerInitialized = false;
 
 	/**
 	 * Returns an instance of AppendersManager. The function follows the principle
@@ -59,18 +60,30 @@ class LoggerPlugin extends Gdn_Plugin {
 	/**
 	 * Returns an instance of LoggerConfigModel. The function follows the principle
 	 * of lazy initialization, instantiating the class the first time it's
-	 * requested.
+	 * requested. This method is static because the LoggerConfigModel is required
+	 * by other static methods.
 	 *
 	 * @return An instance of LoggerConfigModel.
 	 */
 	protected function LoggerConfigModel() {
-		if(empty($this->LoggerConfigModel)) {
+		if(empty(self::$_LoggerConfigModel)) {
 			// Logger Appenders Manager will be used to keep track of available
 			// appenders
-			$this->_LoggerConfigModel = new LoggerConfigModel();
+			self::$_LoggerConfigModel = new LoggerConfigModel();
 		}
 
-		return $this->_LoggerConfigModel;
+		return self::$_LoggerConfigModel;
+	}
+
+	/**
+	 * Returns True if Log4php Logger has been initialized with a call to its
+	 * ::Config() method, or False if it hasn't been.
+	 *
+	 * @return An instance of True if Log4php Logger has been initialized with a
+	 * call to its ::Config() method, or False if it hasn't been.
+	 */
+	protected function LoggerInitialized() {
+		return self::$_LoggerInitialized;
 	}
 
 
@@ -106,6 +119,9 @@ class LoggerPlugin extends Gdn_Plugin {
 	 */
 	public function __construct() {
 		parent::__construct();
+
+		// Perform initialization steps
+		$this->Initialize();
 	}
 
 	/**
@@ -117,10 +133,6 @@ class LoggerPlugin extends Gdn_Plugin {
 	 */
 	protected function Initialize() {
 		// Load Logger Configuration and use it to initialize Log4php
-		Logger::configure($this->LoggerConfigModel()->Get());
-
-		//$logger = self::GetLogger();
-		//$logger->info('Something here.');
 	}
 
 	/**
@@ -144,9 +156,6 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Sender->AddSideMenu('plugin/logger');
 		// Prepare form for sub-pages
 		$Sender->Form = new Gdn_Form();
-
-		// Perform initialization steps
-		$this->Initialize();
 
 		// Forward the call to the appropriate method.
 		$this->Dispatch($Sender, $Sender->RequestArgs);
@@ -209,6 +218,11 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @return An instance of a Log4php Logger.
 	 */
 	public static function GetLogger($LoggerName = 'system') {
+		if(!self::LoggerInitialized()) {
+			Logger::configure(self::LoggerConfigModel()->Get());
+			self::$_LoggerInitialized = true;
+		}
+
 		return Logger::getLogger($LoggerName);
 	}
 
@@ -360,8 +374,8 @@ class LoggerPlugin extends Gdn_Plugin {
 					$Sender->InformMessage(T('Your changes have been saved.'));
 					$this->FireEvent('LoggerConfigChanged');
 
-					// Once changes have been saved, render the main page
-					$this->Controller_Index($Sender);
+					// Once changes have been saved, redurect to the main page
+					Redirect(LOGGER_APPENDERS_LIST_URL);
 				}
 			}
 		}

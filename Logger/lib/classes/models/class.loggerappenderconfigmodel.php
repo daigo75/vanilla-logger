@@ -79,6 +79,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		}
 
 		$Result = $this->SQL
+			->OrderBy('IsSystem', 'desc')
 			->OrderBy('DateInserted', 'asc')
 			->Get();
 

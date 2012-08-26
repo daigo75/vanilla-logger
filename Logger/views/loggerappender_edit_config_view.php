@@ -63,7 +63,7 @@ $IsNewAppender = empty($AppenderID) ? true : false;
 						$this->Form->SetValue('IsEnabled', 1);
 					}
 					echo $this->Form->CheckBox('IsEnabled',
-																		 T('Tick this box if you want to enable this Appender.'),
+																		 T('<strong>Enable</strong>. Tick this box if you want to enable this Appender.'),
 																		 array('value' => 1,));
 				?>
 			</li>

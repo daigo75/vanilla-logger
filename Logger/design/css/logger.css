@@ -9,3 +9,7 @@ You should have received a copy of the GNU General Public License along with Log
 Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 */
 
+.SystemAppender {
+	background-color: whitesmoke;
+	color: gray;
+}
