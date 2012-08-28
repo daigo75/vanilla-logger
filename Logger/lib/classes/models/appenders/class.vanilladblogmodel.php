@@ -100,7 +100,7 @@ class VanillaDBLogModel extends Gdn_Model {
 	}
 
 	/**
-	 * Returns a DataSet containing a list of the configured API Clients.
+	 * Returns a DataSet containing a list of Log Entries.
 	 *
 	 * @param $DateFrom Beginning of the period to include in the result. Date
 	 * must be passed as a string in ISO8601 Format (e.g. '2012-03-01')'
