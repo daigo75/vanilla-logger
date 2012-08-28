@@ -61,6 +61,7 @@ class VanillaDBLogModel extends Gdn_Model {
 			->Column('MethodName', 'varchar(200)')
 			->Column('FileName', 'varchar(400)')
 			->Column('LineNumber', 'int')
+			->Column('Exception', 'text')
 			->Column('TimeStamp', 'datetime', FALSE, 'index')
 			->Column('InsertUserID', 'int', TRUE)
 			->Set(FALSE, FALSE);
@@ -84,7 +85,7 @@ class VanillaDBLogModel extends Gdn_Model {
 	 */
 	public function __construct($TableName) {
 		if(empty($TableName)) {
-			throw new Exception(T('Model requires a Table Name for instantiation, but none was provided.'));
+			throw new InvalidArgumentException(T('Model requires a Table Name for instantiation, but none was provided.'));
 		}
 		$this->LogTableName = $TableName;
 

@@ -44,6 +44,16 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 	}
 
 	/**
+	 * Returns a string representation of an exception.
+	 *
+	 * @param Exception The exception to convert to a string.
+	 * @return A string representation of the Exception.
+	 */
+	private function FormatThrowable(Exception $Exception) {
+		return $Exception->__toString();
+	}
+
+	/**
 	 * Class constructor.
 	 */
 	public function __construct() {
@@ -75,6 +85,12 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 		$Fields['FileName'] = $LocationInformation->getFileName();
 		$Fields['LineNumber'] = $LocationInformation->getLineNumber();
 		$Fields['TimeStamp'] = date('Y-m-d H:i:s', $event->getTimeStamp());
+
+		$ThrowableInfo = $event->getThrowableInformation();
+		if(isset($ThrowableInfo)) {
+			$Fields['Exception'] = $this->FormatThrowable($ThrowableInfo->getThrowable());
+		}
+
 
 		return $Fields;
 	}
