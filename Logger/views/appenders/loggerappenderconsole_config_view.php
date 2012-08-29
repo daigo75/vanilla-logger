@@ -14,7 +14,7 @@ $ConsoleTargets = array('stdout' => T('Standard Out (stdout)'),
 												'stderr' => T('Standard Error (stderr)'),);
 
 ?>
-<ul id="LoggerAppenderConsole Params">
+<ul class="LoggerAppenderConsole Params">
 	<?php
 		// Load the View Snippet containing the interface for the configuration of the
 		// layout to be used by the Appender.

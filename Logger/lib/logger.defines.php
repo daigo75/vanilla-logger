@@ -43,6 +43,7 @@ define('LOGGER_APPENDER_ADD_URL', LOGGER_PLUGIN_BASE_URL . '/appenderadd');
 define('LOGGER_APPENDER_EDIT_URL', LOGGER_PLUGIN_BASE_URL . '/appenderedit');
 define('LOGGER_APPENDER_DELETE_URL', LOGGER_PLUGIN_BASE_URL . '/appenderdelete');
 define('LOGGER_GENERALSETTINGS_URL', LOGGER_PLUGIN_BASE_URL . '/settings');
+define('LOGGER_TESTLOG_URL', LOGGER_PLUGIN_BASE_URL . '/testlog');
 
 // Return Codes
 define('LOGGER_OK', 0);

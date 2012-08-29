@@ -1,5 +1,9 @@
 <?php if (!defined('APPLICATION')) exit();
 
+// Load GELF Libraries
+require(LOGGER_PLUGIN_EXTERNAL_PATH . '/Graylog2-gelf-php/GELFMessage.php');
+require(LOGGER_PLUGIN_EXTERNAL_PATH . '/Graylog2-gelf-php/GELFMessagePublisher.php');
+
 /**
  * Graylog2 Log Model
  *
@@ -28,6 +32,10 @@ class Graylog2Model extends Gdn_Model {
 		LoggerLevel::TRACE => GELFMessage::DEBUG,
 	);
 
+	const GRAYLOG2_DEFAULT_PORT = 12201;
+	const GRAYLOG2_DEFAULT_CHUNK_SIZE = 1420;
+
+
 	/**
 	 * Set Validation Rules that apply when saving a new row in Cron Jobs History.
 	 *
@@ -41,6 +49,18 @@ class Graylog2Model extends Gdn_Model {
 		// Information.
 	}
 
+	protected function GetPublisher() {
+		if(empty($this->GELFMessagePublisher)) {
+			// Instantiate the Message Publisher that will be used to communicate with
+			// Graylog2 Server
+			$this->GELFMessagePublisher = new GELFMessagePublisher($this->HostName,
+																														 $this->Port,
+																														 $this->ChunkSize);
+		}
+
+		return $this->GELFMessagePublisher;
+	}
+
 	/**
 	 * Defines the related database table name. Table name must be passed as a
 	 * parameter.
@@ -51,28 +71,9 @@ class Graylog2Model extends Gdn_Model {
 	public function __construct($HostName, $Port, $ChunkSize) {
 		parent::__construct();
 
-		// Validate parameters
-		if(empty($HostName)) {
-			throw new InvalidArgumentException(T('Host Name must be specified.'));
-		}
-
-		if(!is_numeric($Port)) {
-			throw new InvalidArgumentException(T('Port must be an Integer.'));
-		}
-
-		if(!is_numeric($ChunkSize)) {
-			throw new InvalidArgumentException(T('Chunk Size must be an Integer.'));
-		}
-
-		// Load GELF Libraries
-		require(LOGGER_PLUGIN_EXTERNAL_PATH . '/Graylog2-gelf-php/GELFMessage.php');
-		require(LOGGER_PLUGIN_EXTERNAL_PATH . '/Graylog2-gelf-php/GELFMessagePublisher.php');
-
-		// Instantiate the Message Publisher that will be used to communicate with
-		// Graylog2 Server
-		$this->GELFMessagePublisher = new GELFMessagePublisher($HostName,
-																													 $Port,
-																													 $ChunkSize);
+		$this->HostName = $HostName;
+		$this->Port = $Port;
+		$this->ChunkSize = $ChunkSize;
 
 		$this->_SetGraylog2ValidationRules();
 	}
@@ -122,7 +123,7 @@ class Graylog2Model extends Gdn_Model {
 	 * @return True if message was sent correctly, False otherwise.
 	 */
 	protected function PublishMessage(GELFMessage $Message) {
-		return $this->GELFMessagePublisher($Message);
+		return $this->GetPublisher()->publish($Message);
 	}
 
 	/**
@@ -139,6 +140,12 @@ class Graylog2Model extends Gdn_Model {
 
 		$Message = $this->BuildGELFMessage($LogFields);
 
-		return $this->PublishMessage($Message);
+		try {
+			return $this->PublishMessage($Message);
+		}
+		catch(Exception $e) {
+			// TODO Find a graceful way to handle and display any exception. Logging it could be complicated, since the log will trigger this method again, leading to an infinite recursion.
+			return false;
+		}
 	}
 }

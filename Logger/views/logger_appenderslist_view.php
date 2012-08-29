@@ -42,6 +42,14 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 		<div class="FilterMenu">
 		<?php
 			echo Anchor(T('Add Appender'), LOGGER_APPENDER_ADD_URL, 'SmallButton');
+			echo Anchor(T('Issue test Log message'),
+									LOGGER_TESTLOG_URL,
+									'SmallButton',
+									array('Title' => T('By clickin on this button, a sample Info Log Message will be ' .
+																		 'issued to the System Logger and handled according to the ' .
+																		 'configuration. This will be useful to ensure that all Appenders ' .
+																		 'are working correctly.'),)
+									);
 		?>
 		</div>
 		<table id="AppendersList" class="display AltRows">

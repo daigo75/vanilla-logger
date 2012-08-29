@@ -26,48 +26,59 @@ $IsNewAppender = empty($AppenderID) ? true : false;
 		<ul>
 			<li>
 				<?php
-					echo $this->Form->Label(T('Appender Type'));
-					echo Wrap($this->Form->GetValue('AppenderClass'),
+					$AppenderInfo = $this->Data['AppenderInfo'];
+					echo Wrap(sprintf(T('%s Appender Configuration'),
+														$AppenderInfo['Label']),
+										'h2');
+					echo Wrap($AppenderInfo['Description'],
 										'div',
-										array('class' => 'Info',
-													));
-				?>
-			</li>
-			<li>
-				<?php
-					echo $this->Form->Label(T('Appender Name'), 'AppenderName');
-					echo Wrap(T('Enter a name for the Appender. This is just to help you identifying each Appender.'),
-										'div',
-										array('class' => 'Info',
-													'maxlength' => '100',
-													));
-					echo $this->Form->TextBox('AppenderName',
-																		array('maxlength' => '100',));
-				?>
-			</li>
-			<li>
-				<?php
-					echo $this->Form->Label(T('Description'), 'AppenderDescription');
-					echo Wrap(T('Enter a description for the Appender. This is useful if you have several Appenders
-											of the same type and you need to distinguish between them.'),
-										'div',
-										array('class' => 'Info'));
-					echo $this->Form->TextBox('AppenderDescription',
-																		array('maxlength' => '255',));
-				?>
-			</li>
-			<li>
-				<?php
-					// Set IsEnabled to True if we're adding a new Appender
-					if($IsNewAppender) {
-						$this->Form->SetValue('IsEnabled', 1);
-					}
-					echo $this->Form->CheckBox('IsEnabled',
-																		 T('<strong>Enable</strong>. Tick this box if you want to enable this Appender.'),
-																		 array('value' => 1,));
+										array('class' => 'Info',)
+										);
 				?>
 			</li>
 		</ul>
+		<div class="General">
+			<?php
+				echo Wrap(T('General Settings'),
+										'h3');
+			?>
+			<ul>
+				<li>
+					<?php
+						echo $this->Form->Label(T('Appender Name'), 'AppenderName');
+						echo Wrap(T('Enter a name for the Appender. This is just to help you identifying each Appender.'),
+											'div',
+											array('class' => 'Info',
+														'maxlength' => '100',
+														));
+						echo $this->Form->TextBox('AppenderName',
+																			array('maxlength' => '100',));
+					?>
+				</li>
+				<li>
+					<?php
+						echo $this->Form->Label(T('Description'), 'AppenderDescription');
+						echo Wrap(T('Enter a description for the Appender. This is useful if you have several Appenders
+												of the same type and you need to distinguish between them.'),
+											'div',
+											array('class' => 'Info'));
+						echo $this->Form->TextBox('AppenderDescription',
+																			array('maxlength' => '255',));
+					?>
+				</li>
+				<li>
+					<?php
+						// Set IsEnabled to True if we're adding a new Appender
+						if($IsNewAppender) {
+							$this->Form->SetValue('IsEnabled', 1);
+						}
+						echo $this->Form->CheckBox('IsEnabled',
+																			 T('<strong>Enable</strong>. Tick this box if you want to enable this Appender.'),
+																			 array('value' => 1,));
+					?>
+				</li>
+			</ul>
+		</div>
 		<?php
 			// If Controller passed the name of a specific configuration View for
 			// the Appender, load it. Else, display a simple texarea where User

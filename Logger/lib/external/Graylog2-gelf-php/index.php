@@ -13,6 +13,5 @@ $message->setLine(1337);
 $message->setAdditional("something", "foo");
 $message->setAdditional("something_else", "bar");
 
-$publisher = new GELFMessagePublisher('172.16.22.30');
+$publisher = new GELFMessagePublisher('graylog2.local');
 $publisher->publish($message);
-

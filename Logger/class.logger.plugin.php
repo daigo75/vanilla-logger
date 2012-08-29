@@ -381,10 +381,23 @@ class LoggerPlugin extends Gdn_Plugin {
 			}
 		}
 
+		// Add some descriptive data about the Appender
+		$Sender->SetData('AppenderInfo', self::AppendersManager()->GetAppenderInfo($AppenderClass));
 		// Retrieve the sub-View that will be used to configure the parameters
 		// specific to the selected Logger Appender.
 		$Sender->Data['AppenderConfigView'] = self::AppendersManager()->GetConfigView($AppenderClass);
 		$Sender->Render($this->GetView('loggerappender_edit_config_view.php'));
+	}
+
+
+	public function Controller_TestLog($Sender) {
+		$Exception = new Exception(T('This is a test Exception, no action is required.'));
+		LoggerPlugin::GetLogger('system')->info(T('This is a test Log message, no action is required.'),
+																						$Exception);
+
+		$Sender->InformMessage(T('Test log message issued.'));
+
+		$this->Controller_Index($Sender);
 	}
 
 	/**

@@ -42,7 +42,7 @@ class LoggerAppenderGraylog2ConfigModel extends LoggerAppenderConfigModel {
 		// LoggerAppenders configuration table
 		$Config = array('params' => array('hostname' => $FormPostValues['HostName'],
 																			'port' => $FormPostValues['Port'],
-																			'chunksize' => $FormPostValues['CreateTable'],
+																			'chunksize' => $FormPostValues['ChunkSize'],
 																			));
 
 		$FormPostValues['Configuration'] = json_encode($Config);

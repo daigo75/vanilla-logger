@@ -1,13 +1,22 @@
 <?php	if (!defined('APPLICATION')) exit();
 
+// Add LoggerAppender Info to a global array. It will be used to automatically
+// add the Appender to the list of the available ones.
+LoggerAppendersManager::$Appenders['LoggerAppenderVanillaDB'] = array(
+	'Label' => T('Vanilla Forum Database'),
+	'Description' => T('Writes logging events to a table in Vanilla Forum Database.'),
+);
+
 /**
+ * Vanilla DB Logger Appender
  * This Appender is used to write to a table into Vanilla's Database by using
  * the Objects provided by Vanilla's framework. Such objects will be
  * retrieved automatically by the Appender when it's instantiated. For this
  * reason, this Appender will only work when used within the forum, it can't
  * be exported as standalone.
+ *
+ * @package LoggerPlugin
  */
-
 class LoggerAppenderVanillaDB extends LoggerAppender {
 	// Log Table Model
 	protected $LogModel;

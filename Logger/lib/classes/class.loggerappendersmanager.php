@@ -4,22 +4,20 @@
  * Manages the list of all available Appenders and provides convenience
  * functions to retrieve the Model, Validation and View for each one.
  */
+// TODO Extract to an ancestor class all methods and properties that could be reusable a for Layout Manager, Filter Manager and so on
 class LoggerAppendersManager {
 	private $Logger;
-	// TODO Extract to an ancestor class all methods and properties that could be reusable for Layout Manager, Filter Manager and so on
-	protected $Appenders = array();
+	// @var array Contains a list of all available types of Appenders.
+	public static $Appenders = array();
 
 	/**
-	 * Add an Appender to the list of the available ones.
+	 * Install an Appender Class's auxiliary classes into Vanilla Factories, for
+	 * later use.
 	 *
 	 * @param AppenderClass The Class of the Appender.
-	 * @param Label A Label used to quickly identify the Appender Type.
-	 * @param Description An extended description of the Appender Type.
+	 * @return void.
 	 */
-	public function Add($AppenderClass, $Label, $Description) {
-		$this->Appenders[$AppenderClass] = array('Label' => $Label,
-																						 'Description' => $Description,);
-
+	protected function InstallAppender($AppenderClass) {
 		// Install Appender's Model and Validation class names into Vanilla built-in
 		// factory. This will allow to leverage Vanilla's mechanisms for the
 		// management of Singletons
@@ -31,13 +29,25 @@ class LoggerAppendersManager {
 	}
 
 	/**
+	 * Install in Vanilla's Factories all auxiliary classes for available Appender
+	 * Classes.
+	 *
+	 * @return void.
+	 */
+	protected function InstallAppenders() {
+		foreach(self::$Appenders as $AppenderClass => $AppenderInfo) {
+			$this->InstallAppender($AppenderClass);
+		}
+	}
+
+	/**
 	 * Checks if an Appender Class exists in the list of the configured ones.
 	 *
 	 * @param AppenderClass The Appender class to be checked.
 	 * @return True if the class exists in the list of configured Appenders, False otherwise.
 	 */
 	function AppenderExists($AppenderClass) {
-		return array_key_exists($AppenderClass, $this->Appenders);
+		return array_key_exists($AppenderClass, self::$Appenders);
 	}
 
 	/**
@@ -131,7 +141,7 @@ class LoggerAppendersManager {
 	 */
 	protected function GetAppendersListWithAttribute($AttributeName) {
 		$result = array();
-		foreach($this->Appenders as $AppenderClass => $Attributes) {
+		foreach(self::$Appenders as $AppenderClass => $Attributes) {
 			$result[$AppenderClass] = $Attributes[$AttributeName];
 		}
 		return $result;
@@ -158,6 +168,41 @@ class LoggerAppendersManager {
 	}
 
 	/**
+	 * Returns the Information about a specified Appender Class.
+	 *
+	 * @param AppenderClass The Appender Class for which to retrieve the
+	 * information.
+	 * @return An associative array containing information about the Appender
+	 * Class.
+	 */
+	public function GetAppenderInfo($AppenderClass) {
+		return self::$Appenders[$AppenderClass];
+	}
+
+	/**
+	 * Scans the Appenders directory for all appender files and loads them, so
+	 * that they can add themselves to the list of available appenders.
+	 *
+	 * @return void.
+	 */
+	private function LoadAppendersDefinitions() {
+		$AppendersDir = sprintf('%s/appenders', LOGGER_PLUGIN_CLASS_PATH);
+		$Handle = opendir($AppendersDir);
+		if(empty($Handle)) {
+			return;
+		}
+
+		// Load all Appender Files, so that they can add themselves to the list of
+		// installed Appenders
+    while($File = readdir($Handle)) {
+      if(strpos($File, 'class.loggerappender') == 0) {
+				include_once(sprintf('%s/%s', $AppendersDir, $File));
+			}
+		}
+		closedir($Handle);
+	}
+
+	/**
 	 * Constructor. It initializes the class and populates the list of available
 	 * Appenders.
 	 */
@@ -165,14 +210,7 @@ class LoggerAppendersManager {
 		// Get System (root) Logger
 		$this->Logger = LoggerPlugin::GetLogger();
 
-		// Add Console Appender
-		$this->Add('LoggerAppenderConsole',
-							 T('Console'),
-							 T('Writes logging events to the <code>php://stdout</code> or the ' .
-								 '<code>php://stderr</code> stream, the former being the default target.'));
-		// VanillaDB Appender
-		$this->Add('LoggerAppenderVanillaDB',
-							 T('Vanilla Forum Database'),
-							 T('Writes logging events to a table in Vanilla Forum Database.'));
+		$this->LoadAppendersDefinitions();
+		$this->InstallAppenders();
 	}
 }

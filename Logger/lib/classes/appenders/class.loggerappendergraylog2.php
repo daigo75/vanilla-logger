@@ -1,16 +1,64 @@
 <?php
 
-// TODO Implement Appender to GrayLog 2. Use Graylog2-gelf-php to communicate with it.
+// Add LoggerAppender Info to a global array. It will be used to automatically
+// add the Appender to the list of the available ones.
+LoggerAppendersManager::$Appenders['LoggerAppenderGraylog2'] = array(
+	'Label' => T('Graylog2 (GELF)'),
+	'Description' => T('Writes logging events to a <a href="http://www.graylog2.org/">Graylog2</a> ' .
+										 'Server, sending them in <a href="http://www.graylog2.org/about/gelf">GELF Format</a>'),
+
+);
+
+/**
+ * Graylog2 Log Appender
+ * @package LoggerPlugin
+ */
 class LoggerAppenderGraylog2 extends LoggerAppender {
 	// Log Table Model
 	protected $LogModel;
 
 	/// The properties below will be set automatically by Log4php with the data it
 	/// will get from the configuration.
+	protected $HostName;
+	protected $Port;
+	protected $ChunkSize;
 
+	public function getHostName() {
+		return $this->HostName;
+	}
+
+	public function setHostName($Value) {
+		$this->HostName = $Value;
+	}
+
+	public function getPort() {
+		return $this->Port;
+	}
+
+	public function setPort($Value) {
+		$this->Port = $Value;
+	}
+
+	public function getChunkSize() {
+		return $this->ChunkSize;
+	}
+
+	public function setChunkSize($Value) {
+		$this->ChunkSize = $Value;
+	}
 
 	public function __construct() {
 		parent::__construct();
+	}
+
+	/**
+	 * Returns a string representation of an exception.
+	 *
+	 * @param Exception The exception to convert to a string.
+	 * @return A string representation of the Exception.
+	 */
+	private function FormatThrowable(Exception $Exception) {
+		return $Exception->__toString();
 	}
 
 	/**
@@ -25,7 +73,7 @@ class LoggerAppenderGraylog2 extends LoggerAppender {
 		$Fields = array();
 
 		$Fields['LoggerName'] = $event->getLoggerName();
-		$Fields['Level'] = $event->getLevel()->toString();
+		$Fields['Level'] = $event->getLevel()->toInt();
 		$Fields['Message'] = $event->getMessage();
 		$Fields['Thread'] = $event->getThreadName();
 
@@ -57,7 +105,9 @@ class LoggerAppenderGraylog2 extends LoggerAppender {
 
 			// Instantiate the Model that will send the log information to Graylog2
 			// server
-			$this->LogModel = new Graylog2Model();
+			$this->LogModel = new Graylog2Model($this->HostName,
+																					$this->Port,
+																					$this->ChunkSize);
 		}
 		catch (Exception $e) {
 			throw new Exception($e);
