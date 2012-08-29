@@ -12,9 +12,14 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 	// Log Table Model
 	protected $LogModel;
 
+	/// The properties below will be set automatically by Log4php with the data it
+	/// will get from the configuration.
+	/// @var string The name of the table where the log will be stored.
 	protected $Table;
+	/// @var int Indicates if the Appender should create the log table on the fly (1) or not (0).
 	protected $CreateTable;
 
+	/**
 	/**
 	 * Getter for CreateTable property.
 	 */
@@ -107,7 +112,7 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 			$this->layout = new LoggerLayoutPattern();
 
 			// Instantiate the Model that will write to the Log Table
-			$this->LogModel = &new VanillaDBLogModel($this->Table);
+			$this->LogModel = new VanillaDBLogModel($this->Table);
 		}
 		catch (Exception $e) {
 			throw new Exception($e);

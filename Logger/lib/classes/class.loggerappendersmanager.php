@@ -23,10 +23,10 @@ class LoggerAppendersManager {
 		// Install Appender's Model and Validation class names into Vanilla built-in
 		// factory. This will allow to leverage Vanilla's mechanisms for the
 		// management of Singletons
-		$ModelClass = $this->GetModelClass($AppenderClass);
+		$ConfigModelClass = $this->GetConfigModelClass($AppenderClass);
 		$ValidationClass = $this->GetValidationClass($AppenderClass);
 
-		Gdn::FactoryInstall($ModelClass, $ModelClass, '', Gdn::FactorySingleton);
+		Gdn::FactoryInstall($ConfigModelClass, $ConfigModelClass, '', Gdn::FactorySingleton);
 		Gdn::FactoryInstall($ValidationClass, $ValidationClass, '', Gdn::FactorySingleton);
 	}
 
@@ -48,7 +48,7 @@ class LoggerAppendersManager {
 	 * Model.
 	 * @return The class name of the Model.
 	 */
-	protected function GetModelClass($AppenderClass) {
+	protected function GetConfigModelClass($AppenderClass) {
 		return $this->AppenderExists($AppenderClass) ? sprintf('%sConfigModel', $AppenderClass) : null;
 	}
 
@@ -93,7 +93,7 @@ class LoggerAppendersManager {
 	 * instantiated.
 	 */
 	public function GetModel($AppenderClass) {
-		$ModelClass = $this->GetModelClass($AppenderClass);
+		$ModelClass = $this->GetConfigModelClass($AppenderClass);
 
 		// If ModelClass is valid, then it means that the Appender is in the list.
 		// Therefore, the Validation just needs to be retrieved.
