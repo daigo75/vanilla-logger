@@ -1,4 +1,5 @@
 <?php if (!defined('APPLICATION')) exit();
+
 /*
 Copyright 2012 Diego Zanella IT Services
 This file is part of Logger Plugin for Vanilla Forums.

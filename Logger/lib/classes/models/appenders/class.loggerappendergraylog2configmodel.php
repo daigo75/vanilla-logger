@@ -1,10 +1,10 @@
 <?php if (!defined('APPLICATION')) exit();
 
 /**
- * Vanilla DB Appender Configuration Model
+ * Graylog2 Appender Configuration Model
  * @package LoggerPlugin
  */
-class LoggerAppenderVanillaDBConfigModel extends LoggerAppenderConfigModel {
+class LoggerAppenderGraylog2ConfigModel extends LoggerAppenderConfigModel {
 	/**
 	 * Expands the data contained in the Configuration field of an Appender
 	 * Configuration in the fields that form it.
@@ -23,8 +23,9 @@ class LoggerAppenderVanillaDBConfigModel extends LoggerAppenderConfigModel {
 		// Retrieve the settings encoded as JSON
 		$AppenderParams = json_decode($Config['Configuration'], TRUE);
 
-		$Config['Table'] = $AppenderParams['params']['table'];
-		$Config['CreateTable'] = $AppenderParams['params']['createtable'];
+		$Config['HostName'] = $AppenderParams['params']['hostname'];
+		$Config['Port'] = $AppenderParams['params']['port'];
+		$Config['ChunkSize'] = $AppenderParams['params']['chunksize'];
 
 		return $Config;
 	}
@@ -39,8 +40,9 @@ class LoggerAppenderVanillaDBConfigModel extends LoggerAppenderConfigModel {
 	public function Save($FormPostValues) {
 		// Transforms posted values into an array to populate Configuration field in
 		// LoggerAppenders configuration table
-		$Config = array('params' => array('table' => $FormPostValues['Table'],
-																			'createtable' => $FormPostValues['CreateTable'],
+		$Config = array('params' => array('hostname' => $FormPostValues['HostName'],
+																			'port' => $FormPostValues['Port'],
+																			'chunksize' => $FormPostValues['CreateTable'],
 																			));
 
 		$FormPostValues['Configuration'] = json_encode($Config);

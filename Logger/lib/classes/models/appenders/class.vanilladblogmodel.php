@@ -1,14 +1,13 @@
 <?php if (!defined('APPLICATION')) exit();
 
 /**
- * Vanilla Database Log Model
+ * Vanilla Database Log Model.
+ * It saves Log4php Log entries to a table into Vanilla Database, leveraging
+ * objects provided by Vanilla framework.
  *
  * @package LoggerPlugin
  */
 
-/**
- * This model is used to store Log entries to a table.
-  */
 class VanillaDBLogModel extends Gdn_Model {
 	/// Stores the name of the Log table which Model will read and write.
 	protected $LogTableName;

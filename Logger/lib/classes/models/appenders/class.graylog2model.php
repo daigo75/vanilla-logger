@@ -1,26 +1,13 @@
 <?php if (!defined('APPLICATION')) exit();
 
 /**
- * Vanilla Database Log Model
+ * Graylog2 Log Model
  *
  * @package LoggerPlugin
  */
-
-/**
- * This model is used to store Log entries to a table.
-  */
 class Graylog2Model extends Gdn_Model {
 	/// @var GELFMessagePublisher
 	protected $GELFMessagePublisher;
-
-	///// @var string The name, or IP Address, of Graylog Host
-	//protected $HostName;
-	//
-	///// @var int The port which should be used to communicate with Graylog host
-	//protected $Port;
-	//
-	///// @var int The chunk size to be used in communication with Graylog2
-	//protected $ChunkSize;
 
 	/**
 	 * @var array An associative array mapping Log4php Log levels to the
@@ -76,10 +63,6 @@ class Graylog2Model extends Gdn_Model {
 		if(!is_numeric($ChunkSize)) {
 			throw new InvalidArgumentException(T('Chunk Size must be an Integer.'));
 		}
-
-		//$this->HostName = $HostName;
-		//$this->Port = $Port;
-		//$this->ChunkSize = $ChunkSize;
 
 		// Load GELF Libraries
 		require(LOGGER_PLUGIN_EXTERNAL_PATH . '/Graylog2-gelf-php/GELFMessage.php');

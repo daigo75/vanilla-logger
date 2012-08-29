@@ -7,7 +7,7 @@
 class LoggerAppenderVanillaDBValidation extends LoggerAppenderConfigValidation {
 	/**
 	 * Set Validation Rules that apply when saving the settings for a
-	 * LoggerAppender.
+	 * VanillaDB LoggerAppender.
 	 */
 	protected function SetValidationRules() {
 		parent::SetValidationRules();
