@@ -5,6 +5,6 @@
   <string id="phpCommentStyle">//,#</string>
   <string id="phpConfigFile">C:\XAMPP\php\php.ini</string>
   <string id="phpDefaultInterpreter"></string>
-  <string id="phpExtraPaths">C:\XAMPP\htdocs\vanilla;C:\Users\d.zanella\Documents\Projects\Web\procedo.ie</string>
+  <string id="phpExtraPaths">C:\XAMPP\htdocs\vanilla;C:\Users\d.zanella\Documents\Projects\Web\procedo.ie\Projects\Vanilla Forums\Plugins\LoggerPlugin</string>
 </preference-set>
 </project>

@@ -98,6 +98,7 @@ class Graylog2Model extends Gdn_Model {
 		$Message = new GELFMessage();
 
 		$Message->setAdditional('LoggerName', $LogFields['LoggerName']);
+		// TODO Remove call to GetGraylLog2Level and use Level->getSysLogEquivalent() in Controller class
 		$Message->setLevel($this->GetGraylLog2Level($LogFields['Level']));
 		$Message->setShortMessage($LogFields['Message']);
 		$Message->setAdditional('Thread', $LogFields['Thread']);

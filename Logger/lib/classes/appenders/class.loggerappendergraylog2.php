@@ -73,6 +73,7 @@ class LoggerAppenderGraylog2 extends LoggerAppender {
 		$Fields = array();
 
 		$Fields['LoggerName'] = $event->getLoggerName();
+		// TODO Use Level->getSysLogEquivalent() to translate Log Level
 		$Fields['Level'] = $event->getLevel()->toInt();
 		$Fields['Message'] = $event->getMessage();
 		$Fields['Thread'] = $event->getThreadName();
