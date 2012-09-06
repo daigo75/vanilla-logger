@@ -85,8 +85,9 @@ class Graylog2Model extends Gdn_Model {
 	 * Defines the related database table name. Table name must be passed as a
 	 * parameter.
 	 *
-	 * @param TableName The name of the table that the Model will manipulate.
-	 * @throws an Exception if no Table Name has been provided.
+	 * @param string HostName The name or IP Address of Graylog2 Server.
+	 * @param int Port The Port to use to communicate with Graylog2 Server.
+	 * @param int ChunkSize The chunk size to use to communicate with Graylog2 Server.
 	 */
 	public function __construct($HostName, $Port, $ChunkSize) {
 		parent::__construct();
