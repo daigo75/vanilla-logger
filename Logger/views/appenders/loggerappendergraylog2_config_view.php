@@ -72,6 +72,5 @@ if($this->Form->GetValue('ChunkSize') == null) {
 																	array('maxlength' => '8',));
 			?>
 		</li>
-		</ul>
-	</div>
+	</ul>
 </div>
