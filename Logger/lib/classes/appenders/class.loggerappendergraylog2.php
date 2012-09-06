@@ -5,7 +5,7 @@
 LoggerAppendersManager::$Appenders['LoggerAppenderGraylog2'] = array(
 	'Label' => T('Graylog2 (GELF)'),
 	'Description' => T('Writes logging events to a <a href="http://www.graylog2.org/">Graylog2</a> ' .
-										 'Server, sending them in <a href="http://www.graylog2.org/about/gelf">GELF Format</a>'),
+										 'Server, sending them in <a href="http://www.graylog2.org/about/gelf">GELF Format</a>.'),
 
 );
 
