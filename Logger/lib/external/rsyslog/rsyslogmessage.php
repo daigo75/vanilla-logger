@@ -232,6 +232,20 @@ class RSyslogMessage {
 	}
 
 	/**
+	 * Puts all Log Message elements together to form a string that will be passed
+	 * to the RSysLog Server.
+	 *
+	 * @return string The Message as a string.
+	 */
+	protected function FormatMessage() {
+		return sprintf('%s %s [PID: %d] %s',
+									 $this->GetFQDN(),
+									 $this->GetProcessName(),
+									 getmypid(),
+									 $this->Message);
+	}
+
+	/**
 	 * Returns the chunks that form the full log message. If the message is short
 	 * enough, it's not split and just returned.
 	 *
@@ -240,11 +254,7 @@ class RSyslogMessage {
 	 */
 	public function GetMessageChunks() {
 		$MessageTag = $this->GetTag();
-		$MessageText = sprintf('%s %s [PID: %d] %s',
-													$this->GetFQDN(),
-													$this->GetProcessName(),
-													getmypid(),
-													$this->Message);
+		$MessageText = $this->FormatMessage();
 
 		// If the Tag+Message string is short enough to fit in a single message,
 		// simply return it
