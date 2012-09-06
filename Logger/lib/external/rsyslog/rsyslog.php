@@ -110,11 +110,4 @@ class RSyslog {
   }
 }
 
-$Rsyslog = new RSyslog('logs.papertrailapp.com:22426');
-$Msg = new RSyslogMessage('I love my honey bunny', 1, 5, time());
-$Rsyslog->Send($Msg);
-$Rsyslog->Send($Msg);
-$Rsyslog->Send($Msg);
-$Rsyslog->Send($Msg);
-$Rsyslog->Send($Msg);
-$Rsyslog->Send($Msg);
+//$Rsyslog = new RSyslog('logs.papertrailapp.com:22426');
