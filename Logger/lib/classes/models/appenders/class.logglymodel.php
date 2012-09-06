@@ -56,23 +56,6 @@ class LogglyModel extends Gdn_Model {
 	 */
 	protected function BuildJSONMessage(array &$LogFields) {
 		return json_encode($LogFields);
-		//$Message = new GELFMessage();
-		//
-		//$Message->setAdditional('LoggerName', $LogFields['LoggerName']);
-		//// Level is passed as a SysLog level. The translation between Log4php and
-		//// Syslog level is done by the caller.
-		//$Message->setLevel($LogFields['Level']);
-		//$Message->setShortMessage($LogFields['Message']);
-		//$Message->setAdditional('Thread', $LogFields['Thread']);
-		//$Message->setAdditional('ClassName', $LogFields['ClassName']);
-		//$Message->setAdditional('MethodName', $LogFields['MethodName']);
-		//$Message->setFile($LogFields['FileName']);
-		//$Message->setLine($LogFields['LineNumber']);
-		//$Message->setTimestamp($LogFields['TimeStamp']);
-		//
-		//$Message->setFullMessage($LogFields['Exception']);
-		//
-		//return $Message;
 	}
 
 	/**
@@ -97,14 +80,15 @@ class LogglyModel extends Gdn_Model {
 
 			$Result = curl_exec($ch);
 			//var_dump(curl_error($ch));
+			//$Info = curl_getinfo($ch);
+			//var_dump($Info);
 		}
 		catch(Exception $e) {
+			print(curl_error($ch));
 			trigger_error(sprtinf('Exception occurred while posting the message to loggly. Last CURL Error: %s. Exception details: %s',
 														curl_error($ch),
 														$e->__toString()));
 		}
-		//$Info = curl_getinfo($ch);
-		//var_dump($Info);
 		curl_close($ch);
 
 		return true;
@@ -121,7 +105,6 @@ class LogglyModel extends Gdn_Model {
 		//if(!$this->Validate($LogFields)) {
 		//	return false;
 		//}
-
 		$Message = $this->BuildJSONMessage($LogFields);
 
 		return $this->PublishMessage($Message);
