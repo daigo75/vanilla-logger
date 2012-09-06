@@ -8,10 +8,8 @@ class LoggerAppenderLogglyConfigModel extends LoggerAppenderConfigModel {
 	/**
 	 * @see DecodeAppenderParams::LoggerAppenderConfigModel()
 	 */
-	protected function DecodeAppenderSpecificParams(array &$AppenderConfig, array $AppenderParams = null) {
-		$Config['InputKey'] = $AppenderParams['params']['inputkey'];
-
-		return $Config;
+	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams = null) {
+		$AppenderConfig['InputKey'] = $AppenderParams['params']['inputkey'];
 	}
 
 	/**

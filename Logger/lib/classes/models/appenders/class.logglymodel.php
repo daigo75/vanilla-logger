@@ -6,7 +6,7 @@
  */
 class LogglyModel extends Gdn_Model {
 	// @var string The URL of Loggly Log Server
-	protected $LogglyURL = 'https://logs.loggly.com/inputs/';
+	protected $LogglyURL = 'https://logs.loggly.com/inputs';
 	// @var string The SHA Input Key to be used to send Logs to Loggly via HTTPS
 	protected $InputKey;
 
@@ -43,7 +43,7 @@ class LogglyModel extends Gdn_Model {
 	public function __construct($InputKey) {
 		parent::__construct();
 
-		$this->InputKey = $HostName;
+		$this->InputKey = $InputKey;
 
 		$this->_SetLogglyValidationRules();
 	}
@@ -82,19 +82,32 @@ class LogglyModel extends Gdn_Model {
 	 * @return bool True if message was sent correctly, False otherwise.
 	 */
 	protected function PublishMessage($Message) {
-		$ch = curl_init();
+		$ch = curl_init($this->GetLogURL());
 
-		curl_setopt($ch, CURLOPT_URL, $this->GetLogURL());
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // Follow redirects
-		curl_setopt($ch, CURLOPT_HEADER, 0);  // No HTTP Headers
+		try {
+			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: Application/json'));
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_CAINFO, LOGGER_PLUGIN_CERTS_PATH . '/cacert.pem');
+			//curl_setopt($ch, CURLOPT_HEADER, 0);  // No HTTP Headers
 
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $Message);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $Message);
+			//var_dump(curl_error($ch));
 
-		$Result = curl_exec($ch);
+			$Result = curl_exec($ch);
+			//var_dump(curl_error($ch));
+		}
+		catch(Exception $e) {
+			trigger_error(sprtinf('Exception occurred while posting the message to loggly. Last CURL Error: %s. Exception details: %s',
+														curl_error($ch),
+														$e->__toString()));
+		}
 		//$Info = curl_getinfo($ch);
+		//var_dump($Info);
 		curl_close($ch);
+
+		return true;
 	}
 
 	/**
@@ -111,13 +124,6 @@ class LogglyModel extends Gdn_Model {
 
 		$Message = $this->BuildJSONMessage($LogFields);
 
-		try {
-			return $this->PublishMessage($Message);
-		}
-		catch(Exception $e) {
-			trigger_error(sprintf('log4php: Exception occurred while sending message to Loggly. Details:',
-														$e->__toString()));
-			return false;
-		}
+		return $this->PublishMessage($Message);
 	}
 }

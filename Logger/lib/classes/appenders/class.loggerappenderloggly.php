@@ -95,9 +95,7 @@ class LoggerAppenderLoggly extends LoggerAppender {
 
 			// Instantiate the Model that will send the log information to Graylog2
 			// server
-			$this->LogModel = new Graylog2Model($this->HostName,
-																					$this->Port,
-																					$this->ChunkSize);
+			$this->LogModel = new LogglyModel($this->InputKey);
 		}
 		catch (Exception $e) {
 			throw new Exception($e);

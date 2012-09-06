@@ -114,7 +114,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 	 * @return array|bool An array containing a single row with the settings for the Logger
 	 * Appender, or FALSE if no result is found.
 	 */
-	protected function GetAppenderConfig($AppenderID) {
+	public function GetAppenderConfig($AppenderID) {
 		// Appender ID must be a number, therefore there's no point in running a
 		// query if it's empty or non-numeric.
 		if(empty($AppenderID) || !is_numeric($AppenderID)) {
@@ -129,11 +129,13 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 
 		// Process retrieved configuration to transform the JSON found in Config
 		// field into a list of Field => Value pairs
-		return $this->DecodeAppenderParams($AppenderConfig, json_decode($Config['Configuration'], TRUE));
+		$this->DecodeAppenderParams($AppenderConfig, json_decode($AppenderConfig['Configuration'], TRUE));
+
+		return $AppenderConfig;
 	}
 
 	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams = null) {
-		return $AppenderConfig;
+		// Dummy
 	}
 
 	protected function EncodeAppenderParams(array &$FormPostValues) {
