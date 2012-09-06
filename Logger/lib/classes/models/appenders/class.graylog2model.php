@@ -166,7 +166,8 @@ class Graylog2Model extends Gdn_Model {
 			return $this->PublishMessage($Message);
 		}
 		catch(Exception $e) {
-			// TODO Find a graceful way to handle and display any exception. Logging it could be complicated, since the log will trigger this method again, leading to an infinite recursion.
+			trigger_error(sprintf('log4php: Exception occurred while sending message to Graylog2 Server. Details:',
+														$e->__toString()));
 			return false;
 		}
 	}
