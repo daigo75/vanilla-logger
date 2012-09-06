@@ -109,9 +109,9 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 	 * Returns an array containing a single row with the settings for a specific
 	 * Logger Appender.
 	 *
-	 * @param AppenderID The Id of the Appender for which the data should be
+	 * @param string AppenderID The Id of the Appender for which the data should be
 	 * retrieved.
-	 * @return An array containing a single row with the settings for the Logger
+	 * @return array|bool An array containing a single row with the settings for the Logger
 	 * Appender, or FALSE if no result is found.
 	 */
 	protected function GetAppenderConfig($AppenderID) {
@@ -122,7 +122,22 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		}
 
 		// Retrieve and return the Appender Settings
-		return $this->Get(array('AppenderID' => $AppenderID,))->FirstRow(DATASET_TYPE_ARRAY);
+		$AppenderConfig = $this->Get(array('AppenderID' => $AppenderID,))->FirstRow(DATASET_TYPE_ARRAY);
+		if(empty($AppenderConfig)) {
+			return false;
+		}
+
+		// Process retrieved configuration to transform the JSON found in Config
+		// field into a list of Field => Value pairs
+		return $this->DecodeAppenderParams($AppenderConfig, json_decode($Config['Configuration'], TRUE));
+	}
+
+	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams = null) {
+		return $AppenderConfig;
+	}
+
+	protected function EncodeAppenderParams(array &$FormPostValues) {
+		// Dummy
 	}
 
 	/**
@@ -156,6 +171,10 @@ class LoggerAppenderConfigModel extends Gdn_Model {
    * FALSE if the operation could not be completed successfully.
 	 */
 	public function Save(&$FormPostValues) {
+		// Process the posted values to encode Appender's parameters into a JSON
+		// string. The JSON string will be saved in Form's "Configuration" field
+		$this->EncodeAppenderParams($FormPostValues);
+
 		// Define the primary key in this model's table.
 		$this->DefineSchema();
 
