@@ -47,8 +47,8 @@ class LoggerAppenderGraylog2 extends LoggerAppender {
 		$this->ChunkSize = $Value;
 	}
 
-	public function __construct() {
-		parent::__construct();
+	public function __construct($name = '') {
+		parent::__construct($name);
 	}
 
 	/**

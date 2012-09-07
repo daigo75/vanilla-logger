@@ -70,8 +70,8 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 	/**
 	 * Class constructor.
 	 */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($name = '') {
+		parent::__construct($name);
 
 		// Retrieve Vanilla's Database Objects
 		$this->Database = &Gdn::Database();

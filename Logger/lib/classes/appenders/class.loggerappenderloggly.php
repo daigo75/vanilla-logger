@@ -37,8 +37,8 @@ class LoggerAppenderLoggly extends LoggerAppender {
 		$this->InputKey = $Value;
 	}
 
-	public function __construct() {
-		parent::__construct();
+	public function __construct($name = '') {
+		parent::__construct($name);
 	}
 
 	/**
@@ -110,8 +110,6 @@ class LoggerAppenderLoggly extends LoggerAppender {
 	 * @return void.
 	 */
 	public function append(LoggerLoggingEvent $event) {
-					fwrite($this->fp, $this->layout->format($event));
-
 		$this->LogModel->Save($this->PrepareLogFields($event));
 	}
 }
