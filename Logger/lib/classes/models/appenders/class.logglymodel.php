@@ -38,7 +38,7 @@ class LogglyModel extends Gdn_Model {
 	 * Defines the related database table name. Table name must be passed as a
 	 * parameter.
 	 *
-	 * @param string The SHA Input Key to be used to send Logs to Loggly via HTTPS.
+	 * @param string InputKey The SHA Input Key to be used to send Logs to Loggly via HTTPS.
 	 */
 	public function __construct($InputKey) {
 		parent::__construct();
