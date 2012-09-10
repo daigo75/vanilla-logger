@@ -2,7 +2,7 @@
 
 // Set default value for Remote Syslog Timeout
 if($this->Form->GetValue('Timeout') == null) {
-	$this->Form->SetValue('Timeout', RSyslogModel::DEFAULT_TIMEOUT);
+	$this->Form->SetValue('Timeout', LoggerAppenderRSyslog::DEFAULT_TIMEOUT);
 }
 
 ?>
