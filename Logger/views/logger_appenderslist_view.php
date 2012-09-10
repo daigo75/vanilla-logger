@@ -95,13 +95,13 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 						echo Wrap(Gdn_Format::Text($EnabledText), 'td', array('class' => 'Enabled',));
 
 						echo "<td>\n";
-						// Show Edit/Delete Buttons only if Appender is not a System
+						// Show Configure/Delete Buttons only if Appender is not a System
 						// Appender. System Appenders are not supposed to be reconfigured by
 						// the Admins
 						// TODO Add a "View" button, which allows an Admin to go to a read-only Edit Page to see Appender's Settings
 						if(!$Appender->IsSystem) {
-							// Output Add/Edit button
-							echo Anchor(T('Edit'),
+							// Output Configure button
+							echo Anchor(T('Configure'),
 													sprintf('%s?%s=%s&%s=%s',
 																	LOGGER_APPENDER_EDIT_URL,
 																	LOGGER_ARG_APPENDERID,
