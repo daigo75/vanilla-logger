@@ -48,11 +48,10 @@ $IsNewAppender = empty($AppenderID) ? true : false;
 						echo $this->Form->Label(T('Appender Name'), 'AppenderName');
 						echo Wrap(T('Enter a name for the Appender. This is just to help you identifying each Appender.'),
 											'div',
-											array('class' => 'Info',
-														'maxlength' => '100',
-														));
+											array('class' => 'Info'));
 						echo $this->Form->TextBox('AppenderName',
-																			array('maxlength' => '100',));
+																			array('size' => '50',
+																						'maxlength' => '100'));
 					?>
 				</li>
 				<li>
@@ -63,7 +62,8 @@ $IsNewAppender = empty($AppenderID) ? true : false;
 											'div',
 											array('class' => 'Info'));
 						echo $this->Form->TextBox('AppenderDescription',
-																			array('maxlength' => '255',));
+																			array('size' => '100',
+																						'maxlength' => '255',));
 					?>
 				</li>
 				<li>
