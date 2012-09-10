@@ -8,7 +8,7 @@ class LoggerAppenderGraylog2ConfigModel extends LoggerAppenderConfigModel {
 	/**
 	 * @see DecodeAppenderParams::LoggerAppenderConfigModel()
 	 */
-	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams = null) {
+	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams) {
 		$AppenderConfig['HostName'] = $AppenderParams['params']['hostname'];
 		$AppenderConfig['Port'] = $AppenderParams['params']['port'];
 		$AppenderConfig['ChunkSize'] = $AppenderParams['params']['chunksize'];

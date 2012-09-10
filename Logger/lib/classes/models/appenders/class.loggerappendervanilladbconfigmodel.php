@@ -8,7 +8,7 @@ class LoggerAppenderVanillaDBConfigModel extends LoggerAppenderConfigModel {
 	/**
 	 * @see DecodeAppenderParams::LoggerAppenderConfigModel()
 	 */
-	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams = null) {
+	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams) {
 		$AppenderConfig['Table'] = $AppenderParams['params']['table'];
 		$AppenderConfig['CreateTable'] = $AppenderParams['params']['createtable'];
 	}

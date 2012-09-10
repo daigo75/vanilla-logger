@@ -134,7 +134,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		return $AppenderConfig;
 	}
 
-	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams = null) {
+	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams) {
 		// Dummy
 	}
 

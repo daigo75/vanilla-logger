@@ -8,7 +8,7 @@ class LoggerAppenderConsoleConfigModel extends LoggerAppenderConfigModel {
 	/**
 	 * @see DecodeAppenderParams::LoggerAppenderConfigModel()
 	 */
-	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams = null) {
+	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams) {
 		$AppenderConfig['Layout'] = $AppenderParams['layout']['class'];
 		$AppenderConfig['Target'] = $AppenderParams['params']['target'];
 	}
