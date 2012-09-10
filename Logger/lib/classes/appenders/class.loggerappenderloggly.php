@@ -14,21 +14,14 @@ LoggerAppendersManager::$Appenders['LoggerAppenderLoggly'] = array(
  * @package LoggerPlugin
  */
 class LoggerAppenderLoggly extends LoggerAppender {
-	// Log Table Model
-	protected $LogModel;
+	// @var string The URL of Loggly Log Server
+	protected $LogglyURL = 'https://logs.loggly.com/inputs';
 
 	// The properties below will be set automatically by Log4php with the data it
 	// will get from the configuration.
 
 	// @var string The SHA Input Key to be used to send Logs to Loggly via HTTPS
 	protected $InputKey;
-
-	/**
-	 * Getter for InputKey field.
-	 */
-	public function getInputKey() {
-		return $this->InputKey;
-	}
 
 	/**
 	 * Setter for InputKey field.
@@ -52,14 +45,23 @@ class LoggerAppenderLoggly extends LoggerAppender {
 	}
 
 	/**
-	 * Transforms a Log4php Log Event into an associative array of fields, which
-	 * will be saved to a database table.
+	 * Builds and returns the full URL where the Log messages will be sent.
 	 *
-	 * @param event A Log4php Event.
-	 * @return An associative array of fields containing the information passed by
-	 * the Log Event.
+	 * @return string The full URL where the Log messages will be sent.
 	 */
-	protected function PrepareLogFields(LoggerLoggingEvent $event) {
+	protected function GetLoggerURL() {
+		return sprintf('%s/%s',
+									 $this->LogglyURL,
+									 $this->InputKey);
+	}
+
+	/**
+	 * Builds a JSON Message that will be sent to a Loggly Server.
+	 *
+	 * @param LoggerLoggingEvent event A Log4php Event.
+	 * @return string A JSON structure representing the message.
+	 */
+	protected function BuildJSONMessage(LoggerLoggingEvent $event) {
 		$Fields = array();
 
 		$Fields['LoggerName'] = $event->getLoggerName();
@@ -79,23 +81,55 @@ class LoggerAppenderLoggly extends LoggerAppender {
 			$Fields['Exception'] = $this->FormatThrowable($ThrowableInfo->getThrowable());
 		}
 
-		return $Fields;
+		return json_encode($Fields);
+	}
+
+	/**
+	 * Sends a JSON Message to Loggly.
+	 *
+	 * @param string Message The JSON-Encoded Message to be sent.
+	 * @return bool True if message was sent correctly, False otherwise.
+	 */
+	protected function PublishMessage($Message) {
+		$ch = curl_init($this->GetLoggerURL());
+
+		try {
+			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: Application/json'));
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_CAINFO, LOGGER_PLUGIN_CERTS_PATH . '/cacert.pem');
+			//curl_setopt($ch, CURLOPT_HEADER, 0);  // No HTTP Headers
+
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $Message);
+			//var_dump(curl_error($ch));
+
+			$Result = curl_exec($ch);
+			//var_dump(curl_error($ch));
+			//$Info = curl_getinfo($ch);
+			//var_dump($Info);
+		}
+		catch(Exception $e) {
+			print(curl_error($ch));
+			trigger_error(sprtinf('Exception occurred while posting the message to loggly. Last CURL Error: %s. Exception details: %s',
+														curl_error($ch),
+														$e->__toString()));
+		}
+		curl_close($ch);
+
+		return true;
 	}
 
 	/**
 	 * Apply new configuration.
 	 *
-	 * @return True if configuration is applied successfully.
-	 * @throws an Exception if configuration can't be applied successfully.
+	 * @return bool True if configuration is applied successfully.
+	 * @throws An Exception if configuration can't be applied successfully.
 	 */
 	public function activateOptions() {
 		try {
 			// Layout doesn't apply to this Logger, then use the default one
-			$this->layout = new LoggerLayoutPattern();
-
-			// Instantiate the Model that will send the log information to Graylog2
-			// server
-			$this->LogModel = new LogglyModel($this->InputKey);
+			$this->layout = new LoggerLayoutSimple();
 		}
 		catch (Exception $e) {
 			throw new Exception($e);
@@ -106,10 +140,12 @@ class LoggerAppenderLoggly extends LoggerAppender {
 	/**
 	 * Appends a new Log Entry to the Log Table.
 	 *
-	 * @param event A Log Event object, containing all Log Event Details.
-	 * @return void.
+	 * @param LoggerLoggingEvent event A Log Event object, containing all Log Event Details.
+	 * @return bool True if message was saved correctly, False otherwise.
 	 */
 	public function append(LoggerLoggingEvent $event) {
-		$this->LogModel->Save($this->PrepareLogFields($event));
+		$Message = $this->BuildJSONMessage($event);
+
+		return $this->PublishMessage($Message);
 	}
 }
