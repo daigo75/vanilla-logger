@@ -31,13 +31,13 @@ class VanillaDBLogModel extends Gdn_Model {
 	protected function PrepareLogQuery() {
 		$Query = $this->SQL
 			->Select('LOG.LogEntryID')
+			->Select('LOG.TimeStamp')
 			->Select('LOG.LoggerName')
 			->Select('LOG.Level')
 			->Select('LOG.Message')
 			->Select('LOG.Thread')
 			->Select('LOG.File')
 			->Select('LOG.Line')
-			->Select('LOG.TimeStamp')
 			->Select('LOG.InsertUserID')
 			->From($this->LogTableName . ' LOG');
 		return $Query;
