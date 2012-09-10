@@ -20,9 +20,9 @@
  * @license http://opensource.org/licenses/GPL-2.0 GPL 2.0
 */
 
-require('syslogfacility.php');
-require('syslogseverity.php');
-require('rsyslogmessage.php');
+require_once('syslogfacility.php');
+require_once('syslogseverity.php');
+require_once('rsyslogmessage.php');
 
 /**
  * Sends SysLog messages to a Remote Server.
