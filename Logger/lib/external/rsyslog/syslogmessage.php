@@ -163,8 +163,8 @@ class SyslogMessage {
 	 * @link http://tools.ietf.org/html/rfc5424
 	 */
 	public function SetTimestamp($Timestamp) {
-		if(!is_int($Timestamp)) {
-			throw new Exception('Timestamp must be an Integer, as required by RFC5424.');
+		if(!is_numeric($Timestamp)) {
+			throw new Exception('Timestamp must be a number.');
 		}
 		$this->Timestamp = $Timestamp;
 	}
