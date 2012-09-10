@@ -8,17 +8,23 @@ LoggerAppendersManager::$Appenders['LoggerAppenderRSyslog'] = array(
 
 );
 
+// Load RSysLog Libraries
+require(LOGGER_PLUGIN_EXTERNAL_PATH . '/rsyslog/rsyslog.php');
+
 /**
  * RSyslog Log Appender
  * @package LoggerPlugin
  */
 class LoggerAppenderRSyslog extends LoggerAppender {
-	// Log Table Model
-	protected $LogModel;
+	// @var int The default Timeout to be used when communicating with the Remote Syslog Server/
+	const DEFAULT_TIMEOUT = 1;
+
+	// TODO Allow User to choose the Facility from one of the values provided by SyslogFacility Class.
+	// @var int The default Facility used to build Syslog Messages.
+	const DEFAULT_FACILITY = SyslogFacility::USER;
 
 	// The properties below will be set automatically by Log4php with the data it
 	// will get from the configuration.
-
 	// @var string The address of the RSyslog log to which the log messages will be sent.
 	protected $HostName;
 	// @var int The port to use to connect to RSyslog server.
@@ -26,24 +32,12 @@ class LoggerAppenderRSyslog extends LoggerAppender {
 	// @var int Timeout tro be used when communicating with Remote SysLog Server
 	protected $Timeout;
 
-	public function getTimeout() {
-		return $this->Timeout;
-	}
-
 	public function setTimeout($Value) {
 		$this->Timeout = $Value;
 	}
 
-	public function getPort() {
-		return $this->Port;
-	}
-
 	public function setPort($Value) {
 		$this->Port = $Value;
-	}
-
-	public function getHostName() {
-		return $this->HostName;
 	}
 
 	public function setHostName($Value) {
@@ -55,6 +49,56 @@ class LoggerAppenderRSyslog extends LoggerAppender {
 	}
 
 	/**
+	 * Builds and returns the full URL where the Log messages will be sent.
+	 *
+	 * @return string The full URL where the Log messages will be sent.
+	 */
+	protected function GetSyslogPublisher() {
+		if(empty($this->SyslogPublisher)) {
+			$this->SyslogPublisher = new RSyslog(sprintf('%s:%s',
+																									 $this->HostName,
+																									 $this->Port),
+																					 $this->Timeout);
+		}
+
+		return $this->SyslogPublisher;
+	}
+
+	/**
+	 * Builds a Message that will be sent to a RSyslog Server.
+	 *
+	 * @param LoggerLoggingEvent event A Log4php Event.
+	 * @return string A string representing the message.
+	 */
+	protected function BuildSysLogMessage(LoggerLoggingEvent $event) {
+		// TODO Find a way to log Exception details, which seem to be ignored by all Layout formatters.
+		return new SyslogMessage($this->layout->format($event),
+														 self::DEFAULT_FACILITY,
+														 $event->getLevel()->getSysLogEquivalent(),
+														 $event->getTimeStamp());
+	}
+
+	/**
+	 * Sends a Message to a RSyslog server.
+	 *
+	 * @param string Message The Message to be sent.
+	 * @return bool True if message was sent correctly, False otherwise.
+	 */
+	protected function PublishMessage($Message) {
+		$Result = $this->GetSyslogPublisher()->Send($Message);
+		if($Result === true) {
+			return true;
+		}
+
+		// In case of error, RSysLog publisher returns an array containing an Error Number
+		// and an Error Message
+		trigger_error(sprintf('Error occurred sending log to Remote Syslog Server. Error number: %d. Error Message: %s',
+													$Result[0],
+													$Result[1]));
+		return false;
+	}
+
+	/**
 	 * Returns a string representation of an exception.
 	 *
 	 * @param Exception The exception to convert to a string.
@@ -62,26 +106,6 @@ class LoggerAppenderRSyslog extends LoggerAppender {
 	 */
 	private function FormatThrowable(Exception $Exception) {
 		return $Exception->__toString();
-	}
-
-	/**
-	 * Transforms a Log4php Log Event into an associative array of fields, which
-	 * will be saved to a database table.
-	 *
-	 * @param event A Log4php Event.
-	 * @return An associative array of fields containing the information passed by
-	 * the Log Event.
-	 */
-	protected function PrepareLogFields(LoggerLoggingEvent $event) {
-		$Fields = array();
-
-		// TODO Find a way to log Exception details, which seem to be ignored by all Layout formatters.
-		$Fields['Message'] = $this->layout->format($event);
-		$Fields['Severity'] = $event->getLevel()->getSysLogEquivalent();
-		$Fields['Facility'] = RSyslogModel::DEFAULT_FACILITY;
-		$Fields['TimeStamp'] = $event->getTimeStamp();
-
-		return $Fields;
 	}
 
 	/**
@@ -96,10 +120,6 @@ class LoggerAppenderRSyslog extends LoggerAppender {
 			// TODO Make Layout configurable.
 			$this->layout = new LoggerLayoutPattern();
 			$this->layout->setConversionPattern('%c - %m %x. Location: %l.');
-
-			// Instantiate the Model that will send the log information to Graylog2
-			// server
-			$this->LogModel = new RSyslogModel($this->HostName, $this->Port);
 		}
 		catch (Exception $e) {
 			throw new Exception($e);
@@ -114,6 +134,8 @@ class LoggerAppenderRSyslog extends LoggerAppender {
 	 * @return void.
 	 */
 	public function append(LoggerLoggingEvent $event) {
-		$this->LogModel->Save($this->PrepareLogFields($event));
+		$Message = $this->BuildSysLogMessage($event);
+
+		return $this->PublishMessage($Message);
 	}
 }
