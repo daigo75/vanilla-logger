@@ -1,9 +1,9 @@
 <?php	if (!defined('APPLICATION')) exit();
 
 ?>
-<div class="LoggerAppenderGraylog2">
+<div class="LoggerAppenderLoggly">
 	<?php
-		echo Wrap('Graylog 2 Server Parameters', 'h3');
+		echo Wrap('Loggly Server Parameters', 'h3');
 	?>
 	<ul class="Params">
 		<?php
