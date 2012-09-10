@@ -28,7 +28,7 @@ class LogglyModel extends Gdn_Model {
 	 *
 	 * @return string The full URL where the Log messages will be sent.
 	 */
-	protected function GetLogURL() {
+	protected function GetLoggerURL() {
 		return sprintf('%s/%s',
 									 $this->LogglyURL,
 									 $this->InputKey);
@@ -65,7 +65,7 @@ class LogglyModel extends Gdn_Model {
 	 * @return bool True if message was sent correctly, False otherwise.
 	 */
 	protected function PublishMessage($Message) {
-		$ch = curl_init($this->GetLogURL());
+		$ch = curl_init($this->GetLoggerURL());
 
 		try {
 			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
