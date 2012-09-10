@@ -13,3 +13,17 @@ Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 	background-color: whitesmoke;
 	color: gray;
 }
+
+.AppenderEdit #Form_AppenderName {
+	width: 25em;
+}
+
+.AppenderEdit #Form_AppenderDescription {
+	width: 50em;
+}
+
+.AppenderEdit #Form_Port,
+.AppenderEdit #Form_Timeout {
+	width: 5em;
+	text-align: right;
+}
