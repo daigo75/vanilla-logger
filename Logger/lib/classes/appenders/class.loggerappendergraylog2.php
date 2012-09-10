@@ -9,38 +9,36 @@ LoggerAppendersManager::$Appenders['LoggerAppenderGraylog2'] = array(
 
 );
 
+// Load GELF Libraries
+require(LOGGER_PLUGIN_EXTERNAL_PATH . '/Graylog2-gelf-php/GELFMessage.php');
+require(LOGGER_PLUGIN_EXTERNAL_PATH . '/Graylog2-gelf-php/GELFMessagePublisher.php');
+
 /**
  * Graylog2 Log Appender
  * @package LoggerPlugin
  */
 class LoggerAppenderGraylog2 extends LoggerAppender {
-	// Log Table Model
-	protected $LogModel;
+	/// @var The Publishes that will send messages to Graylog2.
+	protected $GELFMessagePublisher;
+
+	const GRAYLOG2_DEFAULT_PORT = 12201;
+	const GRAYLOG2_DEFAULT_CHUNK_SIZE = 1420;
 
 	/// The properties below will be set automatically by Log4php with the data it
 	/// will get from the configuration.
+	// @var string The Name or IP Address of Graylog2 server.
 	protected $HostName;
+	// @var int Port The Port to use to communicate with Graylog2.
 	protected $Port;
+	// @var int The size of the chunks to send to Graylog2.
 	protected $ChunkSize;
-
-	public function getHostName() {
-		return $this->HostName;
-	}
 
 	public function setHostName($Value) {
 		$this->HostName = $Value;
 	}
 
-	public function getPort() {
-		return $this->Port;
-	}
-
 	public function setPort($Value) {
 		$this->Port = $Value;
-	}
-
-	public function getChunkSize() {
-		return $this->ChunkSize;
 	}
 
 	public function setChunkSize($Value) {
@@ -52,62 +50,86 @@ class LoggerAppenderGraylog2 extends LoggerAppender {
 	}
 
 	/**
+	 * Getter for GELFMessagePublisher field. It uses lazy initialization for the
+	 * field.
+	 */
+	protected function GetPublisher() {
+		if(empty($this->GELFMessagePublisher)) {
+			// Instantiate the Message Publisher that will be used to communicate with
+			// Graylog2 Server
+			$this->GELFMessagePublisher = new GELFMessagePublisher($this->HostName,
+																														 $this->Port,
+																														 $this->ChunkSize);
+		}
+
+		return $this->GELFMessagePublisher;
+	}
+
+
+	/**
 	 * Returns a string representation of an exception.
 	 *
-	 * @param Exception The exception to convert to a string.
-	 * @return A string representation of the Exception.
+	 * @param Exception Exception The exception to convert to a string.
+	 * @return string A string representation of the Exception.
 	 */
 	private function FormatThrowable(Exception $Exception) {
 		return $Exception->__toString();
 	}
 
 	/**
-	 * Transforms a Log4php Log Event into an associative array of fields, which
-	 * will be saved to a database table.
+	 * Builds a GELF Message that will be sent to a Graylog2 Server.
 	 *
-	 * @param event A Log4php Event.
-	 * @return An associative array of fields containing the information passed by
-	 * the Log Event.
+	 * @param LoggerLoggingEvent event A Log4php Event.
+	 * @return GELFMessage A GELF Message instance.
 	 */
-	protected function PrepareLogFields(LoggerLoggingEvent $event) {
-		$Fields = array();
+	protected function BuildGELFMessage(LoggerLoggingEvent $event) {
+		$Message = new GELFMessage();
 
-		$Fields['LoggerName'] = $event->getLoggerName();
-		$Fields['Level'] = $event->getLevel()->getSysLogEquivalent();
-		$Fields['Message'] = $event->getMessage();
-		$Fields['Thread'] = $event->getThreadName();
+		$Message->setAdditional('LoggerName', $event->getLoggerName());
+		$Message->setLevel($event->getLevel()->getSysLogEquivalent());
+		$Message->setShortMessage($event->getMessage());
+		$Message->setAdditional('Thread', $event->getThreadName());
 
 		$LocationInformation = &$event->getLocationInformation();
-		$Fields['ClassName'] = $LocationInformation->getClassName();
-		$Fields['MethodName'] = $LocationInformation->getMethodName();
-		$Fields['FileName'] = $LocationInformation->getFileName();
-		$Fields['LineNumber'] = $LocationInformation->getLineNumber();
-		$Fields['TimeStamp'] = date('Y-m-d H:i:s', $event->getTimeStamp());
+		$Message->setAdditional('ClassName', $LocationInformation->getClassName());
+		$Message->setAdditional('MethodName', $LocationInformation->getMethodName());
+		$Message->setFile($LocationInformation->getFileName());
+		$Message->setLine($LocationInformation->getLineNumber());
+		$Message->setTimestamp(date('Y-m-d H:i:s', $event->getTimeStamp()));
 
 		$ThrowableInfo = $event->getThrowableInformation();
 		if(isset($ThrowableInfo)) {
-			$Fields['Exception'] = $this->FormatThrowable($ThrowableInfo->getThrowable());
+			$Message->setFullMessage($this->FormatThrowable($ThrowableInfo->getThrowable()));
 		}
 
-		return $Fields;
+		// This value is not produced, nor managed by Log4php, but Graylog2 can
+		// accept it, therefore it's passed to the server as an additional detail.
+		$Message->setHost(gethostname());
+
+		return $Message;
+	}
+
+	/**
+	 * Sends a GELF Message to a Graylog2 Server.
+	 *
+	 * @param GELFMessage Message The GELF Message to be sent.
+	 * @return bool True if message was sent correctly, False otherwise.
+	 */
+	protected function PublishMessage(GELFMessage $Message) {
+		return $this->GetPublisher()->publish($Message);
 	}
 
 	/**
 	 * Apply new configuration.
 	 *
-	 * @return True if configuration is applied successfully.
+	 * @return bool True if configuration is applied successfully.
 	 * @throws an Exception if configuration can't be applied successfully.
 	 */
 	public function activateOptions() {
 		try {
-			// Layout doesn't apply to this Logger, then use the default one
-			$this->layout = new LoggerLayoutPattern();
+			// Layout doesn't apply to this Logger, then use a default one
+			$this->layout = new LoggerLayoutSimple();
 
-			// Instantiate the Model that will send the log information to Graylog2
-			// server
-			$this->LogModel = new Graylog2Model($this->HostName,
-																					$this->Port,
-																					$this->ChunkSize);
 		}
 		catch (Exception $e) {
 			throw new Exception($e);
@@ -118,10 +140,19 @@ class LoggerAppenderGraylog2 extends LoggerAppender {
 	/**
 	 * Appends a new Log Entry to the Log Table.
 	 *
-	 * @param event A Log Event object, containing all Log Event Details.
-	 * @return void.
+	 * @param LoggerLoggingEvent event A Log Event object, containing all Log Event Details.
+	 * @return bool True if message was saved correctly, False otherwise.
 	 */
 	public function append(LoggerLoggingEvent $event) {
-		$this->LogModel->Save($this->PrepareLogFields($event));
+		$Message = $this->BuildGELFMessage($event);
+
+		try {
+			return $this->PublishMessage($Message);
+		}
+		catch(Exception $e) {
+			trigger_error(sprintf('log4php: Exception occurred while sending message to Graylog2 Server. Details:',
+														$e->__toString()));
+			return false;
+		}
 	}
 }

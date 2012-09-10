@@ -22,12 +22,12 @@
 
 // Set default value for Graylog2 Port
 if($this->Form->GetValue('Port') == null) {
-	$this->Form->SetValue('Port', Graylog2Model::GRAYLOG2_DEFAULT_PORT);
+	$this->Form->SetValue('Port', LoggerAppenderGraylog2::GRAYLOG2_DEFAULT_PORT);
 }
 
 // Set default value for Graylog2 Chunk Size
 if($this->Form->GetValue('ChunkSize') == null) {
-	$this->Form->SetValue('ChunkSize', Graylog2Model::GRAYLOG2_DEFAULT_CHUNK_SIZE);
+	$this->Form->SetValue('ChunkSize', LoggerAppenderGraylog2::GRAYLOG2_DEFAULT_CHUNK_SIZE);
 }
 
 ?>
