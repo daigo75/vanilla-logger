@@ -33,28 +33,8 @@ class Graylog2Model extends Gdn_Model {
 	/// @var GELFMessagePublisher
 	protected $GELFMessagePublisher;
 
-	/**
-	 * @var array An associative array mapping Log4php Log levels to the
-	 * equivalents used by Graylog2. Note that Graylog2 uses Syslog level coding,
-	 * which has more levels than the ones provided by Log4php. For this reason,
-	 * not all Log levels match, and some had to be ignored.
-	 */
-	protected $LogLevelMap = array(
-		LoggerLevel::FATAL => GELFMessage::EMERGENCY,
-		// Log4php has less Log levels. To err on the safe side, Fatal has been
-		// translated to Emergency, while Alert and Critical have been ignored.
-    // => GELFMessage::ALERT,
-    // => GELFMessage::CRITICAL = 2,
-		LoggerLevel::ERROR => GELFMessage::ERROR,
-		LoggerLevel::WARN => GELFMessage::WARNING,
-		LoggerLevel::INFO => GELFMessage::NOTICE,
-		LoggerLevel::DEBUG => GELFMessage::INFO,
-		LoggerLevel::TRACE => GELFMessage::DEBUG,
-	);
-
 	const GRAYLOG2_DEFAULT_PORT = 12201;
 	const GRAYLOG2_DEFAULT_CHUNK_SIZE = 1420;
-
 
 	/**
 	 * Set Validation Rules that apply when saving a new row in Cron Jobs History.
@@ -119,8 +99,7 @@ class Graylog2Model extends Gdn_Model {
 		$Message = new GELFMessage();
 
 		$Message->setAdditional('LoggerName', $LogFields['LoggerName']);
-		// TODO Remove call to GetGraylLog2Level and use Level->getSysLogEquivalent() in Controller class
-		$Message->setLevel($this->GetGraylLog2Level($LogFields['Level']));
+		$Message->setLevel($LogFields['Level']);
 		$Message->setShortMessage($LogFields['Message']);
 		$Message->setAdditional('Thread', $LogFields['Thread']);
 		$Message->setAdditional('ClassName', $LogFields['ClassName']);
