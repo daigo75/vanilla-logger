@@ -23,7 +23,7 @@
 /**
  * Encapsulates a Syslog Message.
  */
-class RSyslogMessage {
+class SyslogMessage {
 	// @const Maximum length of a Syslog message, as specified by RFC3164
 	const MAX_MESSAGE_LENGTH = 1024;
 	// @const Maximum length of the Tag section of a message

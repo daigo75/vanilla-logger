@@ -22,7 +22,7 @@
 
 require_once('syslogfacility.php');
 require_once('syslogseverity.php');
-require_once('rsyslogmessage.php');
+require_once('syslogmessage.php');
 
 /**
  * Sends SysLog messages to a Remote Server.
@@ -83,7 +83,7 @@ class RSyslog {
 	/**
 	 * Sends a Message to the remote Log Server.
 	 *
-	 * @param Message An instance of RSyslogMessage class.
+	 * @param Message An instance of SyslogMessage class.
 	 * @param LogServer The Server to which the message will be sent. If omitted,
 	 * the one specified when the class was instantiated will be used instead. It
 	 * can be indicated as <server>[:<port>].
@@ -92,7 +92,7 @@ class RSyslog {
 	 * @return True if the message was sent correctly. If not, an array containing
 	 * an Error Code and an Error Message.
 	 */
-  function Send(RSyslogMessage $Message, $LogServer = null, $Timeout = null) {
+  function Send(SyslogMessage $Message, $LogServer = null, $Timeout = null) {
     $this->SetLogServer($LogServer);
 		$this->SetTimeout($Timeout);
 
