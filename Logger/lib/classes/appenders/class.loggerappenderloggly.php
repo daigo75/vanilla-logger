@@ -18,7 +18,6 @@ class LoggerAppenderLoggly extends LoggerAppender {
 	protected $LogglyServer = 'logs.loggly.com';
 	protected $LogglyPort = 443;
 	protected $LogglyPath = '/inputs';
-	protected $LogglyURL = 'https://logs.loggly.com/inputs';
 
 	// Connection timeout, in seconds
 	const CONNECTION_TIMEOUT = 15;
@@ -48,17 +47,6 @@ class LoggerAppenderLoggly extends LoggerAppender {
 	 */
 	private function FormatThrowable(Exception $Exception) {
 		return $Exception->__toString();
-	}
-
-	/**
-	 * Builds and returns the full URL where the Log messages will be sent.
-	 *
-	 * @return string The full URL where the Log messages will be sent.
-	 */
-	protected function GetLoggerURL() {
-		return sprintf('%s/%s',
-									 $this->LogglyURL,
-									 $this->InputKey);
 	}
 
 	/**
