@@ -45,10 +45,18 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 			echo Anchor(T('Issue test Log message'),
 									LOGGER_TESTLOG_URL,
 									'SmallButton',
-									array('Title' => T('By clickin on this button, a sample Info Log Message will be ' .
+									array('Title' => T('By clicking on this button, a sample Info Log Message will be ' .
 																		 'issued to the System Logger and handled according to the ' .
 																		 'configuration. This will be useful to ensure that all Appenders ' .
 																		 'are working correctly.'),)
+									);
+			echo Anchor(T('Issue a burst of test Log messages'),
+									sprintf('%s/10', LOGGER_TESTLOG_URL),
+									'SmallButton',
+									array('Title' => T('By clicking on this button, a burst of 50 sample Info Log Messages will be ' .
+																		 'issued to the System Logger. At the end, the total amount of time spent for ' .
+																		 'logging the messages will be displayed. This will be useful for performance ' .
+																		 'testing.'),)
 									);
 		?>
 		</div>
