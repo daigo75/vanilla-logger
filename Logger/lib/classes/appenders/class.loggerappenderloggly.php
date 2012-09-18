@@ -21,7 +21,7 @@ class LoggerAppenderLoggly extends LoggerAppender {
 	protected $LogglyURL = 'https://logs.loggly.com/inputs';
 
 	// Connection timeout, in seconds
-	const CONNECTION_TIMEOUT = 1;
+	const CONNECTION_TIMEOUT = 15;
 
 	// The properties below will be set automatically by Log4php with the data it
 	// will get from the configuration.
@@ -109,6 +109,7 @@ class LoggerAppenderLoggly extends LoggerAppender {
 										 $this->InputKey);
 			$Out .= sprintf("Host: %s\r\n", $this->LogglyServer);
 			$Out .= "Content-Type: application/json\r\n";
+			$Out .= "User-Agent: Vanilla Logger Plugin\r\n";
 			$Out .= sprintf("Content-Length: %d\r\n", strlen($Message));
 			$Out .= "Connection: Close\r\n\r\n";
 			$Out .= $Message . "\r\n\r\n";
