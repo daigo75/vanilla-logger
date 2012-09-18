@@ -15,7 +15,13 @@ LoggerAppendersManager::$Appenders['LoggerAppenderLoggly'] = array(
  */
 class LoggerAppenderLoggly extends LoggerAppender {
 	// @var string The URL of Loggly Log Server
+	protected $LogglyServer = 'logs.loggly.com';
+	protected $LogglyPort = 443;
+	protected $LogglyPath = '/inputs';
 	protected $LogglyURL = 'https://logs.loggly.com/inputs';
+
+	// Connection timeout, in seconds
+	const CONNECTION_TIMEOUT = 1;
 
 	// The properties below will be set automatically by Log4php with the data it
 	// will get from the configuration.
@@ -91,33 +97,38 @@ class LoggerAppenderLoggly extends LoggerAppender {
 	 * @return bool True if message was sent correctly, False otherwise.
 	 */
 	protected function PublishMessage($Message) {
-		$ch = curl_init($this->GetLoggerURL());
+		$fp = fsockopen(sprintf('ssl://%s', $this->LogglyServer),
+										$this->LogglyPort,
+										$ErrorNumber,
+										$ErrorMessage,
+										self::CONNECTION_TIMEOUT);
 
 		try {
-			curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: Application/json'));
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_CAINFO, LOGGER_PLUGIN_CERTS_PATH . '/cacert.pem');
-			//curl_setopt($ch, CURLOPT_HEADER, 0);  // No HTTP Headers
+			$Out = sprintf("POST %s/%s HTTP/1.1\r\n",
+										 $this->LogglyPath,
+										 $this->InputKey);
+			$Out .= sprintf("Host: %s\r\n", $this->LogglyServer);
+			$Out .= "Content-Type: application/json\r\n";
+			$Out .= sprintf("Content-Length: %d\r\n", strlen($Message));
+			$Out .= "Connection: Close\r\n\r\n";
+			$Out .= $Message . "\r\n\r\n";
 
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $Message);
-			//var_dump(curl_error($ch));
+			$Result = fwrite($fp, $Out);
+			fclose($fp);
 
-			$Result = curl_exec($ch);
-			//var_dump(curl_error($ch));
-			//$Info = curl_getinfo($ch);
-			//var_dump($Info);
+			if($Result == false) {
+				trigger_error(sprintf('Error occurred posting log message to Loggly via HTTPS. Posted Message: %s',
+															$Message));
+			}
 		}
 		catch(Exception $e) {
-			print(curl_error($ch));
-			trigger_error(sprtinf('Exception occurred while posting the message to loggly. Last CURL Error: %s. Exception details: %s',
-														curl_error($ch),
+			trigger_error(sprintf('Exception occurred while posting the message to Loggly via HTTPS. Error Number: %d. Error Message: %s. Exception details: %s',
+														$ErrorNumber,
+														$ErrorMessage,
 														$e->__toString()));
 		}
-		curl_close($ch);
 
-		return true;
+		return $Result;
 	}
 
 	/**
