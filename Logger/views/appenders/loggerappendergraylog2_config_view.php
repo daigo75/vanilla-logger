@@ -64,7 +64,8 @@ if($this->Form->GetValue('ChunkSize') == null) {
 		<li>
 			<?php
 				echo $this->Form->Label(T('Chunk Size'), 'ChunkSize');
-				echo Wrap(T('Enter the Chunk Size to use to communicate with Graylog2 Server. '.
+				echo Wrap(T('Enter the Chunk Size to use to communicate with Graylog2 Server. ' .
+										'It should be set to 1420 for WAN, and to 8154 for LAN. ' .
 										'If not sure, leave the default value.'),
 									'div',
 									array('class' => 'Info'));
