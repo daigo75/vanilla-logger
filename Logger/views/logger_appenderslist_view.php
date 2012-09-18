@@ -99,8 +99,27 @@ $AppendersDataSet = $this->Data['AppendersDataSet'];
 						// Output Appender Description
 						echo Wrap(Gdn_Format::Text($Appender->AppenderDescription), 'td', array('class' => 'AppenderDescription',));
 						// Output "Enabled" indicator
-						$EnabledText = ($Appender->IsEnabled == 1) ? T('Yes') : '';
-						echo Wrap(Gdn_Format::Text($EnabledText), 'td', array('class' => 'Enabled',));
+						$EnabledText = ($Appender->IsEnabled == 1) ? T('Yes') : T('No');
+
+						// System Appenders cannot be enabled or disabled. For all the others,
+						// display a convenient link to enable/disable them with a single click
+						if(!$Appender->IsSystem) {
+							$EnabledText = Anchor(Gdn_Format::Text($EnabledText),
+																		sprintf('%s?%s=%d&%s=%d',
+																						LOGGER_APPENDER_ENABLE_URL,
+																						LOGGER_ARG_APPENDERID,
+																						$Appender->AppenderID,
+																						LOGGER_ARG_ENABLEFLAG,
+																						($Appender->IsEnabled == 1 ? 0 : 1)),
+																		'EnableLink',
+																		array('title' => T('Click here to change Appender status (Enabled/Disabled).'),)
+																		);
+						}
+
+						echo Wrap($EnabledText,
+											'td',
+											array('class' => 'Enabled',)
+											);
 
 						echo "<td>\n";
 						// Show Configure/Delete Buttons only if Appender is not a System
