@@ -134,6 +134,30 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		return $AppenderConfig;
 	}
 
+	/**
+	 * Enables/disabled an Appender in the configuration.
+	 *
+	 * @param int AppenderID The ID of the Appender to enabler or disable.
+	 * @param int EnableFlag A flag indicating if the Appender should be enabled.
+	 * It can be "1" for Enable and "0" for Disable.
+	 * @return bool True, if operation completed successfully, False otherwise.
+	 */
+	public function EnableAppender($AppenderID, $EnableFlag) {
+		// Appender ID must be a number, therefore there's no point in running a
+		// query if it's empty or non-numeric.
+		if(!is_numeric($AppenderID) || !is_numeric($EnableFlag)) {
+			return null;
+		}
+
+		// Set the IsEnabled flag in Appender configuration
+		$Result = $this->SQL->Update('LoggerAppenders')
+								->Set('IsEnabled', $EnableFlag)
+								->Where('AppenderID', $AppenderID)
+								->Put();
+
+		return $Result;
+	}
+
 	protected function DecodeAppenderParams(array &$AppenderConfig, array $AppenderParams) {
 		// Dummy
 	}
