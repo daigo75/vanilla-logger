@@ -46,6 +46,7 @@ define('LOGGER_APPENDER_EDIT_URL', LOGGER_PLUGIN_BASE_URL . '/appenderedit');
 define('LOGGER_APPENDER_DELETE_URL', LOGGER_PLUGIN_BASE_URL . '/appenderdelete');
 define('LOGGER_GENERALSETTINGS_URL', LOGGER_PLUGIN_BASE_URL . '/settings');
 define('LOGGER_TESTLOG_URL', LOGGER_PLUGIN_BASE_URL . '/testlog');
+define('LOGGER_APPENDER_ENABLE_URL', LOGGER_PLUGIN_BASE_URL . '/appenderenable');
 
 // Return Codes
 define('LOGGER_OK', 0);
@@ -56,6 +57,7 @@ define('LOGGER_ERR_INVALID_APPENDER_ID', 1001);
 
 // Http Arguments
 define('LOGGER_ARG_APPENDERID', 'apd_id');
+define('LOGGER_ARG_ENABLEFLAG', 'enable');
 define('LOGGER_ARG_APPENDERTYPE', 'apd_type');
 //define('LOGGER_ARG_APPENDERDESCRIPTION', 'email');
 
