@@ -389,13 +389,34 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Sender->Render($this->GetView('loggerappender_edit_config_view.php'));
 	}
 
-
+	/**
+	 * Issues one or more Test Log Messages to all the configured loggers, and
+	 * indicates how much time it took to do it. It's useful to verify that all
+	 * loggers work as expected, and to evaluate the performance of each.
+	 *
+	 * @param Sender The request Sender.
+	 * @return void.
+	 */
 	public function Controller_TestLog($Sender) {
-		$Exception = new Exception(T('This is a test Exception, no action is required.'));
-		LoggerPlugin::GetLogger('system')->info(T('This is a test Log message, no action is required.'),
-																						$Exception);
+		$AmountOfLogMessages = isset($Sender->RequestArgs[1]) ? $Sender->RequestArgs[1] : 1;
 
-		$Sender->InformMessage(T('Test log message issued.'));
+		$LogStart = time();
+
+		// Issues the amount of Log Messages specified as an argument. The code is
+		// willingly inefficient, creating an Exception and an error message every
+		// time, because it simulates what would happen in real use cases.
+		for($MessageIdx = 0; $MessageIdx < $AmountOfLogMessages; $MessageIdx++) {
+			$Exception = new Exception(T('This is a test Exception, no action is required.'));
+			LoggerPlugin::GetLogger('system')->info(T('This is a test Log message, no action is required.'),
+																							$Exception);
+		}
+
+		$LogEnd = time();
+		$ElapsedTime = $LogEnd - $LogStart;
+
+		$Sender->InformMessage(sprintf(T('%d test log message(s) issued in %s'),
+																	 $AmountOfLogMessages,
+																	 gmdate('H:i:s', $ElapsedTime)));
 
 		$this->Controller_Index($Sender);
 	}
