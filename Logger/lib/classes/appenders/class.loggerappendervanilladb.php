@@ -4,7 +4,7 @@
 // add the Appender to the list of the available ones.
 LoggerAppendersManager::$Appenders['LoggerAppenderVanillaDB'] = array(
 	'Label' => T('Vanilla Forum Database'),
-	'Description' => T('Writes logging events to a table in Vanilla Forum Database.'),
+	'Description' => T('Writes logging events to a table in this Forum\'s Database.'),
 );
 
 /**
