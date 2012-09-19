@@ -31,14 +31,14 @@ class SyslogMessage {
 	const DEFAULT_PROCESSNAME = 'PHP';
 	const DEFAULT_HOSTNAME = 'NONAME';
 
-  private $Facility; // @link SyslogFacility
-  private $Severity; // @link SyslogSeverity
-  private $HostName; // no embedded space, no domain name, only a-z A-Z 0-9 and other authorized characters
-  private $FQDN;
-  private $IPAddress;
-  private $ProcessName;
-  private $Message;
-	private $Timestamp;
+  protected $Facility; // @link SyslogFacility
+  protected $Severity; // @link SyslogSeverity
+  protected $HostName; // no embedded space, no domain name, only a-z A-Z 0-9 and other authorized characters
+  protected $FQDN;
+  protected $IPAddress;
+  protected $ProcessName;
+  protected $Message;
+	protected $Timestamp;
 
 	/**
 	 * Returns the first non null value amongst the arguments.
