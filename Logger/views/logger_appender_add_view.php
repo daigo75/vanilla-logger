@@ -56,6 +56,7 @@ Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 					echo Wrap(T('Please select the type of Appender you want to add.'),
 										'div',
 										array('class' => 'Info',));
+					ksort($this->Data['AppenderClasses']);
 					echo $this->Form->DropDown('AppenderClass',
 																		 $this->Data['AppenderClasses'],
 																		 array('id' => 'AppenderClass',));
