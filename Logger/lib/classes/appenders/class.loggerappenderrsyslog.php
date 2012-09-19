@@ -104,7 +104,7 @@ class LoggerAppenderRSyslog extends LoggerAppender {
 	 * @param Exception The exception to convert to a string.
 	 * @return A string representation of the Exception.
 	 */
-	private function FormatThrowable(Exception $Exception) {
+	protected function FormatThrowable(Exception $Exception) {
 		return $Exception->__toString();
 	}
 
