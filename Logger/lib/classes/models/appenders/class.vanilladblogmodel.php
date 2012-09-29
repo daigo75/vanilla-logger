@@ -53,6 +53,7 @@ class VanillaDBLogModel extends Gdn_Model {
 	public function CreateLogTable() {
 		Gdn::Structure()
 			->Table($this->LogTableName)
+			->Engine('MyISAM')
 			->PrimaryKey('LogEntryID')
 			->Column('LoggerName', 'varchar(100)')
 			->Column('Level', 'varchar(40)')
