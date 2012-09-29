@@ -33,6 +33,8 @@ $PluginInfo['Logger'] = array(
 	'Author' => 'Diego Zanella',
 	'AuthorEmail' => 'diego@pathtoenlightenment.net',
 	'AuthorUrl' => 'http://dev.pathtoenlightenment.net',
+	'RegisterPermissions' => array('Plugins.Logger.Manage',
+																 'Plugins.Logger.ViewLog',),
 );
 
 class LoggerPlugin extends Gdn_Plugin {
@@ -40,6 +42,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	private static $_LoggerConfigModel;
 	private static $_AppenderConfigModel;
 	private static $_LoggerInitialized = false;
+	private $_SysDBLogModel;
 
 	/**
 	 * Returns an instance of AppendersManager. The function follows the principle
@@ -47,7 +50,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * requested. This method is static because the AppendersManager is required
 	 * by a global validation function.
 	 *
-	 * @return An instance of AppendersManager.
+	 * @return object An instance of AppendersManager.
 	 */
 	public static function AppendersManager() {
 		if(empty(self::$_AppendersManager)) {
@@ -65,7 +68,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * requested. This method is static because the LoggerConfigModel is required
 	 * by other static methods.
 	 *
-	 * @return An instance of LoggerConfigModel.
+	 * @return object An instance of LoggerConfigModel.
 	 */
 	protected function LoggerConfigModel() {
 		if(empty(self::$_LoggerConfigModel)) {
@@ -83,7 +86,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * requested. This method is static because the AppenderConfigModel is required
 	 * by other static methods.
 	 *
-	 * @return An instance of AppenderConfigModel.
+	 * @return object An instance of AppenderConfigModel.
 	 */
 	protected function AppenderConfigModel() {
 		if(empty(self::$_AppenderConfigModel)) {
@@ -96,21 +99,38 @@ class LoggerPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Returns an instance of VanillaDBLogModel, which will query SysDBLogModel
+	 * table. The function follows the principle of lazy initialization,
+	 * instantiating the class the first time it's requested. This method is
+	 * static because the VanillaDBLogModel is required by other static methods.
+	 *
+	 * @return object An instance of VanillaDBLogModel.
+	 */
+	protected function GetSysDBLogModel() {
+		if(empty($this->_SysDBLogModel)) {
+			// Logger Appenders Manager will be used to keep track of available
+			// appenders
+			$this->_SysDBLogModel = new VanillaDBLogModel('LoggerSysLog');
+		}
+
+		return $this->_SysDBLogModel;
+	}
+
+	/**
 	 * Returns True if Log4php Logger has been initialized with a call to its
 	 * ::Config() method, or False if it hasn't been.
 	 *
-	 * @return An instance of True if Log4php Logger has been initialized with a
+	 * @return object An instance of True if Log4php Logger has been initialized with a
 	 * call to its ::Config() method, or False if it hasn't been.
 	 */
 	protected function LoggerInitialized() {
 		return self::$_LoggerInitialized;
 	}
 
-
 	/**
 	 * Set Validation Rules related to Configuration Model.
 	 *
-	 * @param Gdn_Validation $Validation The Validation that is (or will be)
+	 * @param object Gdn_Validation $Validation The Validation that is (or will be)
 	 * associated to the Configuration Model.
 	 *
 	 * @return void
@@ -119,9 +139,20 @@ class LoggerPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Set Validation Rules related to VanillaDBLog Model.
+	 *
+	 * @param object Gdn_Validation $Validation The Validation that is (or will be)
+	 * associated to the Configuration Model.
+	 *
+	 * @return void
+	 */
+	protected function _SetLogViewValidationRules(Gdn_Validation $Validation) {
+	}
+
+	/**
 	 * Set Validation Rules related to the step of adding a new Appender.
 	 *
-	 * @param Gdn_Validation $Validation The Validation that is (or will be)
+	 * @param object Gdn_Validation $Validation The Validation that is (or will be)
 	 * associated to the Configuration Model.
 	 *
 	 * @return void
@@ -139,26 +170,12 @@ class LoggerPlugin extends Gdn_Plugin {
 	 */
 	public function __construct() {
 		parent::__construct();
-
-		// Perform initialization steps
-		$this->Initialize();
-	}
-
-	/**
-	 * Performs several initialization steps needed for the plugin to work
-	 * correctly. These steps have been moved from method
-	 * PluginController_Logger_Create().
-	 *
-	 * @return void.
-	 */
-	protected function Initialize() {
-		// Load Logger Configuration and use it to initialize Log4php
 	}
 
 	/**
 	 * Base_Render_Before Event Hook
 	 *
-	 * @param $Sender Sending controller instance
+	 * @param object Sender Sending controller instance
 	 */
 	public function Base_Render_Before(&$Sender) {
 		$Sender->AddCssFile($this->GetResource('design/css/logger.css', FALSE, FALSE));
@@ -168,7 +185,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	/**
 	 * Create a method called "Logger" on the PluginController
 	 *
-	 * @param $Sender Sending controller instance
+	 * @param object Sender Sending controller instance
 	 */
 	public function PluginController_Logger_Create(&$Sender) {
 		// Basic plugin properties
@@ -181,12 +198,66 @@ class LoggerPlugin extends Gdn_Plugin {
 		$this->Dispatch($Sender, $Sender->RequestArgs);
 	}
 
+	/**
+	 * Renders the Plugin's default (index) page.
+	 *
+	 * @param object Sender Sending controller instance
+	 */
 	public function Controller_Index($Sender) {
+		Redirect(LOGGER_VIEW_LOG_URL);
+	}
+
+	public function Controller_ViewLog($Sender) {
+		// Prevent non-admins from accessing this page
+		$Sender->Permission('Plugins.Logger.ViewLog');
+
+		// CSS And JavaScript for this specific page
+		//$Sender->AddJsFile($this->GetResource('js/logger.js', FALSE, FALSE));
+		$Sender->SetData('CurrentPath', LOGGER_VIEW_LOG_URL);
+
+		// If seeing the form for the first time...
+		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
+			// Just show the form with the default values
+
+			// Default DateFrom is today
+			$Sender->Form->SetFormValue('DateFrom', date('Y-m-d'));
+			// Default DateTo is today
+			$Sender->Form->SetFormValue('DateTo', date('Y-m-d'));
+		}
+		else {
+			// Else, validate submitted data.
+			$Validation = new Gdn_Validation();
+			$this->_SetLogViewValidationRules($Validation);
+
+			$FormValues = $Sender->Form->FormValues();
+
+			$Validation->Validate($FormValues);
+			$Sender->Form->SetValidationResults($Validation->Results());
+
+			if(!$Sender->Form->ErrorCount()){
+				$DateFrom = $Sender->Form->GetFormValue('DateFrom');
+				$DateTo = $Sender->Form->GetFormValue('DateTo');
+
+				$LogDataSet = $this->GetSysDBLogModel()->Get($DateFrom, $DateTo)->Result();
+
+				$Sender->SetData('LogDataSet', $LogDataSet);
+			}
+		}
+		// TODO Handle Limit and Offset
+		// TODO Add Pager
+
+		$Sender->Render($this->GetView('logger_viewlog_view.php'));
+	}
+
+	/**
+	 * Renders the page showing the list of configured Appenders.
+	 *
+	 * @param object Sender Sending controller instance
+	 */
+	public function Controller_Appenders($Sender) {
 		// Prevent non-admins from accessing this page
 		$Sender->Permission('Plugins.Logger.Manage');
 
-		// CSS And JavaScript for this specific page
-		$Sender->AddJsFile($this->GetResource('js/logger.js', FALSE, FALSE));
 		$Sender->SetData('CurrentPath', LOGGER_APPENDERS_LIST_URL);
 
 		$AppenderConfigModel = $this->AppenderConfigModel();
@@ -199,6 +270,11 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Sender->Render($this->GetView('logger_appenderslist_view.php'));
 	}
 
+	/**
+	 * Renders the Settings page.
+	 *
+	 * @param object Sender Sending controller instance
+	 */
 	public function Controller_Settings(&$Sender) {
 		throw new Exception('Not implemented');
 
@@ -234,8 +310,8 @@ class LoggerPlugin extends Gdn_Plugin {
 	/**
 	 * Returns an instance of the Log4php Logger.
 	 *
-	 * @param LoggerName The name of the Logger to retrieve.
-	 * @return An instance of a Log4php Logger.
+	 * @param string LoggerName The name of the Logger to retrieve.
+	 * @return object An instance of a Log4php Logger.
 	 */
 	public static function GetLogger($LoggerName = 'system') {
 		if(!self::LoggerInitialized()) {
@@ -252,7 +328,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * By grabbing a reference to the current SideMenu object we gain access to its methods, allowing us
 	 * to add a menu link to the newly created /plugin/Logger method.
 	 *
-	 * @param $Sender Sending controller instance
+	 * @param object Sender Sending controller instance
 	 */
 	public function Base_GetAppSettingsMenuItems_Handler(&$Sender) {
 		$Menu = &$Sender->EventArguments['SideMenu'];
@@ -263,7 +339,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * Renders the page that allows Users to Add a Log Appender. This is the first
 	 * step of the Add process, where User simply chooses the type of Appender.
 	 *
-	 * @param Sender The Sender generated by the Request.
+	 * @param object Sender The Sender generated by the Request.
 	 * @return void.
 	 */
 	public function Controller_AppenderAdd(&$Sender) {
@@ -316,7 +392,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	/**
 	 * Renders the page that allows Users to Add/Edit a Log Appender.
 	 *
-	 * @param Sender The Sender generated by the Request.
+	 * @param object Sender The Sender generated by the Request.
 	 * @return void.
 	 */
 	public function Controller_AppenderEdit(&$Sender) {
@@ -412,7 +488,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	/**
 	 * Enables/disables a Log Appender.
 	 *
-	 * @param Sender The Sender generated by the Request.
+	 * @param object Sender The Sender generated by the Request.
 	 * @return void.
 	 */
 	public function Controller_AppenderEnable(&$Sender) {
@@ -440,7 +516,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * indicates how much time it took to do it. It's useful to verify that all
 	 * loggers work as expected, and to evaluate the performance of each.
 	 *
-	 * @param Sender The request Sender.
+	 * @param object Sender The request Sender.
 	 * @return void.
 	 */
 	public function Controller_TestLog($Sender) {
@@ -470,7 +546,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	/**
 	 * Renders the page that allows Users to Delete a Log Appender.
 	 *
-	 * @param Sender The Sender generated by the Request.
+	 * @param object Sender The Sender generated by the Request.
 	 * @return void.
 	 */
 	public function Controller_AppenderDelete(&$Sender) {
@@ -516,7 +592,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * Handles the event LoggerPlugin.ConfigChanged, which is fired whenever
 	 * the configuration for the Logger is modified.
 	 *
-	 * @param Sender The Sender generated by the Request.
+	 * @param object Sender The Sender generated by the Request.
 	 * @return void.
 	 */
 	public function LoggerPlugin_ConfigChanged_Handler($Sender) {

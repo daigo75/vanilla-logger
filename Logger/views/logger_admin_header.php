@@ -47,6 +47,7 @@ Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
 	<div class="Tabs">
 		<ul>
 			<?php
+				echo RenderTabItem(T('View Log'), LOGGER_VIEW_LOG_URL, $TabsClasses);
 				echo RenderTabItem(T('Appenders'), LOGGER_APPENDERS_LIST_URL, $TabsClasses);
 				echo RenderTabItem(T('General Settings'), LOGGER_GENERALSETTINGS_URL, $TabsClasses);
 			?>

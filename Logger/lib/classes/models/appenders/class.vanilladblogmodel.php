@@ -36,8 +36,10 @@ class VanillaDBLogModel extends Gdn_Model {
 			->Select('LOG.Level')
 			->Select('LOG.Message')
 			->Select('LOG.Thread')
-			->Select('LOG.File')
-			->Select('LOG.Line')
+			->Select('LOG.ClassName')
+			->Select('LOG.MethodName')
+			->Select('LOG.FileName')
+			->Select('LOG.LineNumber')
 			->Select('LOG.InsertUserID')
 			->From($this->LogTableName . ' LOG');
 		return $Query;
@@ -101,17 +103,19 @@ class VanillaDBLogModel extends Gdn_Model {
 	/**
 	 * Returns a DataSet containing a list of Log Entries.
 	 *
-	 * @param $DateFrom Beginning of the period to include in the result. Date
+	 * @param datetime DateFrom Beginning of the period to include in the result. Date
 	 * must be passed as a string in ISO8601 Format (e.g. '2012-03-01')'
-	 * @param $DateTo End of the period to include in the result. It follows the
+	 * @param datetime DateTo End of the period to include in the result. It follows the
 	 * same format rules as parameter $DateFrom.
-	 * @param Limit Limit the amount of rows to be returned. Note: it doesn't
+	 * @param int Limit Limit the amount of rows to be returned. Note: it doesn't
 	 * apply to Summary Datasets, as they normally contain one row per total.
-	 * @param Offset Specifies from which rows the data should be returned. Used
+	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination. Note: it doesn't apply to Summary Datasets.
-	 * @return A DataSet containing a list of the configured API Clients.
+	 * @param array Wheres An associative array of WHERE clauses to be added to
+	 * the query.
+	 * @return object A DataSet containing a list of the configured API Clients.
 	 */
-	public function Get($DateFrom, $DateTo, $Limit = 1000, $Offset = 0) {
+	public function Get($DateFrom, $DateTo, $Limit = 1000, $Offset = 0, array $Wheres = array()) {
 		// Set default Limit and Offset, if invalid ones have been passed.
 		$Limit = (is_numeric($Limit) && $Limit > 0) ? $Limit : 1000;
 		$Offset = (is_numeric($Offset) && $Offset > 0) ? $Offset : 0;
@@ -127,6 +131,7 @@ class VanillaDBLogModel extends Gdn_Model {
 			->Where('TimeStamp >=', array("DATE('%s')" => $DateFrom,), TRUE, FALSE)
 			->Where('TimeStamp <', array("DATE('%s')" => $DateTo,), TRUE, FALSE)
 			->OrderBy('TimeStamp', 'desc')
+			->Where($Wheres)
 			->Get();
 
 		return $Result;
