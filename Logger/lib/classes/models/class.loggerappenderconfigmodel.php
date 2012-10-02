@@ -7,7 +7,7 @@
  */
 
 /**
- * This model is used to store Log entries to a table.
+ * This model is used to save Appenders Configuration to a table.
   */
 class LoggerAppenderConfigModel extends Gdn_Model {
 	/**
