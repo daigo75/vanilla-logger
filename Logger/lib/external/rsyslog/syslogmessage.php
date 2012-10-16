@@ -63,8 +63,11 @@ class SyslogMessage {
 	 */
 	protected function GetHostName() {
 		if(empty($this->HostName)) {
-			$HostNameParts = explode('.', $this->Coalesce($_ENV['COMPUTERNAME'],
-																										$_ENV['HOSTNAME'],
+			$ComputerName = empty($_ENV['COMPUTERNAME']) ? null : $_ENV['COMPUTERNAME'];
+			$HostName = empty($_ENV['HOSTNAME']) ? null : $_ENV['HOSTNAME'];
+
+			$HostNameParts = explode('.', $this->Coalesce($ComputerName,
+																										$HostName,
 																										self::DEFAULT_HOSTNAME));
 			$this->HostName = $HostNameParts[0];
 		}
@@ -233,7 +236,7 @@ class SyslogMessage {
 	 * .hash
 	 */
 	private function GetMessageID() {
-		return sprintf(' MSG_%s', md5(uniqid('', true)));
+		return sprintf('MSG_%s', md5(uniqid('', true)));
 	}
 
 	/**
@@ -278,7 +281,7 @@ class SyslogMessage {
 		$Result = array();
 		// Build a full message for each chunk, adding Tag and Message ID
 		foreach($Chunks as $Chunk) {
-			$Result[] = sprintf('%s:%s%s',
+			$Result[] = sprintf('%s:%s [Message ID: %s]',
 													$MessageTag,
 													$Chunk,
 													$MessageUniqueID);

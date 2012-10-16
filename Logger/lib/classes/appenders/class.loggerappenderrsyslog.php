@@ -16,7 +16,7 @@ require(LOGGER_PLUGIN_EXTERNAL_PATH . '/rsyslog/rsyslog.php');
  * @package LoggerPlugin
  */
 class LoggerAppenderRSyslog extends LoggerAppender {
-	// @var int The default Timeout to be used when communicating with the Remote Syslog Server/
+	// @var int The default Timeout to be used when communicating with the Remote Syslog Server.
 	const DEFAULT_TIMEOUT = 1;
 
 	// TODO Allow User to choose the Facility from one of the values provided by SyslogFacility Class.

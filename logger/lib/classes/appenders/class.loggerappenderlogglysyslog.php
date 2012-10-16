@@ -20,7 +20,7 @@ class LoggerAppenderLogglySyslog extends LoggerAppenderRSyslog {
 	// will get from the configuration.
 
 	/**
-	 * Transforms a Log4ph event into an associative array.
+	 * Transforms a Log4php event into an associative array.
 	 *
 	 * @param LoggerLoggingEvent event A Log4php Event.
 	 * @return array An associative array representation of the event.
