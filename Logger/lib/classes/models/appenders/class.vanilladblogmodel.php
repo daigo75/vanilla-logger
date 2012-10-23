@@ -1,4 +1,7 @@
 <?php if (!defined('APPLICATION')) exit();
+/*
+{licence}
+*/
 
 /**
  * Vanilla Database Log Model.

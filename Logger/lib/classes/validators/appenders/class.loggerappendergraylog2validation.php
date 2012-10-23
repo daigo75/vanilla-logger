@@ -1,4 +1,7 @@
 <?php	if (!defined('APPLICATION')) exit();
+/*
+{licence}
+*/
 
 /**
  * It implements a set of rules used to validate the settings of a Log4php

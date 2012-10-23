@@ -1,4 +1,7 @@
 <?php if (!defined('APPLICATION')) exit();
+/*
+{licence}
+*/
 
 /**
  * Manages the list of all available Appenders and provides convenience

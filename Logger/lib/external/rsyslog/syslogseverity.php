@@ -1,4 +1,8 @@
 <?php
+/*
+{licence}
+*/
+
 /**
  * Copyright 2012 Diego Zanella
  * This file is part of Logger Plugin for Vanilla Forums.

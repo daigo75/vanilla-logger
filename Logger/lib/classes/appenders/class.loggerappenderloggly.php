@@ -1,4 +1,7 @@
-<?php
+<?php if (!defined('APPLICATION')) exit();
+/*
+{licence}
+*/
 
 // Add LoggerAppender Info to a global array. It will be used to automatically
 // add the Appender to the list of the available ones.

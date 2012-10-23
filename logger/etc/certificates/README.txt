@@ -1,1 +1,0 @@
-This folder contains a set of certificates used by PHP CURL to communicate using HTTPS protocol.

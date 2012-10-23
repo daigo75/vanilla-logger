@@ -1,4 +1,7 @@
 <?php	if (!defined('APPLICATION')) exit();
+/*
+{licence}
+*/
 
 // Set default value for Remote Syslog Timeout
 if($this->Form->GetValue('Timeout') == null) {

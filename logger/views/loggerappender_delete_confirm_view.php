@@ -1,4 +1,7 @@
 <?php if (!defined('APPLICATION')) exit();
+/*
+{licence}
+*/
 
 ?>
 <div class="Logger ConfirmationDialog">
