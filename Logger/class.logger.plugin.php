@@ -16,7 +16,7 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 // Plugin definition
 $PluginInfo['Logger'] = array(
 	'Description' => 'Logger for Vanilla',
-	'Version' => '12.10.26',
+	'Version' => '12.10.27',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
@@ -133,6 +133,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @return void
 	 */
 	protected function _SetConfigModelValidationRules(Gdn_Validation $Validation) {
+		$Validation->ApplyRule('Plugin.Logger.LogLevel', 'Required', T('Please specify a Logging Level.'));
 	}
 
 	/**
@@ -278,8 +279,6 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance
 	 */
 	public function Controller_Settings(&$Sender) {
-		throw new Exception('Not implemented');
-
 		// Prevent non-admins from accessing this page
 		$Sender->Permission('Plugins.Logger.Manage');
 		$Sender->SetData('CurrentPath', LOGGER_GENERALSETTINGS_URL);
@@ -289,6 +288,7 @@ class LoggerPlugin extends Gdn_Plugin {
 
 		$ConfigurationModel = new Gdn_ConfigurationModel($Validation);
 		$ConfigurationModel->SetField(array(
+			'Plugin.Logger.LogLevel' => LoggerLevel::INFO,
 		));
 
 		// Set the model on the form.
@@ -302,6 +302,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		else {
 			$Saved = $Sender->Form->Save();
 			if ($Saved) {
+				$this->FireEvent('ConfigChanged');
 				$Sender->InformMessage(T('Your changes have been saved.'));
 			}
 		}
@@ -608,6 +609,8 @@ class LoggerPlugin extends Gdn_Plugin {
 	 */
 	public function Setup() {
 		// Set up plugin's default values
+		SaveToConfig('Plugin.Logger.LogLevel', LoggerLevel::INFO);
+
 		// TODO Set up plugin's default values
 
 		// Create Database Objects needed by the Plugin
