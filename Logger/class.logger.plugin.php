@@ -509,7 +509,7 @@ class LoggerPlugin extends Gdn_Plugin {
 			};
 		}
 
-		$this->Controller_Index($Sender);
+		Redirect(LOGGER_APPENDERS_LIST_URL);
 	}
 
 
@@ -542,7 +542,7 @@ class LoggerPlugin extends Gdn_Plugin {
 																	 $AmountOfLogMessages,
 																	 gmdate('H:i:s', $ElapsedTime)));
 
-		$this->Controller_Index($Sender);
+		Redirect(LOGGER_APPENDERS_LIST_URL);
 	}
 
 	/**
