@@ -84,6 +84,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		$Result = $this->SQL
 			->OrderBy('IsSystem', 'desc')
 			->OrderBy('AppenderID', 'asc')
+			->Limit($Limit, $Offset)
 			->Get();
 
 		return $Result;
