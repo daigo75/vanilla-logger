@@ -65,7 +65,7 @@ class VanillaDBLogModel extends Gdn_Model {
 			->Column('MethodName', 'varchar(200)')
 			->Column('FileName', 'varchar(400)')
 			->Column('LineNumber', 'int')
-			->Column('Exception', 'text')
+			->Column('Exception', 'text', TRUE)
 			->Column('TimeStamp', 'datetime', FALSE, 'index')
 			->Column('InsertUserID', 'int', TRUE)
 			->Set(FALSE, FALSE);
@@ -160,7 +160,6 @@ class VanillaDBLogModel extends Gdn_Model {
 
 		// Prepare all the validated fields to be passed to an INSERT/UPDATE query
 		$Fields = &$this->Validation->ValidationFields();
-
 
 		$this->AddInsertFields($Fields);
 		return $this->Insert($Fields);
