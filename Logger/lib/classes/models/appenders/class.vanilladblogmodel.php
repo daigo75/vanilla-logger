@@ -135,6 +135,7 @@ class VanillaDBLogModel extends Gdn_Model {
 			->Where('TimeStamp <', array("DATE('%s')" => $DateTo,), TRUE, FALSE)
 			->OrderBy('TimeStamp', 'desc')
 			->Where($Wheres)
+			->Limit($Limit, $Offset)
 			->Get();
 
 		return $Result;
