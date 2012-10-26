@@ -35,6 +35,7 @@ class LoggerConfigModel extends Gdn_Model {
 	protected function InitializeLoggerSection($LoggerName = LOGGER_LOG4PHP_ROOTLOGGER) {
 		// Initialize
 		$this->LoggerConfig[$LoggerName] = array();
+		$this->LoggerConfig[$LoggerName]['level'] = C('Plugin.Logger.LogLevel');
 		$this->LoggerConfig[$LoggerName]['appenders'] = array();
 	}
 
@@ -123,7 +124,7 @@ class LoggerConfigModel extends Gdn_Model {
 		$this->GetLoggerFilters();
 
 		// Save the configuration array to Vanilla's configuration
-		SaveToConfig('LoggerPlugin.Logger.Config', $this->LoggerConfig);
+		SaveToConfig('Plugin.Logger.LoggerConfig', $this->LoggerConfig);
 	}
 
 	/**
@@ -132,6 +133,6 @@ class LoggerConfigModel extends Gdn_Model {
 	 *
 	 */
 	public function Get() {
-		return C('LoggerPlugin.Logger.Config');
+		return C('Plugin.Logger.LoggerConfig');
 	}
 }
