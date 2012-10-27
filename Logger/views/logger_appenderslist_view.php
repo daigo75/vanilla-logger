@@ -18,7 +18,7 @@ $OutputForEmptyDataSet = Wrap(T('No Appenders configured.'),
 
 $AppendersDataSet = $this->Data['AppendersDataSet'];
 ?>
-<div class="Logger">
+<div class="LoggerPlugin">
 	<div class="Header">
 		<?php include('logger_admin_header.php'); ?>
 	</div>
