@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 {licence}
 */
 require_once('syslogfacility.php');
