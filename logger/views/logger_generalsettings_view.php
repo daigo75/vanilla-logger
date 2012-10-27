@@ -39,7 +39,7 @@ $CurrentLoggerLevel = C('Plugin.Logger.LogLevel');
 			<ul>
 				<li><?php
 					echo $this->Form->Label(T('Logger Level'), 'Plugin.Logger.LogLevel');
-					echo Wrap(T('Select the Log Level. Messages with a level less than the one selected ' .
+					echo Wrap(T('Select the Log Level. Messages with a level lower than the one selected ' .
 											'will be ignored. <strong>Example</strong>: if you select "<i>Warning</i>", ' .
 											'messages logged as <i>Trace</i>, <i>Debug</i> and <i>Info</i> will be ignored.'),
 										'div',
