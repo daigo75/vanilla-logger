@@ -16,11 +16,12 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 // Plugin definition
 $PluginInfo['Logger'] = array(
 	'Description' => 'Logger for Vanilla',
-	'Version' => '12.10.27',
+	'Version' => '12.10.28',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
 	'HasLocale' => FALSE,
+	'MobileFriendly' => TRUE,
 	'SettingsUrl' => '/plugin/logger/settings',
 	'SettingsPermission' => 'Garden.AdminUser.Only',
 	'Author' => 'Diego Zanella',
