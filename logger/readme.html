@@ -1,0 +1,96 @@
+<html>
+<head>
+	<title>Logger Plugin for Vanilla</title>
+	<style type="text/css">
+	body {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 14px;
+	}
+
+	code {
+		background-color: #EEEEEE;
+	}
+
+	code.example {
+		display: block;
+		padding: 0.5em 1em;
+		border: 1px dashed gray;
+	}
+	</style>
+</head>
+<body>
+<h1>Logger Plugin for Vanilla 2.0</h1>
+<h2>Description</h2>
+<div id="description">
+	<p>This plugins implements a Logger in Vanilla. It is based on <a href="http://logging.apache.org/log4php/" title="Apache Log4php">Log4php</a> and, as such, it offers great flexibility.</p>
+</div>
+<div id="Licence">
+	{licence_html}
+</div>
+<div id="Usage">
+	<div>
+		<h3>Installation</h3>
+		<p>Follow standard plugin installation procedure.</p>
+	</div>
+	<div>
+		<h3>Configuration</h3>
+		<ul>
+			<li>
+				<h4>Pro Version</h4>
+				<p>
+					Vanilla Logger Pro offers a convenient User Interface to configure the various settings for the Plugin. To access it, simply open Vanilla Administration page and click on <i>Plugins -> Logger</i>.<br />
+					The interface has been designed to be very intuitive, and all its parts are thoroughly documented.
+				</p>
+				<p>
+					One of the best features of the Pro Version over the Basic is the ability of sending log messages to remote Log Servers, such as <a href="http://papertrailapp.com" title="PaperTrail" target="_blank">Papertrail</a>, <a href="http://loggly.com" title="Loggly" target="_blank">Loggly</a> or even a Remote SysLog server.<br />
+					This allows to centralize all the logs, removing the need to fetch files from each website and saving a significant amount of time. This feature alone is invaluable for any Administrator who manages several communities.
+				</p>
+			</li>
+			<li>
+				<h4>Basic Version</h4>
+				<p>
+					Basic Version provides a reduced set of features, and doesn't come with a User Interface for the configuration. In its default configuration, it logs all messages to <strong>LoggerSysLog</strong> table in the same database used by your instance of Vanilla Forums.<br />
+					If you wish to change the configuration, you have to modify file <strong>config.xml</strong>, which can be found in Plugin's directory. Information on how to write a configuration file can be found on <a href="http://logging.apache.org/log4php/docs/configuration.html" title="Log4php - Configuration">Log4php website</a>.
+				</p>
+				<p>
+					<strong>Important</strong><br />
+					Basic Version only supports the appenders provided by standard Log4php, plus an additional one to write log messages to a table in Vanilla database.
+				</p>
+			</li>
+		</ul>
+	</div>
+	<div>
+		<h3>Usage</h3>
+		<p>
+			This plugin has been designed to be used by other plugins, or even by Vanilla Core libraries. Using it
+			is straightforward, please see the example below:
+		</p>
+		<div>
+			<h4>Example - Using the Logger</h4>
+			<code class="example">
+				// Get the Logger instance<br />
+				$Logger = LoggerPlugin::GetLogger();<br />
+				<br />
+				// Log several messages, one for each available level<br />
+				$Logger->trace('This is a TRACE message');<br />
+				$Logger->debug('This is a DEBUG message');<br />
+				$Logger->info('This is an INFO message');<br />
+				$Logger->warn('This is an WARNING message');<br />
+				$Logger->error('This is an ERROR message');<br />
+				$Logger->fatail('This is an FATAL message');<br />
+			</code>
+		</div>
+	</div>
+	<div>
+		<h3>Support</h3>
+		<ul>
+			<li>
+				<strong>Vanilla Logger Pro</strong> comes with 30 days free email support. <br />
+			</li>
+			<li>
+				<strong>Vanilla Logger Basic</strong> is provided as is. Paid support is available.
+			</li>
+		</ul>
+		If you have any issue, please <a href="http://dev.pathtoenlightenment.net/contact/"></a>contact Us</a>.
+	</div>
+</body>
