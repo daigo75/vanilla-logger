@@ -3,7 +3,6 @@
 {licence}
 */
 
-
 // File logger.defines.php must be included by manually specifying the whole
 // path. It will then define some shortcuts for commonly used paths, such as
 // LOGGER_PLUGIN_LIB_PATH, used just below.
