@@ -3,13 +3,6 @@
 {licence}
 */
 
-// Add LoggerAppender Info to a global array. It will be used to automatically
-// add the Appender to the list of the available ones.
-LoggerAppendersManager::$Appenders['LoggerAppenderVanillaDB'] = array(
-	'Label' => T('Vanilla Forum Database'),
-	'Description' => T('Writes logging events to a table in this Forum\'s Database.'),
-);
-
 /**
  * Vanilla DB Logger Appender
  * This Appender is used to write to a table into Vanilla's Database by using
