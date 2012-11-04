@@ -44,6 +44,8 @@ $CurrentLoggerLevel = C('Plugin.Logger.LogLevel');
 											'messages logged as <i>Trace</i>, <i>Debug</i> and <i>Info</i> will be ignored.'),
 										'div',
 										array('class' => 'Info',));
+					var_dump($CurrentLoggerLevel);
+
 					echo $this->Form->DropDown('Plugin.Logger.LogLevel',
 																		 $LoggerLevels,
 																		 array('id' => 'LoggerLevel',

@@ -289,7 +289,7 @@ class LoggerPlugin extends Gdn_Plugin {
 
 		$ConfigurationModel = new Gdn_ConfigurationModel($Validation);
 		$ConfigurationModel->SetField(array(
-			'Plugin.Logger.LogLevel' => LoggerLevel::INFO,
+			'Plugin.Logger.LogLevel' => LOGGER_DEFAULT_LOGLEVEL,
 		));
 
 		// Set the model on the form.
@@ -610,7 +610,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 */
 	public function Setup() {
 		// Set up plugin's default values
-		SaveToConfig('Plugin.Logger.LogLevel', LoggerLevel::INFO);
+		SaveToConfig('Plugin.Logger.LogLevel', LOGGER_DEFAULT_LOGLEVEL);
 
 		// TODO Set up plugin's default values
 

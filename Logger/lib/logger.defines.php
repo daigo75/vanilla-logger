@@ -4,33 +4,13 @@
 */
 
 /**
- * Copyright 2012 Diego Zanella
- * This file is part of Logger Plugin for Vanilla Forums.
- *
- * Plugin is free software: you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or (at your
- * option) any later version.
- * Plugin is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
- * Public License for more details.
- * You should have received a copy of the GNU General Public License along with
- * Logger Plugin. If not, see http://opensource.org/licenses/GPL-2.0.
- *
- * @package Logger Plugin
- * @author Diego Zanella <diego@pathtoenlightenment.net>
- * @copyright Copyright (c) 2011 Diego Zanella (http://dev.pathtoenlightenment.net)
- * @license http://opensource.org/licenses/GPL-2.0 GPL 2.0
-*/
-
-/**
  * Constants used by Logger Plugin.
  *
  * @package LoggerPlugin
  */
 
 // Default Configuration Settings
+define('LOGGER_DEFAULT_LOGLEVEL', 'INFO');
 
 // Paths
 define('LOGGER_PLUGIN_PATH', PATH_PLUGINS . '/Logger');
@@ -70,25 +50,3 @@ define('LOGGER_ARG_APPENDERTYPE', 'apd_type');
 // Definitions for Log4php configuration files
 define('LOGGER_LOG4PHP_ROOTLOGGER', 'rootLogger');
 define('LOGGER_LOG4PHP_APPENDERS', 'appenders');
-
-/**
- * Auxiliary class to handled serialized arrays declared using "define".
- */
-class LoggerConst {
-	/**
-	 * Generic function to retrieve a value from a serialized array.
-	 *
-	 * @param SerializedArray The serialized array from which the value should be
-	 * retrieved.
-	 * @param Key the Key which will be used to retrieve the value.
-	 * @return A value from the serialized array, or null if the array doesn't
-	 * exist, or the Key is not found.
-	 */
-	protected static function GetFromSerializedArray($SerializedArray, $Key) {
-		if(empty($SerializedArray)) {
-			return null;
-		}
-		$Values = unserialize($SerializedArray);
-		return $Values[$Key];
-	}
-}
