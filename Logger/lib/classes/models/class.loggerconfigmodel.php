@@ -124,6 +124,7 @@ class LoggerConfigModel extends Gdn_Model {
 		$this->GetLoggerFilters();
 
 		// Save the configuration array to Vanilla's configuration
+		var_dump($this->LoggerConfig);
 		SaveToConfig('Plugin.Logger.LoggerConfig', $this->LoggerConfig);
 	}
 
