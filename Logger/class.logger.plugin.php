@@ -618,7 +618,8 @@ class LoggerPlugin extends Gdn_Plugin {
 		require('install/logger.schema.php');
 		LoggerSchema::Install();
 
-		$this->FireEvent('ConfigChanged');
+		// Build initial configuration
+		$this->LoggerConfigModel()->RebuildConfiguration();
 	}
 
 	/**
