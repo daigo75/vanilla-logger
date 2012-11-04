@@ -617,6 +617,8 @@ class LoggerPlugin extends Gdn_Plugin {
 		// Create Database Objects needed by the Plugin
 		require('install/logger.schema.php');
 		LoggerSchema::Install();
+
+		$this->FireEvent('ConfigChanged');
 	}
 
 	/**
