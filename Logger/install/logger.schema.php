@@ -34,24 +34,19 @@ class LoggerSchema extends PluginSchema {
 	 */
 	protected function install_system_appender() {
 		$AppenderConfigValues = array(
-		'AppenderID' => 3,
-		'AppenderName' =>'System',
-		'AppenderClass' => 'LoggerAppenderVanillaDB',
-		'AppenderDescription' => 'System Logger - It\'s always enabled and saves to a table in Vanilla\'s Database.',
-		'IsSystem' => 1,
-		'IsEnabled' => 1,
-		'Configuration' => '{"params":{"table":"LoggerSysLog" =>"createtable":"1"}}',
+			'AppenderID' => 1,
+			'AppenderName' =>'System',
+			'AppenderClass' => 'LoggerAppenderVanillaDB',
+			'AppenderDescription' => 'System Logger - It\'s always enabled and saves to a table in Vanilla\'s Database.',
+			'IsSystem' => 1,
+			'IsEnabled' => 1,
+			'Configuration' => '{"params":{"table":"LoggerSysLog" =>"createtable":"1"}}',
 		);
 
-		$ConfigModel = new LoggerAppenderConfigModel();
-		if($ConfigModel->Save($AppenderConfigValues) === false) {
-			throw new Exception(T('Could not configure System Appender. This is <strong>not</strong> ' .
-														'a critical error. Logger Plugin will still work correctly. ' .
-														'you just have to manually configure at least one Appender. ' .
-														'If you are not sure of how to proceed, please ' .
-														'<a href="http://dev.pathtoenlightenment.net/contact/">contact ' .
-														'Support</a>. Sorry for the inconvenience.'));
-		}
+		Gdn::SQL()->Replace('LoggerAppenders',
+												$AppenderConfigValues,
+												array('AppenderID' => 1),
+												true);
 	}
 
 	/**
