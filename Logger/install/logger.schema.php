@@ -40,7 +40,7 @@ class LoggerSchema extends PluginSchema {
 			'AppenderDescription' => 'System Logger - It\'s always enabled and saves to a table in Vanilla\'s Database.',
 			'IsSystem' => 0,
 			'IsEnabled' => 1,
-			'Configuration' => '{"params":{"table":"LoggerSysLog" =>"createtable":"1"}}',
+			'Configuration' => '{"params":{"table":"LoggerSysLog","createtable":"1"}}',
 		);
 
 		Gdn::SQL()->Replace('LoggerAppenders',
