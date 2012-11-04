@@ -27,25 +27,32 @@ class LoggerSchema extends PluginSchema {
 			->Set(FALSE, FALSE);
 	}
 
-	///**
-	// * Create the System Log table, which will store all Log entries. Log messages
-	// * will always be saved to this table, whether other Appenders have been
-	// * configured or not.
-	// */
-	//protected function create_syslog_table() {
-	//	Gdn::Structure()
-	//		->Table('LoggerSysLog')
-	//		->PrimaryKey('LogEntryID')
-	//		->Column('LoggerName', 'varchar(100)')
-	//		->Column('Level', 'varchar(40)')
-	//		->Column('Message', 'varchar(9999)')
-	//		->Column('Thread', 'varchar(32)')
-	//		->Column('File', 'varchar(400)')
-	//		->Column('Line', 'varchar(6)')
-	//		->Column('TimeStamp', 'datetime', FALSE, 'index')
-	//		->Column('InsertUserID', 'int', TRUE)
-	//		->Set(FALSE, FALSE);
-	//}
+	/**
+	 * Configures the System Appender, which will store all Log entries in
+	 * LoggerSysLog table, in Vanilla database. Log messages will always be saved
+	 * to this table, whether other Appenders have been configured or not.
+	 */
+	protected function install_system_appender() {
+		$AppenderConfigValues = array(
+		'AppenderID' => 3,
+		'AppenderName' =>'System',
+		'AppenderClass' => 'LoggerAppenderVanillaDB',
+		'AppenderDescription' => 'System Logger - It\'s always enabled and saves to a table in Vanilla\'s Database.',
+		'IsSystem' => 1,
+		'IsEnabled' => 1,
+		'Configuration' => '{"params":{"table":"LoggerSysLog" =>"createtable":"1"}}',
+		);
+
+		$ConfigModel = new LoggerAppenderConfigModel();
+		if($ConfigModel->Save($AppenderConfigValues) === false) {
+			throw new Exception(T('Could not configure System Appender. This is <strong>not</strong> ' .
+														'a critical error. Logger Plugin will still work correctly. ' .
+														'you just have to manually configure at least one Appender. ' .
+														'If you are not sure of how to proceed, please ' .
+														'<a href="http://dev.pathtoenlightenment.net/contact/">contact ' .
+														'Support</a>. Sorry for the inconvenience.'));
+		}
+	}
 
 	/**
 	 * Creates a View that returns the list of the configured Appenders.
@@ -72,8 +79,8 @@ class LoggerSchema extends PluginSchema {
 	 */
 	protected function CreateObjects() {
 		$this->create_logger_appenders_table();
-		//$this->create_syslog_table();
 		$this->create_logger_appenders_view();
+		$this->install_system_appender();
 	}
 
 	/**
