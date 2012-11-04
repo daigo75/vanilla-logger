@@ -38,7 +38,7 @@ class LoggerSchema extends PluginSchema {
 			'AppenderName' =>'System',
 			'AppenderClass' => 'LoggerAppenderVanillaDB',
 			'AppenderDescription' => 'System Logger - It\'s always enabled and saves to a table in Vanilla\'s Database.',
-			'IsSystem' => 0,
+			'IsSystem' => 1,
 			'IsEnabled' => 1,
 			'Configuration' => '{"params":{"table":"LoggerSysLog","createtable":"1"}}',
 		);
