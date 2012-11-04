@@ -613,8 +613,24 @@ class LoggerPlugin extends Gdn_Plugin {
 		// Default log level
 		SaveToConfig('Plugin.Logger.LogLevel', LOGGER_DEFAULT_LOGLEVEL);
 		// Default complete configuration, based on the default log level and the
-		// presence of only the System Appender
-		SaveToConfig('Plugin.Logger.LoggerConfig', 'a:2:{s:9:"appenders";a:1:{s:6:"System";a:2:{s:6:"params";a:2:{s:5:"table";s:12:"LoggerSysLog";s:11:"createtable";s:1:"1";}s:5:"class";s:23:"LoggerAppenderVanillaDB";}}s:10:"rootLogger";a:2:{s:5:"level";s:4:"INFO";s:9:"appenders";a:1:{i:0;s:6:"System";}}}');
+		// presence of only the System Appender. Configuration has to be saved
+		// manually during setup as all plugin's auxiliary functions are not
+		// operational, in this phase
+		$DefaultConfig = array(
+			'appenders' => array(
+				'system' => array(
+					'params' => array(
+						'table' => 'LoggerSysLog',
+						'createtable' => 1
+					)
+				)
+			),
+			'rootLogger' => array(
+				'level' => LOGGER_DEFAULT_LOGLEVEL,
+				'appenders' => array('System')
+			)
+		);
+		SaveToConfig('Plugin.Logger.LoggerConfig', $DefaultConfig);
 
 		// Create Database Objects needed by the Plugin
 		require('install/logger.schema.php');
