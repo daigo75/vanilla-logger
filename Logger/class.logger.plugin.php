@@ -619,7 +619,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		LoggerSchema::Install();
 
 		// Build initial configuration
-		$this->LoggerConfigModel()->RebuildConfiguration();
+		//$this->LoggerConfigModel()->RebuildConfiguration();
 	}
 
 	/**
