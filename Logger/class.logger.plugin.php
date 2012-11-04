@@ -618,16 +618,17 @@ class LoggerPlugin extends Gdn_Plugin {
 		// operational, in this phase
 		$DefaultConfig = array(
 			'appenders' => array(
-				'system' => array(
+				'System' => array(
 					'params' => array(
 						'table' => 'LoggerSysLog',
 						'createtable' => 1
-					)
+					),
+					'class' => 'LoggerAppenderVanillaDB'
 				)
 			),
 			'rootLogger' => array(
 				'level' => LOGGER_DEFAULT_LOGLEVEL,
-				'appenders' => array('System')
+				'appenders' => array(0 => 'System')
 			)
 		);
 		SaveToConfig('Plugin.Logger.LoggerConfig', $DefaultConfig);
