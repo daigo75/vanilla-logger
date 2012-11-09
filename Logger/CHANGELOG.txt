@@ -1,0 +1,10 @@
+Advancer Logger for Vanilla Forums
+
+Change Log
+
+12.11.04
+- Initial release
+
+12.11.09
+- Removed all "calls by reference" for compatibility with PHP 5.4+
+
