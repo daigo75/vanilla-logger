@@ -558,7 +558,7 @@ class LoggerPlugin extends Gdn_Plugin {
 
 		$AppenderConfigModel = $this->AppenderConfigModel();
 
-		$Sender->Form->SetModel(&$AppenderConfigModel);
+		$Sender->Form->SetModel($AppenderConfigModel);
 
 		// If seeing the form for the first time...
 		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
