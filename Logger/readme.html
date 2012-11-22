@@ -33,6 +33,20 @@
 		<p>Follow standard plugin installation procedure.</p>
 	</div>
 	<div>
+		<h3>Default configuration</h3>
+		<ul>
+			<li>
+				Logger plugin has been designed to work out of the box in both Advanced and Basic versions. In its default configuration, it logs all messages to <strong>LoggerSysLog</strong> table in the same database used by your instance of Vanilla Forums. Such table is created the first time a message is logged.
+			</li>
+			<li>
+				<p>
+					The default Log Level is <strong>INFO</strong>. This means that log messages with a lower level will be ignored. To change it, use the User Interface (Advanced Logger), or modify the <strong>config.xml</strong> file by adding the line <code>&lt;level value="{new_log_level}" /&gt;</code> in the <code>&lt;root&gt;</code> node, replacing <strong>{new_log_level}</strong> with your desired Log Level.
+				</p>
+				<p>
+					To view the allowed values of the Log Level, please visit <a href="http://logging.apache.org/log4php/docs/configuration.html" title="Log4php - Configuration">Log4php website</a>.
+				</p>
+			</li>
+		</ul>
 		<h3>Configuration</h3>
 		<ul>
 			<li>
@@ -49,7 +63,7 @@
 			<li>
 				<h4>Basic Version</h4>
 				<p>
-					Basic Version provides a reduced set of features, and doesn't come with a User Interface for the configuration. In its default configuration, it logs all messages to <strong>LoggerSysLog</strong> table in the same database used by your instance of Vanilla Forums.<br />
+					Basic Version provides a reduced set of features, and doesn't come with a User Interface for the configuration.<br />
 					If you wish to change the configuration, you have to modify file <strong>config.xml</strong>, which can be found in Plugin's directory. Information on how to write a configuration file can be found on <a href="http://logging.apache.org/log4php/docs/configuration.html" title="Log4php - Configuration">Log4php website</a>.
 				</p>
 				<p>
