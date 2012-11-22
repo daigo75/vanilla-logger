@@ -63,7 +63,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 *
 	 * @param object Sender Sending controller instance
 	 */
-	public function Base_Render_Before(&$Sender) {
+	public function Base_Render_Before($Sender) {
 		$Sender->AddCssFile($this->GetResource('design/css/logger.css', FALSE, FALSE));
 	}
 
@@ -72,7 +72,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 *
 	 * @param object Sender Sending controller instance
 	 */
-	public function PluginController_Logger_Create(&$Sender) {
+	public function PluginController_Logger_Create($Sender) {
 		// Basic plugin properties
 		$Sender->Title('Logger Plugin');
 		$Sender->AddSideMenu('plugin/logger');
@@ -97,7 +97,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 *
 	 * @param object Sender Sending controller instance
 	 */
-	public function Controller_Settings(&$Sender) {
+	public function Controller_Settings($Sender) {
 		// Prevent non-admins from accessing this page
 		$Sender->Permission('Plugins.Logger.Manage');
 		$Sender->SetData('CurrentPath', LOGGER_GENERALSETTINGS_URL);
@@ -128,8 +128,8 @@ class LoggerPlugin extends Gdn_Plugin {
 	 *
 	 * @param object Sender Sending controller instance
 	 */
-	public function Base_GetAppSettingsMenuItems_Handler(&$Sender) {
-		$Menu = &$Sender->EventArguments['SideMenu'];
+	public function Base_GetAppSettingsMenuItems_Handler($Sender) {
+		$Menu = $Sender->EventArguments['SideMenu'];
 		$Menu->AddLink('Add-ons', T('Logger'), 'plugin/logger', 'Garden.AdminUser.Only');
 	}
 }
