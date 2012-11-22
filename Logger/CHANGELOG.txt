@@ -1,6 +1,4 @@
-Advancer Logger for Vanilla Forums
-
-Change Log
+Advancer Logger for Vanilla Forums - Change Log
 
 12.11.04
 - Initial release
@@ -10,3 +8,4 @@ Change Log
 
 12.11.22
 - Updated readme.html
+- Removed some "calls by reference" that were still left from previous cleanup
