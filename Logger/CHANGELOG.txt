@@ -11,3 +11,6 @@ Change Log
 12.11.22
 - Updated readme.html
 - Removed all "calls by reference" in Basic version
+
+12.11.23
+- Modified Log4php AutoLoader so that it raises a fatal error when a class cannot be loaded
