@@ -9,3 +9,6 @@ Advancer Logger for Vanilla Forums - Change Log
 12.11.22
 - Updated readme.html
 - Removed some "calls by reference" that were still left from previous cleanup
+
+12.11.23
+- Modified Log4php AutoLoader so that it raises a fatal error when a class cannot be loaded
