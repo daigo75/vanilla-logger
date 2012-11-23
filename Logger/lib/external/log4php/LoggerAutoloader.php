@@ -123,7 +123,6 @@ class LoggerAutoloader {
 	 */
 	public static function autoload($className) {
 		if(isset(self::$classes[$className])) {
-			var_dump('Loading file', dirname(__FILE__) . self::$classes[$className]);
 			require dirname(__FILE__) . self::$classes[$className];
 		}
 	}
