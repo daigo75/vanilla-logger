@@ -12,3 +12,6 @@ Advancer Logger for Vanilla Forums - Change Log
 
 12.11.23
 - Modified Log4php AutoLoader so that it raises a fatal error when a class cannot be loaded
+
+13.01.04
+- Modified Log4php Autoloader to work around a bug in the autoloading mechanism on PHP 5.2.
