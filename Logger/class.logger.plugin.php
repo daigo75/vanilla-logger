@@ -212,12 +212,12 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_ViewLog($Sender) {
+		$Sender->SetData('CurrentPath', LOGGER_VIEW_LOG_URL);
 		// Prevent non-admins from accessing this page
 		$Sender->Permission('Plugins.Logger.ViewLog');
 
 		// CSS And JavaScript for this specific page
 		//$Sender->AddJsFile($this->GetResource('js/logger.js', FALSE, FALSE));
-		$Sender->SetData('CurrentPath', LOGGER_VIEW_LOG_URL);
 
 		// If seeing the form for the first time...
 		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
@@ -259,10 +259,9 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance
 	 */
 	public function Controller_Appenders($Sender) {
+		$Sender->SetData('CurrentPath', LOGGER_APPENDERS_LIST_URL);
 		// Prevent non-admins from accessing this page
 		$Sender->Permission('Plugins.Logger.Manage');
-
-		$Sender->SetData('CurrentPath', LOGGER_APPENDERS_LIST_URL);
 
 		$AppenderConfigModel = $this->AppenderConfigModel();
 		$AppendersDataSet = $AppenderConfigModel->Get();
@@ -280,9 +279,9 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance
 	 */
 	public function Controller_Settings($Sender) {
+		$Sender->SetData('CurrentPath', LOGGER_GENERALSETTINGS_URL);
 		// Prevent non-admins from accessing this page
 		$Sender->Permission('Plugins.Logger.Manage');
-		$Sender->SetData('CurrentPath', LOGGER_GENERALSETTINGS_URL);
 
 		$Validation = new Gdn_Validation();
 		$this->_SetConfigModelValidationRules($Validation);
