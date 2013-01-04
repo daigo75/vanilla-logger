@@ -98,9 +98,9 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance
 	 */
 	public function Controller_Settings($Sender) {
+		$Sender->SetData('CurrentPath', LOGGER_GENERALSETTINGS_URL);
 		// Prevent non-admins from accessing this page
 		$Sender->Permission('Plugins.Logger.Manage');
-		$Sender->SetData('CurrentPath', LOGGER_GENERALSETTINGS_URL);
 
 		$Sender->Render($this->GetView('logger_generalsettings_view.php'));
 	}
