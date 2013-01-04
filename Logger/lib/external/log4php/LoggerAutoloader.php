@@ -18,15 +18,23 @@
  * @package log4php
  */
 
-if (function_exists('__autoload')) {
-	trigger_error("log4php: It looks like your code is using an __autoload() function. log4php uses spl_autoload_register() which will bypass your __autoload() function and may break autoloading.", E_USER_WARNING);
-}
+// PHP 5.3+ supports the prepending of an AutoLoader
+if(phpversion() >= '5.3') {
+	if (function_exists('__autoload')) {
+		trigger_error("log4php: It looks like your code is using an __autoload() function. log4php uses spl_autoload_register() which will bypass your __autoload() function and may break autoloading.", E_USER_WARNING);
+	}
 
-// IMPORTANT - Changed for integration with Vanilla Forums.
-// The Autoload function MUST be prepended to the existing list of Autoloaders, or
-// Vanilla's Autoloader will kick in, attempting to load the classes needed by Log4php,
-// causing serious performance issues.
-spl_autoload_register(array('LoggerAutoloader', 'autoload'), true, true);
+	// IMPORTANT - Changed for integration with Vanilla Forums.
+	// The Autoload function MUST be prepended to the existing list of Autoloaders, or
+	// Vanilla's Autoloader will kick in, attempting to load the classes needed by Log4php,
+	// causing serious performance issues.
+	spl_autoload_register(array('LoggerAutoloader', 'autoload'), true, true);
+}
+else {
+	// PHP 5.2 and earlier don't support correctly the prepending of an Autoloader,
+	// therefore classes are loaded upfront
+	LoggerAutoloader::LoadAllClasses();
+}
 
 /**
  * Class autoloader.
@@ -41,9 +49,9 @@ class LoggerAutoloader {
 	protected static $classes = array(
 
 		// Base
+		'LoggerConfigurable' => '/LoggerConfigurable.php',
 		'LoggerAppender' => '/LoggerAppender.php',
 		'LoggerAppenderPool' => '/LoggerAppenderPool.php',
-		'LoggerConfigurable' => '/LoggerConfigurable.php',
 		'LoggerConfigurator' => '/LoggerConfigurator.php',
 		'LoggerException' => '/LoggerException.php',
 		'LoggerHierarchy' => '/LoggerHierarchy.php',
@@ -58,10 +66,10 @@ class LoggerAutoloader {
 		'LoggerThrowableInformation' => '/LoggerThrowableInformation.php',
 
 		// Appenders
+		'LoggerAppenderFile' => '/appenders/LoggerAppenderFile.php',
 		'LoggerAppenderConsole' => '/appenders/LoggerAppenderConsole.php',
 		'LoggerAppenderDailyFile' => '/appenders/LoggerAppenderDailyFile.php',
 		'LoggerAppenderEcho' => '/appenders/LoggerAppenderEcho.php',
-		'LoggerAppenderFile' => '/appenders/LoggerAppenderFile.php',
 		'LoggerAppenderMail' => '/appenders/LoggerAppenderMail.php',
 		'LoggerAppenderMailEvent' => '/appenders/LoggerAppenderMailEvent.php',
 		'LoggerAppenderMongoDB' => '/appenders/LoggerAppenderMongoDB.php',
@@ -92,15 +100,15 @@ class LoggerAutoloader {
 		'LoggerPatternParser' => '/helpers/LoggerPatternParser.php',
 
 		// Converters
+		'LoggerPatternConverter' => '/helpers/LoggerPatternConverter.php',
 		'LoggerBasicPatternConverter' => '/helpers/LoggerBasicPatternConverter.php',
+		'LoggerNamedPatternConverter' => '/helpers/LoggerNamedPatternConverter.php',
 		'LoggerCategoryPatternConverter' => '/helpers/LoggerCategoryPatternConverter.php',
 		'LoggerClassNamePatternConverter' => '/helpers/LoggerClassNamePatternConverter.php',
 		'LoggerDatePatternConverter' => '/helpers/LoggerDatePatternConverter.php',
 		'LoggerLiteralPatternConverter' => '/helpers/LoggerLiteralPatternConverter.php',
 		'LoggerLocationPatternConverter' => '/helpers/LoggerLocationPatternConverter.php',
 		'LoggerMDCPatternConverter' => '/helpers/LoggerMDCPatternConverter.php',
-		'LoggerNamedPatternConverter' => '/helpers/LoggerNamedPatternConverter.php',
-		'LoggerPatternConverter' => '/helpers/LoggerPatternConverter.php',
 
 		// Layouts
 		'LoggerLayoutHtml' => '/layouts/LoggerLayoutHtml.php',
@@ -111,10 +119,10 @@ class LoggerAutoloader {
 		'LoggerLayoutXml' => '/layouts/LoggerLayoutXml.php',
 
 		// Renderers
+		'LoggerRendererObject' => '/renderers/LoggerRendererObject.php',
 		'LoggerRendererDefault' => '/renderers/LoggerRendererDefault.php',
 		'LoggerRendererException' => '/renderers/LoggerRendererException.php',
 		'LoggerRendererMap' => '/renderers/LoggerRendererMap.php',
-		'LoggerRendererObject' => '/renderers/LoggerRendererObject.php',
 	);
 
 	/**
@@ -124,6 +132,27 @@ class LoggerAutoloader {
 	public static function autoload($className) {
 		if(isset(self::$classes[$className])) {
 			require dirname(__FILE__) . self::$classes[$className];
+		}
+	}
+
+	/**
+	 * Loads all classes in one shot.
+	 *
+	 * This method has been added for backward
+	 * compatibility with PHP 5.2, which doesn't support correctly the "prepend"
+	 * parameter for the spl_autoloader(). Simply removing such parameter would
+	 * allow the autoloader to run correctly, but it would bring a cost in terms
+	 * of performances, as Vanilla Autoloader would kick in first and perform a
+	 * file scan to look for the classes, which it would not be able to find, as
+	 * they don't follow Vanilla's naming convention.
+	 *
+	 * To prevent this from happening, on PHP 5.2 all Log4php classes are loaded
+	 * upfront. It carries a cost in terms of resources used, but it improves
+	 * performances.
+	 */
+	public static function LoadAllClasses() {
+		foreach(self::$classes as $ClassName => $ClassFile) {
+			require dirname(__FILE__) . $ClassFile;
 		}
 	}
 }
