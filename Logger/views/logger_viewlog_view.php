@@ -48,7 +48,7 @@
 		?>
 		<div class="Results">
 			<?php
-				$LogDataSet = $this->Data['LogDataSet'];
+				$LogDataSet = GetValue('LogDataSet', $this->Data, null);
 
 				include('logger_viewlog_details.php');
 			?>
