@@ -128,11 +128,18 @@ class LoggerConfigModel extends Gdn_Model {
 	}
 
 	/**
-	 * Returns an associative array containing the full configuraiton to be used
-	 * by the Logger.
+	 * Returns an associative array containing the full configuration to be used
+	 * by the Logger. Configuration should be initialised to a default as soon as
+	 * the plugin is started. In case something went wrong, and no configuration
+	 * is found, it returns the default configuration to prevent Log4php from
+	 * triggering an exception.
+	 *
+	 * @return array An associative array containing the configuration for the
+	 * Plugin.
 	 *
 	 */
 	public function Get() {
-		return C('Plugin.Logger.LoggerConfig');
+
+		return C('Plugin.Logger.LoggerConfig', LoggerPlugin::$DefaultConfig);
 	}
 }
