@@ -18,30 +18,6 @@ class LoggerConfigModel extends Gdn_Model {
 	/// Stores the configuration that will be passed to Log4php
 	private $LoggerConfig = array();
 
-	// Default Configuration Settings
-	const LOGGER_DEFAULT_LOGLEVEL = 'INFO';
-	/**
-	 * @var string Default complete configuration, based on the default log level
-	 * and the presence of only the System Appender. Configuration has to be saved
-	 * manually during setup as all plugin's auxiliary functions are not
-	 * operational, in this phase.
-	 */
-	public static $DefaultConfig = array(
-			'appenders' => array(
-				'System' => array(
-					'params' => array(
-						'table' => 'LoggerSysLog',
-						'createtable' => 1
-					),
-					'class' => 'LoggerAppenderVanillaDB'
-				)
-			),
-			'rootLogger' => array(
-				'level' => self::LOGGER_DEFAULT_LOGLEVEL,
-				'appenders' => array(0 => 'System')
-			)
-		);
-
 	/**
 	 * Defines the related database table name.
 	 *
@@ -59,7 +35,7 @@ class LoggerConfigModel extends Gdn_Model {
 	protected function InitializeLoggerSection($LoggerName = LOGGER_LOG4PHP_ROOTLOGGER) {
 		// Initialize
 		$this->LoggerConfig[$LoggerName] = array();
-		$this->LoggerConfig[$LoggerName]['level'] = C('Plugin.Logger.LogLevel', self::LOGGER_DEFAULT_LOGLEVEL);
+		$this->LoggerConfig[$LoggerName]['level'] = C('Plugin.Logger.LogLevel', LOGGER_DEFAULT_LOGLEVEL);
 		$this->LoggerConfig[$LoggerName]['appenders'] = array();
 	}
 
@@ -164,6 +140,6 @@ class LoggerConfigModel extends Gdn_Model {
 	 */
 	public function Get() {
 
-		return C('Plugin.Logger.LoggerConfig', self::$DefaultConfig);
+		return C('Plugin.Logger.LoggerConfig', LoggerPlugin::$DefaultConfig);
 	}
 }
