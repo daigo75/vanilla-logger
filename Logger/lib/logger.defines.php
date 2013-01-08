@@ -9,9 +9,6 @@
  * @package LoggerPlugin
  */
 
-// Default Configuration Settings
-define('LOGGER_DEFAULT_LOGLEVEL', 'INFO');
-
 // Paths
 define('LOGGER_PLUGIN_PATH', PATH_PLUGINS . '/Logger');
 define('LOGGER_PLUGIN_LIB_PATH', LOGGER_PLUGIN_PATH . '/lib');

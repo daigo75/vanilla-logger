@@ -16,7 +16,7 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 $PluginInfo['Logger'] = array(
 	'Name' => 'Logger',
 	'Description' => 'Logger for Vanilla - Advanced Version',
-	'Version' => '13.01.07',
+	'Version' => '13.01.08',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
@@ -40,29 +40,6 @@ class LoggerPlugin extends Gdn_Plugin {
 	private static $_LoggerConfigModel;
 	private static $_AppenderConfigModel;
 	private static $_LoggerInitialized = false;
-	/**
-	 * @var string Default complete configuration, based on the default log level
-	 * and the presence of only the System Appender. Configuration has to be saved
-	 * manually during setup as all plugin's auxiliary functions are not
-	 * operational, in this phase.
-	 */
-	public static $DefaultConfig = array(
-			'appenders' => array(
-				'System' => array(
-					'params' => array(
-						'table' => 'LoggerSysLog',
-						'createtable' => 1
-					),
-					'class' => 'LoggerAppenderVanillaDB'
-				)
-			),
-			'rootLogger' => array(
-				'level' => LOGGER_DEFAULT_LOGLEVEL,
-				'appenders' => array(0 => 'System')
-			)
-		);
-
-
 
 	private $_SysDBLogModel;
 
@@ -312,7 +289,7 @@ class LoggerPlugin extends Gdn_Plugin {
 
 		$ConfigurationModel = new Gdn_ConfigurationModel($Validation);
 		$ConfigurationModel->SetField(array(
-			'Plugin.Logger.LogLevel' => LOGGER_DEFAULT_LOGLEVEL,
+			'Plugin.Logger.LogLevel' => LoggerConfigModel::LOGGER_DEFAULT_LOGLEVEL,
 		));
 
 		// Set the model on the form.
@@ -382,7 +359,7 @@ class LoggerPlugin extends Gdn_Plugin {
 			$Data = $Sender->Form->FormValues();
 			// The field named "Cancel" is the Cancel button. By clicking it, User
 			// will return to the Appenders List page.
-			if($Data['Cancel']) {
+			if(GetValue('Cancel', $Data, null)) {
 				Redirect(LOGGER_APPENDERS_LIST_URL);
 				return;
 			}
@@ -390,7 +367,7 @@ class LoggerPlugin extends Gdn_Plugin {
 			// The field named "Next" is the Next button. If it exists, it means
 			// that the User chose to save the choice and proceed with the creation of
 			// an Appender.
-			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Next']) {
+			if(Gdn::Session()->ValidateTransientKey(GetValue('TransientKey', $Data)) && isset($Data['Next'])) {
 				$Validation = new Gdn_Validation();
 				$this->_SetAppenderAddValidationRules($Validation);
 
@@ -489,7 +466,7 @@ class LoggerPlugin extends Gdn_Plugin {
 				Redirect(LOGGER_APPENDERS_LIST_URL);
 			}
 
-			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
+			if(Gdn::Session()->ValidateTransientKey(GetValue('TransientKey', $Data)) && isset($Data['Save'])) {
 				// Save Appender settings
 				$Saved = $Sender->Form->Save();
 
@@ -603,9 +580,9 @@ class LoggerPlugin extends Gdn_Plugin {
 
 			// The field named "OK" is actually the OK button. If it exists, it means
 			// that the User confirmed the deletion.
-			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['OK']) {
+			if(Gdn::Session()->ValidateTransientKey(GetValue('TransientKey', $Data)) && isset($Data['OK'])) {
 				// Delete Client Id
-				$AppenderConfigModel->Delete($Data['AppenderID']);
+				$AppenderConfigModel->Delete(GetValue('AppenderID', $Data));
 
 				$Sender->InformMessage(T('Appender deleted.'));
 			}
@@ -634,8 +611,8 @@ class LoggerPlugin extends Gdn_Plugin {
 	public function Setup() {
 		// Set up plugin's default values
 		// Default log level
-		SaveToConfig('Plugin.Logger.LogLevel', LOGGER_DEFAULT_LOGLEVEL);
-		SaveToConfig('Plugin.Logger.LoggerConfig', self::$DefaultConfig);
+		SaveToConfig('Plugin.Logger.LogLevel', LoggerConfigModel::LOGGER_DEFAULT_LOGLEVEL);
+		SaveToConfig('Plugin.Logger.LoggerConfig', LoggerConfigModel::$DefaultConfig);
 
 		// Create Database Objects needed by the Plugin
 		require('install/logger.schema.php');
