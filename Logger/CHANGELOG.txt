@@ -23,4 +23,4 @@ Advancer Logger for Vanilla Forums - Change Log
 
 13.01.08
 - Fixed minor bugs that would throw an error if PHP Error Level was set to throw errors on NOTICE messages
-- Moved default configuration settings to LoggerConfigModel classes
+
