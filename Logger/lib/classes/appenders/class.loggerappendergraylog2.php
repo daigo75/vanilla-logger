@@ -93,7 +93,7 @@ class LoggerAppenderGraylog2 extends LoggerAppender {
 		$Message->setShortMessage($event->getMessage());
 		$Message->setAdditional('Thread', $event->getThreadName());
 
-		$LocationInformation = &$event->getLocationInformation();
+		$LocationInformation = $event->getLocationInformation();
 		$Message->setAdditional('ClassName', $LocationInformation->getClassName());
 		$Message->setAdditional('MethodName', $LocationInformation->getMethodName());
 		$Message->setFile($LocationInformation->getFileName());

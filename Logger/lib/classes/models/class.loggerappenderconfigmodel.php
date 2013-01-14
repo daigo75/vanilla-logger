@@ -220,7 +220,7 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 		$Insert = ($this->GetAppenderConfig($AppenderID) == null);
 
 		// Prepare all the validated fields to be passed to an INSERT/UPDATE query
-		$Fields = &$this->Validation->ValidationFields();
+		$Fields = $this->Validation->ValidationFields();
 		if($Insert) {
 			$this->AddInsertFields($Fields);
 			return $this->Insert($Fields);

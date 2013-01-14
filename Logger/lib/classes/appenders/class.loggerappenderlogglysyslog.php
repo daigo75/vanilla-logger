@@ -36,7 +36,7 @@ class LoggerAppenderLogglySyslog extends LoggerAppenderRSyslog {
 		$Fields['Message'] = $event->getMessage();
 		$Fields['Thread'] = $event->getThreadName();
 
-		$LocationInformation = &$event->getLocationInformation();
+		$LocationInformation = $event->getLocationInformation();
 		$Fields['ClassName'] = $LocationInformation->getClassName();
 		$Fields['MethodName'] = $LocationInformation->getMethodName();
 		$Fields['FileName'] = $LocationInformation->getFileName();

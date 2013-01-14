@@ -77,7 +77,7 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 		parent::__construct($name);
 
 		// Retrieve Vanilla's Database Objects
-		$this->Database = &Gdn::Database();
+		$this->Database = Gdn::Database();
 	}
 
 	/**
@@ -96,7 +96,7 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 		$Fields['Message'] = $event->getMessage();
 		$Fields['Thread'] = $event->getThreadName();
 
-		$LocationInformation = &$event->getLocationInformation();
+		$LocationInformation = $event->getLocationInformation();
 		$Fields['ClassName'] = $LocationInformation->getClassName();
 		$Fields['MethodName'] = $LocationInformation->getMethodName();
 		$Fields['FileName'] = $LocationInformation->getFileName();
@@ -140,6 +140,7 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 	 * @return void.
 	 */
 	public function append(LoggerLoggingEvent $event) {
-		$this->LogModel->Save($this->PrepareLogFields($event));
+		$LogFields = $this->PrepareLogFields($event);
+		$this->LogModel->Save($LogFields);
 	}
 }

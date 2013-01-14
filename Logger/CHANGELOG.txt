@@ -24,3 +24,6 @@ Advancer Logger for Vanilla Forums - Change Log
 13.01.08
 - Fixed minor bugs that would throw an error if PHP Error Level was set to throw errors on NOTICE messages
 
+13.01.14
+- Removed some "calls by reference" that were still left from previous cleanup
+- Minor fixes to adhere to PHP Strict Standards
