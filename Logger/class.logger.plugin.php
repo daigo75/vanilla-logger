@@ -16,7 +16,7 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 $PluginInfo['Logger'] = array(
 	'Name' => 'Logger',
 	'Description' => 'Logger for Vanilla - Advanced Version',
-	'Version' => '13.01.15',
+	'Version' => '13.01.16',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
