@@ -25,6 +25,7 @@ class LoggerAppenderConsoleConfigModel extends LoggerAppenderConfigModel {
 		$Config = array('layout' => array('class' => $FormPostValues['Layout']),
 										'params' => array('target' => $FormPostValues['Target'],));
 
+		// If layout is LoggerLayoutPattern, save the pattern to be used
 		if(GetValue('class', $Config['layout'], null) == 'LoggerLayoutPattern') {
 			$Config['layout']['params'] = array('conversionPattern' => $FormPostValues['LayoutPattern']);
 		}
