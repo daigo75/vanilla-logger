@@ -16,7 +16,7 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 $PluginInfo['Logger'] = array(
 	'Name' => 'Logger',
 	'Description' => 'Logger for Vanilla - Advanced Version',
-	'Version' => '13.01.14',
+	'Version' => '13.01.15',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
@@ -555,9 +555,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		// willingly inefficient, creating an Exception and an error message every
 		// time, because it simulates what would happen in real use cases.
 		for($MessageIdx = 0; $MessageIdx < $AmountOfLogMessages; $MessageIdx++) {
-			$Exception = new Exception(T('This is a test Exception, no action is required.'));
-			LoggerPlugin::GetLogger('system')->info(T('This is a test Log message, no action is required.'),
-																							$Exception);
+			LoggerPlugin::GetLogger('system')->info(T('This is a test Log message, no action is required.'));
 		}
 
 		$LogEnd = time();

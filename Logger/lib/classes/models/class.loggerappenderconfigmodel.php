@@ -16,7 +16,35 @@ class LoggerAppenderConfigModel extends Gdn_Model {
 	// Default Layout to be used by the loggers
 	const DEFAULT_LAYOUT = 'LoggerLayoutPattern';
 	// Default Layout Pattern to be used if nothing else has been specified
-	const DEFAULT_LAYOUT_PATTERN = '%date %logger %-5level %msg%n';
+	const DEFAULT_LAYOUT_PATTERN = '%d [%t] %p %c %x - %m%n';
+
+	// String representation of boolean values. They are used by Log4php.
+	const STR_TRUE = 'true';
+	const STR_FALSE = 'false';
+
+	/**
+	 * Converts an Integer representation to a boolean string. Such conversion is
+	 * required by Log4php, which expects the string representation of booleans in
+	 * the configuration.
+	 *
+	 * @param int Value The value to convert.
+	 * @param string The string "true" if Value is non-zero, 'false' otherwise.
+	 */
+	protected function IntToBoolStr($Value) {
+		return $Value == 0 ? self::STR_FALSE : self::STR_TRUE;
+	}
+
+	/**
+	 * Converts an string representation to an Integer. Such conversion is
+	 * required by Log4php, which expects the string representation of booleans in
+	 * the configuration.
+	 *
+	 * @param string Value The value to convert.
+	 * @param int 1, if the string is "true", 0 otherwise.
+	 */
+	protected function BoolStrToInt($Value) {
+		return $Value == self::STR_TRUE ? 1 : 0;
+	}
 
 	/**
 	 * Build SQL query to retrieve data from the LoggerAppenders Table.
