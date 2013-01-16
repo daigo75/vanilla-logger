@@ -13,6 +13,11 @@
  * This model is used to save Appenders Configuration to a table.
   */
 class LoggerAppenderConfigModel extends Gdn_Model {
+	// Default Layout to be used by the loggers
+	const DEFAULT_LAYOUT = 'LoggerLayoutPattern';
+	// Default Layout Pattern to be used if nothing else has been specified
+	const DEFAULT_LAYOUT_PATTERN = '%date %logger %-5level %msg%n';
+
 	/**
 	 * Build SQL query to retrieve data from the LoggerAppenders Table.
 	 */
