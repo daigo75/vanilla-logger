@@ -28,7 +28,7 @@ Advancer Logger for Vanilla Forums - Change Log
 - Removed some "calls by reference" that were still left from previous cleanup
 - Minor fixes to adhere to PHP Strict Standards
 
-13.01.15
+13.01.16
 - Implemented File Appender
 - Implemented Echo Appender
 - Fixed minor incompatibility bugs
