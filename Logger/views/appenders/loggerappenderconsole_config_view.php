@@ -16,8 +16,7 @@ $ConsoleTargets = array('stdout' => T('Standard Out (stdout)'),
 	<li>
 		<?php
 			echo $this->Form->Label(T('Target'), 'Target');
-			echo Wrap(T('Enter a description for the Appender. This is useful if you have several Appenders
-									of the same type and you need to distinguish between them.'),
+			echo Wrap(T('The stream to write to; either "stdout" or "stderr".'),
 								'div',
 								array('class' => 'Info'));
 			echo $this->Form->DropDown('Target',
