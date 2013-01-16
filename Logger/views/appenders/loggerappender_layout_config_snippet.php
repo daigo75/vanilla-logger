@@ -11,7 +11,8 @@
 							'div',
 							array('class' => 'Info',));
 
-		echo $this->Form->Hidden('Layout', array('value' => 'LoggerLayoutPattern',));
+		echo $this->Form->Hidden('Layout', array('value' => LoggerAppenderConfigModel::DEFAULT_LAYOUT,));
+		echo $this->Form->Hidden('LayoutPattern', array('value' => LoggerAppenderConfigModel::DEFAULT_LAYOUT_PATTERN,));
 		//echo Wrap(T('Please select the layout that will be used by the Appender.'),
 		//					'div',
 		//					array('class' => 'Info',));
