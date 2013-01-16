@@ -8,7 +8,7 @@
 LoggerAppendersManager::$Appenders['LoggerAppenderConsole'] = array(
 	'Label' => T('Console'),
 	'Description' => T('Writes logging events to the <code>php://stdout</code> or the ' .
-										 '<code>php://stderr</code> stream, the former being the default target.'),
+										 '<code>php://stderr</code> stream, the former being the default target'),
 );
 
 // Class LoggerAppenderConsole is a standard Log4php class, therefore it
