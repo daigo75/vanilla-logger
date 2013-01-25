@@ -32,3 +32,6 @@ Advancer Logger for Vanilla Forums - Change Log
 - Implemented File Appender
 - Implemented Echo Appender
 - Fixed minor incompatibility bugs
+
+13.01.25
+- Removed debug message
