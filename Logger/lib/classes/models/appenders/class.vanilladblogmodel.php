@@ -77,7 +77,14 @@ class VanillaDBLogModel extends Gdn_Model {
 	 * @return True if the Table exists, False otherwise.
 	 */
 	protected function LogTableExists() {
-		return Gdn::Structure()->TableExists($this->LogTableName);
+		// The SQL object is cloned because using FetchTables could interfere with
+		// the execution of other queries. This may happen if such method is invoked
+		// half way through the building of another SELECT statement. From time to
+		// time, this could cause the half-built statement to "lose some pieces".
+		// By cloning the whole SQL object, instead, we work with an independent
+		// copy, which we can manipulate as we like.
+		$SQL = clone $this->SQL;
+		return count($SQL->FetchTables(':_' . $this->LogTableName)) > 0;
 	}
 
 	/**
