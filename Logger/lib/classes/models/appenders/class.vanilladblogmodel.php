@@ -130,7 +130,7 @@ class VanillaDBLogModel extends Gdn_Model {
 		$Limit = (is_numeric($Limit) && $Limit > 0) ? $Limit : 1000;
 		$Offset = (is_numeric($Offset) && $Offset > 0) ? $Offset : 0;
 
-		// On day is added to DateTo as the date it represents should be included
+		// One day is added to DateTo as the date it represents should be included
 		// until 23:59:59.000. By adding one day and querying by "< DateTo", we're
 		// sure to get all the data.
 		$DateTo = date('Y-m-d', strtotime($DateTo . ' +1 day'));
