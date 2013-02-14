@@ -19,7 +19,7 @@
 if(!isset($LogDataSet)) { return; }
 
 // Indicates how many columns there are in the table that shows data from the
-// Cron Jobs History. It's mainly used to set the "colspan" attributes of
+// Log Entries. It's mainly used to set the "colspan" attributes of
 // single-valued table rows, such as Title, or the "No Results Found" message.
 define('LOG_TABLE_COLUMNS', 9);
 
