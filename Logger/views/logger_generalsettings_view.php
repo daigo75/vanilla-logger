@@ -2,7 +2,7 @@
 /**
 {licence}
 */
-
+ 
 ?>
 <div class="LoggerPlugin">
 	<div class="Content">
