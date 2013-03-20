@@ -41,3 +41,6 @@ Advancer Logger for Vanilla Forums - Change Log
 
 13.02.14
 - Corrected readme.html
+
+13.03.20
+- Corrected method declaration
