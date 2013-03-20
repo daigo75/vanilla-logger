@@ -16,7 +16,7 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 $PluginInfo['Logger'] = array(
 	'Name' => 'Logger',
 	'Description' => 'Logger for Vanilla - Advanced Version',
-	'Version' => '13.02.14',
+	'Version' => '13.03.20',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
@@ -145,7 +145,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @return object An instance of True if Log4php Logger has been initialized with a
 	 * call to its ::Config() method, or False if it hasn't been.
 	 */
-	protected function LoggerInitialized() {
+	protected static function LoggerInitialized() {
 		return self::$_LoggerInitialized;
 	}
 
