@@ -44,3 +44,6 @@ Advancer Logger for Vanilla Forums - Change Log
 
 13.03.20
 - Corrected method declaration
+
+13.04.02
+- Corrected issue with permissions. Previous versions allowed only SuperAdmin to access Plugin's settings
