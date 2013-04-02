@@ -17,14 +17,14 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 $PluginInfo['Logger'] = array(
 	'Name' => 'Logger',
 	'Description' => 'Logger for Vanilla - Basic Version',
-	'Version' => '13.02.01',
+	'Version' => '13.04.02',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
 	'HasLocale' => FALSE,
 	'MobileFriendly' => TRUE,
 	'SettingsUrl' => '/plugin/logger/settings',
-	'SettingsPermission' => 'Garden.AdminUser.Only',
+	'SettingsPermission' => 'Garden.Settings.Manage',
 	'Author' => 'Diego Zanella',
 	'AuthorEmail' => 'diego@pathtoenlightenment.net',
 	'AuthorUrl' => 'http://dev.pathtoenlightenment.net',
@@ -130,6 +130,6 @@ class LoggerPlugin extends Gdn_Plugin {
 	 */
 	public function Base_GetAppSettingsMenuItems_Handler($Sender) {
 		$Menu = $Sender->EventArguments['SideMenu'];
-		$Menu->AddLink('Add-ons', T('Logger'), 'plugin/logger', 'Garden.AdminUser.Only');
+		$Menu->AddLink('Add-ons', T('Logger'), 'plugin/logger', 'Garden.Settings.Manage');
 	}
 }
