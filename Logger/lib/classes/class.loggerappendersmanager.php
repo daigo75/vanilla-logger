@@ -198,8 +198,8 @@ class LoggerAppendersManager {
 		// Load all Appender Files, so that they can add themselves to the list of
 		// installed Appenders
     while($File = readdir($Handle)) {
-      if(strpos($File, 'class.loggerappender') == 0) {
-				include_once(sprintf('%s/%s', $AppendersDir, $File));
+      if(!is_dir($File) && preg_match('/^class\.loggerappender.+?/i', $File) == 1) {
+				include_once($AppendersDir . '/' .  $File);
 			}
 		}
 		closedir($Handle);
