@@ -50,3 +50,6 @@ Advancer Logger for Vanilla Forums - Change Log
 
 13.04.04
 - Corrected bug in loading of Appenders
+
+13.04.07
+- Refactored code to remove unnecessary static methods and properties
