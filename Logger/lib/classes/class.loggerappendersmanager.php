@@ -209,7 +209,7 @@ class LoggerAppendersManager {
 	 * @return void.
 	 */
 	private function LoadAppendersDefinitions() {
-		$AppendersDir = sprintf('%s/appenders', LOGGER_PLUGIN_CLASS_PATH);
+		$AppendersDir = LOGGER_PLUGIN_CLASS_PATH . '/appenders';
 		$Handle = opendir($AppendersDir);
 		if(empty($Handle)) {
 			return;
