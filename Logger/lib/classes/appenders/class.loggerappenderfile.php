@@ -3,11 +3,14 @@
 {licence}
 */
 
-// Add LoggerAppender Info to a global array. It will be used to automatically
-// add the Appender to the list of the available ones.
-LoggerAppendersManager::$Appenders['LoggerAppenderFile'] = array(
-	'Label' => T('File'),
-	'Description' => T('Writes logging events to a file.'),
+// Register Appender with the Appenders Manager
+LoggerAppendersManager::RegisterAppender(
+	'LoggerAppenderFile',
+	array('Label' => T('File'),
+				'Description' => T('Writes logging events to a file.'),
+				// Version is for reference only
+				'Version' => '13.04.07',
+			 )
 );
 
 // Class LoggerAppenderFile is a standard Log4php class, therefore it

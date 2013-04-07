@@ -3,13 +3,15 @@
 {licence}
 */
 
-// Add LoggerAppender Info to a global array. It will be used to automatically
-// add the Appender to the list of the available ones.
-LoggerAppendersManager::$Appenders['LoggerAppenderGraylog2'] = array(
-	'Label' => T('Graylog2 (GELF)'),
-	'Description' => T('Writes logging events to a <a href="http://www.graylog2.org/">Graylog2</a> ' .
-										 'Server, sending them in <a href="http://www.graylog2.org/about/gelf">GELF Format</a>.'),
-
+// Register Appender with the Appenders Manager
+LoggerAppendersManager::RegisterAppender(
+	'LoggerAppenderGraylog2',
+	array('Label' => T('Graylog2 (GELF)'),
+				'Description' => T('Writes logging events to a <a href="http://www.graylog2.org/">Graylog2</a> ' .
+													 'Server, sending them in <a href="http://www.graylog2.org/about/gelf">GELF Format</a>.'),
+				// Version is for reference only
+				'Version' => '13.04.07',
+			 )
 );
 
 // Load GELF Libraries

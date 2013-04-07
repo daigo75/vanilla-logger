@@ -16,7 +16,7 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 $PluginInfo['Logger'] = array(
 	'Name' => 'Logger',
 	'Description' => 'Logger for Vanilla - Advanced Version',
-	'Version' => '13.04.04',
+	'Version' => '13.04.07',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
@@ -36,35 +36,46 @@ $PluginInfo['Logger'] = array(
  * and allows to log messages to several Appenders.
  */
 class LoggerPlugin extends Gdn_Plugin {
-	private static $_AppendersManager;
-	private static $_LoggerConfigModel;
-	private static $_AppenderConfigModel;
 	private static $_LoggerInitialized = false;
 
 	private $_SysDBLogModel;
 
-	// Default Configuration Settings
 	/**
-	 * @var string Default complete configuration, based on the default log level
-	 * and the presence of only the System Appender. Configuration has to be saved
-	 * manually during setup as all plugin's auxiliary functions are not
-	 * operational, in this phase.
+	 * Returns an instance of a Class and stores it as a property of this class.
+	 * The function follows the principle of lazy initialization, instantiating
+	 * the class the first time it's requested.
+	 *
+	 * @param string ClassName The Class to instantiate.
+	 * @param array Args An array of Arguments to pass to the Class' constructor.
+	 * @return object An instance of the specified class.
+	 * @throws An Exception if the specified class does not exist.
 	 */
-	public static $DefaultConfig = array(
-			'appenders' => array(
-				'System' => array(
-					'params' => array(
-						'table' => 'LoggerSysLog',
-						'createtable' => 1
-					),
-					'class' => 'LoggerAppenderVanillaDB'
-				)
-			),
-			'rootLogger' => array(
-				'level' => LOGGER_DEFAULT_LOGLEVEL,
-				'appenders' => array(0 => 'System')
-			)
-		);
+	private function GetInstance($ClassName) {
+		$FieldName = '_' . $ClassName;
+		$Args = func_get_args();
+		// Discard the first argument, as it is the Class Name, which doesn't have
+		// to be passed to the instance of the Class
+		array_shift($Args);
+
+		if(empty($this->$FieldName)) {
+			$Reflect  = new ReflectionClass($ClassName);
+
+			$this->$FieldName = $Reflect->newInstanceArgs($Args);
+		}
+
+		return $this->$FieldName;
+	}
+
+	/**
+	 * Returns the instance of the Logger Plugin. This method is needed to allow
+	 * non-Vanilla classes to access Plugin's methods, without having to declare
+	 * all of them as static.
+	 *
+	 * @return LoggerPlugin The plugin instance.
+	 */
+	public static function PluginInstance() {
+		return Gdn::PluginManager()->GetPluginInstance('LoggerPlugin');
+	}
 
 	/**
 	 * Returns an instance of AppendersManager. The function follows the principle
@@ -74,14 +85,8 @@ class LoggerPlugin extends Gdn_Plugin {
 	 *
 	 * @return object An instance of AppendersManager.
 	 */
-	public static function AppendersManager() {
-		if(empty(self::$_AppendersManager)) {
-			// Logger Appenders Manager will be used to keep track of available
-			// appenders
-			self::$_AppendersManager = new LoggerAppendersManager();
-		}
-
-		return self::$_AppendersManager;
+	public function AppendersManager() {
+		return $this->GetInstance('LoggerAppendersManager');
 	}
 
 	/**
@@ -93,13 +98,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @return object An instance of LoggerConfigModel.
 	 */
 	protected function LoggerConfigModel() {
-		if(empty(self::$_LoggerConfigModel)) {
-			// Logger Appenders Manager will be used to keep track of available
-			// appenders
-			self::$_LoggerConfigModel = new LoggerConfigModel();
-		}
-
-		return self::$_LoggerConfigModel;
+		return $this->GetInstance('LoggerConfigModel');
 	}
 
 	/**
@@ -111,13 +110,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @return object An instance of AppenderConfigModel.
 	 */
 	protected function AppenderConfigModel() {
-		if(empty(self::$_AppenderConfigModel)) {
-			// Logger Appenders Manager will be used to keep track of available
-			// appenders
-			self::$_AppenderConfigModel = new LoggerAppenderConfigModel();
-		}
-
-		return self::$_AppenderConfigModel;
+		return $this->GetInstance('LoggerAppenderConfigModel');
 	}
 
 	/**
@@ -334,6 +327,10 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Sender->Render($this->GetView('logger_generalsettings_view.php'));
 	}
 
+	public function Controller_ViewLoggers($Sender) {
+		var_dump($this->AppendersManager()->GetAppenders());
+	}
+
 	/**
 	 * Returns an instance of the Log4php Logger.
 	 *
@@ -342,7 +339,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 */
 	public static function GetLogger($LoggerName = 'system') {
 		if(!self::LoggerInitialized()) {
-			Logger::configure(self::LoggerConfigModel()->Get());
+			Logger::configure(self::PluginInstance()->LoggerConfigModel()->Get());
 			self::$_LoggerInitialized = true;
 		}
 
@@ -411,8 +408,8 @@ class LoggerPlugin extends Gdn_Plugin {
 			}
 		}
 
-		$Sender->SetData('AppenderClasses', self::AppendersManager()->GetAppendersLabels());
-		$Sender->SetData('AppenderClassesDescriptions', self::AppendersManager()->GetAppendersDescriptions());
+		$Sender->SetData('AppenderClasses', $this->AppendersManager()->GetAppendersLabels());
+		$Sender->SetData('AppenderClassesDescriptions', $this->AppendersManager()->GetAppendersDescriptions());
 		$Sender->Render($this->GetView('logger_appender_add_view.php'));
 	}
 
@@ -457,7 +454,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		}
 
 		// Load appropriate Appender Configuration Model, depending on Appender Type
-		$AppenderConfigModel = self::AppendersManager()->GetModel($AppenderClass);
+		$AppenderConfigModel = $this->AppendersManager()->GetModel($AppenderClass);
 
 		// Set the model on the form.
 		$Sender->Form->SetModel($AppenderConfigModel);
@@ -485,11 +482,11 @@ class LoggerPlugin extends Gdn_Plugin {
 			$Data = $Sender->Form->FormValues();
 
 			// If User Canceled, go back to the List
-			if($Data['Cancel']) {
+			if($Sender->Form->ButtonExists('Cancel')) {
 				Redirect(LOGGER_APPENDERS_LIST_URL);
 			}
 
-			if(Gdn::Session()->ValidateTransientKey(GetValue('TransientKey', $Data)) && isset($Data['Save'])) {
+			if(Gdn::Session()->ValidateTransientKey(GetValue('TransientKey', $Data)) && $Sender->Form->ButtonExists('Save')) {
 				// Save Appender settings
 				$Saved = $Sender->Form->Save();
 
@@ -504,10 +501,10 @@ class LoggerPlugin extends Gdn_Plugin {
 		}
 
 		// Add some descriptive data about the Appender
-		$Sender->SetData('AppenderInfo', self::AppendersManager()->GetAppenderInfo($AppenderClass));
+		$Sender->SetData('AppenderInfo', $this->AppendersManager()->GetAppenderInfo($AppenderClass));
 		// Retrieve the sub-View that will be used to configure the parameters
 		// specific to the selected Logger Appender.
-		$Sender->Data['AppenderConfigView'] = self::AppendersManager()->GetConfigView($AppenderClass);
+		$Sender->Data['AppenderConfigView'] = $this->AppendersManager()->GetConfigView($AppenderClass);
 		$Sender->Render($this->GetView('loggerappender_edit_config_view.php'));
 	}
 
@@ -633,7 +630,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		// Set up plugin's default values
 		// Default log level
 		SaveToConfig('Plugin.Logger.LogLevel', LOGGER_DEFAULT_LOGLEVEL);
-		SaveToConfig('Plugin.Logger.LoggerConfig', self::$DefaultConfig);
+		SaveToConfig('Plugin.Logger.LoggerConfig', $this->LoggerConfigModel()->DefaultConfig());
 
 		// Create Database Objects needed by the Plugin
 		require('install/logger.schema.php');

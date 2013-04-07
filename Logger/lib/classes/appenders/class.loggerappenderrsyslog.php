@@ -3,12 +3,14 @@
 {licence}
 */
 
-// Add LoggerAppender Info to a global array. It will be used to automatically
-// add the Appender to the list of the available ones.
-LoggerAppendersManager::$Appenders['LoggerAppenderRSyslog'] = array(
-	'Label' => T('RSyslog (Remote SysLog)'),
-	'Description' => T('Writes logging events to Remote Syslog Server, such as <a href="http://www.papertrail.com/">PaperTrail</a>.'),
-
+// Register Appender with the Appenders Manager
+LoggerAppendersManager::RegisterAppender(
+	'LoggerAppenderRSyslog',
+	array('Label' => T('RSyslog (Remote SysLog)'),
+				'Description' => T('Writes logging events to Remote Syslog Server, such as <a href="http://www.papertrail.com/">PaperTrail</a>.'),
+				// Version is for reference only
+				'Version' => '13.04.07',
+			 )
 );
 
 // Load RSysLog Libraries

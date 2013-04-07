@@ -3,12 +3,15 @@
 {licence}
 */
 
-// Add LoggerAppender Info to a global array. It will be used to automatically
-// add the Appender to the list of the available ones.
-LoggerAppendersManager::$Appenders['LoggerAppenderConsole'] = array(
-	'Label' => T('Console'),
-	'Description' => T('Writes logging events to the <code>php://stdout</code> or the ' .
+// Register Appender with the Appenders Manager
+LoggerAppendersManager::RegisterAppender(
+	'LoggerAppenderConsole',
+	array('Label' => T('Console'),
+				'Description' => T('Writes logging events to the <code>php://stdout</code> or the ' .
 										 '<code>php://stderr</code> stream, the former being the default target'),
+				// Version is for reference only
+				'Version' => '13.04.07',
+				)
 );
 
 // Class LoggerAppenderConsole is a standard Log4php class, therefore it

@@ -3,13 +3,17 @@
 {licence}
 */
 
-// Add LoggerAppender Info to a global array. It will be used to automatically
-// add the Appender to the list of the available ones.
-LoggerAppendersManager::$Appenders['LoggerAppenderLogglySyslog'] = array(
-	'Label' => T('Loggly - JSON via Remote SysLog'),
-	'Description' => T('Sends log events to <a href="http://www.loggly.com/">Loggly</a>, in JSON format, ' .
-										 'using Remote Syslog (UDP). <br />If you\'d like to send events to Loggly as plain ' .
-										 'text, please use the standard Remote Syslog appender).'));
+// Register Appender with the Appenders Manager
+LoggerAppendersManager::RegisterAppender(
+	'LoggerAppenderLogglySyslog',
+	array('Label' => T('Loggly - JSON via Remote SysLog'),
+				'Description' => T('Sends log events to <a href="http://www.loggly.com/">Loggly</a>, in JSON format, ' .
+													 'using Remote Syslog (UDP). <br />If you\'d like to send events to Loggly as plain ' .
+													 'text, please use the standard Remote Syslog appender).'),
+				// Version is for reference only
+				'Version' => '13.04.07',
+			 )
+);
 
 /**
  * Loggly Log Appender

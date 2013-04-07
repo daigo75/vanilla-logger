@@ -64,7 +64,7 @@ class LoggerConfigModel extends Gdn_Model {
 
 		foreach($ActiveAppenders as $AppenderCfg) {
 			// Load the model that will retrieve the Appender's settings
-			$AppenderConfigModel = LoggerPlugin::AppendersManager()->GetModel($AppenderCfg->AppenderClass);
+			$AppenderConfigModel = LoggerPlugin::PluginInstance()->AppendersManager()->GetModel($AppenderCfg->AppenderClass);
 
 			// Get Appender's settings in the format expected by Log4php and add them
 			// to the global configuration array
@@ -139,7 +139,32 @@ class LoggerConfigModel extends Gdn_Model {
 	 *
 	 */
 	public function Get() {
+		return C('Plugin.Logger.LoggerConfig', $this->DefaultConfig());
+	}
 
-		return C('Plugin.Logger.LoggerConfig', LoggerPlugin::$DefaultConfig);
+	/**
+	 * Returns the Default configuration for the Logger.
+	 *
+	 * @return string Default complete configuration, based on the default log level
+	 * and the presence of only the System Appender. Configuration has to be saved
+	 * manually during setup as all plugin's auxiliary functions are not
+	 * operational, in this phase.
+	 */
+	public function DefaultConfig() {
+		return array(
+			'appenders' => array(
+				'System' => array(
+					'params' => array(
+						'table' => 'LoggerSysLog',
+						'createtable' => 1
+					),
+					'class' => 'LoggerAppenderVanillaDB'
+				)
+			),
+			'rootLogger' => array(
+				'level' => LOGGER_DEFAULT_LOGLEVEL,
+				'appenders' => array(0 => 'System')
+			)
+		);
 	}
 }

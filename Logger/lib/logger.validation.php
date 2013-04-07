@@ -13,7 +13,8 @@ if(!function_exists('ValidateAppenderClass')){
 	 * Checks if an Appender Class is amongst the available ones.
 	 */
 	function ValidateAppenderClass($Value, $Field, $FormPostedValues){
-		return LoggerPlugin::AppendersManager()->AppenderExists($Value);
+		$AppendersManager = new LoggerAppendersManager();
+		return $AppendersManager->AppenderExists($Value);
 	}
 }
 

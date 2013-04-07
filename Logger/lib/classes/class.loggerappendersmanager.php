@@ -11,7 +11,18 @@
 class LoggerAppendersManager {
 	private $Logger;
 	// @var array Contains a list of all available types of Appenders.
-	public static $Appenders = array();
+	private static $Appenders = array();
+
+	/**
+	 * Registers an Appender to the array of available Appenders.
+	 *
+	 * @param string AppenderClass The name of the Appender Class.
+	 * @param array An associative array of Appender Information.
+	 * @throws An Exception if the Appender Class doesn't exist.
+	 */
+	public static function RegisterAppender($AppenderClass, array $AppenderInfo) {
+		self::$Appenders[$AppenderClass] = $AppenderInfo;
+	}
 
 	/**
 	 * Install an Appender Class's auxiliary classes into Vanilla Factories, for
@@ -180,6 +191,15 @@ class LoggerAppendersManager {
 	 */
 	public function GetAppenderInfo($AppenderClass) {
 		return self::$Appenders[$AppenderClass];
+	}
+
+	/**
+	 * Getter for Appenders property.
+	 *
+	 * @return array The value of Appenders property.
+	 */
+	public function GetAppenders() {
+		return self::$Appenders;
 	}
 
 	/**

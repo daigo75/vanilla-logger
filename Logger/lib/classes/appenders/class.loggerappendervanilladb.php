@@ -3,11 +3,14 @@
 {licence}
 */
 
-// Add LoggerAppender Info to a global array. It will be used to automatically
-// add the Appender to the list of the available ones.
-LoggerAppendersManager::$Appenders['LoggerAppenderVanillaDB'] = array(
-	'Label' => T('Vanilla Forum Database'),
-	'Description' => T('Writes logging events to a table in this Forum\'s Database.'),
+// Register Appender with the Appenders Manager
+LoggerAppendersManager::RegisterAppender(
+	'LoggerAppenderVanillaDB',
+	array('Label' => T('Vanilla Forum Database'),
+				'Description' => T('Writes logging events to a table in this Forum\'s Database.'),
+				// Version is for reference only
+				'Version' => '13.04.07',
+			 )
 );
 
 /**
