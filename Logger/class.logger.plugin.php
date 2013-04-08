@@ -16,7 +16,7 @@ require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
 $PluginInfo['Logger'] = array(
 	'Name' => 'Logger',
 	'Description' => 'Logger for Vanilla - Advanced Version',
-	'Version' => '13.04.07',
+	'Version' => '13.04.08',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
@@ -39,6 +39,32 @@ class LoggerPlugin extends Gdn_Plugin {
 	private static $_LoggerInitialized = false;
 
 	private $_SysDBLogModel;
+
+	/**
+	 * Returns the Default configuration for the Logger.
+	 *
+	 * @return string Default complete configuration, based on the default log level
+	 * and the presence of only the System Appender. Configuration has to be saved
+	 * manually during setup as all plugin's auxiliary functions are not
+	 * operational, in this phase.
+	 */
+	public static function DefaultConfig() {
+		return array(
+			'appenders' => array(
+				'System' => array(
+					'params' => array(
+						'table' => 'LoggerSysLog',
+						'createtable' => 1
+					),
+					'class' => 'LoggerAppenderVanillaDB'
+				)
+			),
+			'rootLogger' => array(
+				'level' => LOGGER_DEFAULT_LOGLEVEL,
+				'appenders' => array(0 => 'System')
+			)
+		);
+	}
 
 	/**
 	 * Returns an instance of a Class and stores it as a property of this class.
@@ -630,7 +656,7 @@ class LoggerPlugin extends Gdn_Plugin {
 		// Set up plugin's default values
 		// Default log level
 		SaveToConfig('Plugin.Logger.LogLevel', LOGGER_DEFAULT_LOGLEVEL);
-		SaveToConfig('Plugin.Logger.LoggerConfig', $this->LoggerConfigModel()->DefaultConfig());
+		SaveToConfig('Plugin.Logger.LoggerConfig', self::DefaultConfig());
 
 		// Create Database Objects needed by the Plugin
 		require('install/logger.schema.php');

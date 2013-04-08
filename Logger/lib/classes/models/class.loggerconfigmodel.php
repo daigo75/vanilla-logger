@@ -139,32 +139,6 @@ class LoggerConfigModel extends Gdn_Model {
 	 *
 	 */
 	public function Get() {
-		return C('Plugin.Logger.LoggerConfig', $this->DefaultConfig());
-	}
-
-	/**
-	 * Returns the Default configuration for the Logger.
-	 *
-	 * @return string Default complete configuration, based on the default log level
-	 * and the presence of only the System Appender. Configuration has to be saved
-	 * manually during setup as all plugin's auxiliary functions are not
-	 * operational, in this phase.
-	 */
-	public function DefaultConfig() {
-		return array(
-			'appenders' => array(
-				'System' => array(
-					'params' => array(
-						'table' => 'LoggerSysLog',
-						'createtable' => 1
-					),
-					'class' => 'LoggerAppenderVanillaDB'
-				)
-			),
-			'rootLogger' => array(
-				'level' => LOGGER_DEFAULT_LOGLEVEL,
-				'appenders' => array(0 => 'System')
-			)
-		);
+		return C('Plugin.Logger.LoggerConfig', LoggerPlugin::DefaultConfig());
 	}
 }
