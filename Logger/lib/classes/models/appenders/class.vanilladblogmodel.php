@@ -59,7 +59,7 @@ class VanillaDBLogModel extends Gdn_Model {
 			->PrimaryKey('LogEntryID')
 			->Column('LoggerName', 'varchar(100)')
 			->Column('Level', 'varchar(40)')
-			->Column('Message', 'varchar(9999)')
+			->Column('Message', 'text')
 			->Column('Thread', 'varchar(32)')
 			->Column('ClassName', 'varchar(100)')
 			->Column('MethodName', 'varchar(200)')
