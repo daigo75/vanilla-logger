@@ -138,8 +138,8 @@ class VanillaDBLogModel extends Gdn_Model {
 		// Return the Jobs Started within the Date Range.
 		$this->PrepareLogQuery();
 		$Result = $this->SQL
-			->Where('TimeStamp >=', array("DATE('%s')" => $DateFrom,), TRUE, FALSE)
-			->Where('TimeStamp <', array("DATE('%s')" => $DateTo,), TRUE, FALSE)
+			->Where('TimeStamp >=', "DATE('$DateFrom')", TRUE, FALSE)
+			->Where('TimeStamp <', "DATE('$DateTo')", TRUE, FALSE)
 			->OrderBy('TimeStamp', 'desc')
 			->Where($Wheres)
 			->Limit($Limit, $Offset)
