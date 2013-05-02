@@ -62,3 +62,6 @@ Advancer Logger for Vanilla Forums - Change Log
 
 13.04.30
 - Added compatibility with Vanilla 2.0.18.8
+
+13.05.02
+- Removed unused class
