@@ -117,7 +117,10 @@ class LoggerPlugin extends Gdn_Plugin {
 			self::$_LoggerInitialized = true;
 		}
 
-		return Logger::getLogger($LoggerName);
+		$Logger = Logger::getLogger($LoggerName);
+		$PSRLogger = new PSRLogger($Logger);
+
+		return $PSRLogger;
 	}
 
 	/**
@@ -133,3 +136,4 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Menu->AddLink('Add-ons', T('Logger'), 'plugin/logger', 'Garden.Settings.Manage');
 	}
 }
+n
