@@ -1,2 +1,4 @@
 /Logger/install/plugin.schema.php
 /*.komodotools
+
+/Logger/vendor
