@@ -1,5 +1,8 @@
 Basic Logger for Vanilla Forums - Change Log
 
+13.10.31
+- Fixed bug in PSR Log interface, which caused calls to encapsulated logger to fail
+
 13.10.08
 - Implemented PSR Log interface (see https://github.com/php-fig/log)
 
