@@ -3,7 +3,6 @@ Basic Logger for Vanilla Forums - Change Log
 13.10.08
 - Implemented PSR Log interface (see https://github.com/php-fig/log)
 
-
 13.04.02
 - Corrected issue with permissions. Previous versions allowed only SuperAdmin to access Plugin's settings
 
