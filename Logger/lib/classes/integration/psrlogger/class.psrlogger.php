@@ -3,6 +3,8 @@
 {licence}
 */
 
+require LOGGER_PLUGIN_PATH . '/vendor/psr/log/Psr/Log/LoggerInterface.php';
+
 /**
  * Wraps a PHP Logger into a class implementing the psr/logger interface.
  *
@@ -90,7 +92,7 @@ class PSRLogger implements \Psr\Log\LoggerInterface {
 	 */
 	public function __call($Method, $Args = array()) {
 		if(method_exists($this->Log, $Method)) {
-			call_user_func_array($Method, $this->Log, $Args);
+			call_user_func_array(array($this->Log, $Method), $Args);
 		}
 		else {
 		trigger_error(sprintf(T('Method does not exist: %s::%s'),
