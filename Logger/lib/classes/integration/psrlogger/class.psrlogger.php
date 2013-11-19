@@ -6,8 +6,8 @@
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-//require LOGGER_PLUGIN_PATH . '/vendor/psr/log/Psr/Log/LoggerInterface.php';
-//require LOGGER_PLUGIN_PATH . '/vendor/psr/log/Psr/Log/LogLevel.php';
+require_once LOGGER_PLUGIN_PATH . '/vendor/psr/log/Psr/Log/LoggerInterface.php';
+require_once LOGGER_PLUGIN_PATH . '/vendor/psr/log/Psr/Log/LogLevel.php';
 
 /**
  * Wraps a PHP Logger into a class implementing the psr/logger interface.
