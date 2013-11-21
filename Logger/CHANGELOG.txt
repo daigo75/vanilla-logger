@@ -1,5 +1,8 @@
 Basic Logger for Vanilla Forums - Change Log
 
+13.11.19.001
+- Added loading of required files in PSRLogger class file
+
 13.11.15
 - Added required "use" entries in PSRLogger class file
 
