@@ -1,3 +1,4 @@
 /Logger/install/plugin.schema.php
 
 /Logger/vendor
+/Logger/composer.lock
