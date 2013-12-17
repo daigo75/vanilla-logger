@@ -1,4 +1,4 @@
-Advanced Logger for Vanilla Forums - Change Log
+Basic Logger for Vanilla Forums - Change Log
 
 13.11.19.001
 - Added loading of required files in PSRLogger class file
@@ -12,62 +12,18 @@ Advanced Logger for Vanilla Forums - Change Log
 13.10.08
 - Implemented PSR Log interface (see https://github.com/php-fig/log)
 
-13.05.02
-- Removed unused class
-
-13.04.30
-- Added compatibility with Vanilla 2.0.18.8
-
-13.04.19
-- Changed type of VanillaDB.Message column to TEXT
-
-13.04.08
-- Moved default configuration back to main LoggerPlugin class
-
-13.04.07
-- Refactored code to remove unnecessary static methods and properties
-
-13.04.04
-- Corrected bug in loading of Appenders
-
 13.04.02
 - Corrected issue with permissions. Previous versions allowed only SuperAdmin to access Plugin's settings
-
-13.03.20
-- Corrected method declaration
-
-13.02.14
-- Corrected readme.html
 
 13.02.01
 - Fixed bug in VanillaDB Model, which could sporadically generate an error when the module checked for the existence of the destination Log table.
 
-13.01.25
-- Removed debug message
-
-13.01.16
-- Implemented File Appender
-- Implemented Echo Appender
-- Fixed minor incompatibility bugs
-
-13.01.14
-- Removed some "calls by reference" that were still left from previous cleanup
-- Minor fixes to adhere to PHP Strict Standards
-
-13.01.08
-- Fixed minor bugs that would throw an error if PHP Error Level was set to throw errors on NOTICE messages
-
-13.01.07
-- Improved error handling when the Logger configuration cannot be retrieved
-- Fixed minor bugs that would throw an error if PHP Error Level was set to throw errors on NOTICE messages
-
 13.01.04
-- Modified Log4php Autoloader to work around a bug in the autoloading mechanism on PHP 5.2
+- Modified Log4php Autoloader to work around a bug in the autoloading mechanism on PHP 5.2.
 - Added setting of pages "CurrentPath" before checking permissions, to prevent rendering error when user is not authorised to view a page
 
 12.11.23
 - Modified Log4php AutoLoader so that it raises a fatal error when a class cannot be loaded
-
 
 12.11.22
 - Updated readme.html
