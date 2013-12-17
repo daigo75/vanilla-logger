@@ -1,29 +1,15 @@
 <?php if (!defined('APPLICATION')) exit();
 /**
-{licence}
-*/
-
-// Register Appender with the Appenders Manager
-LoggerAppendersManager::RegisterAppender(
-	'LoggerAppenderGraylog2',
-	array('Label' => T('Graylog2 (GELF)'),
-				'Description' => T('Writes logging events to a <a href="http://www.graylog2.org/">Graylog2</a> ' .
-													 'Server, sending them in <a href="http://www.graylog2.org/about/gelf">GELF Format</a>.'),
-				// Version is for reference only
-				'Version' => '13.04.07',
-			 )
-);
-
-// Load GELF Libraries
-require(LOGGER_PLUGIN_EXTERNAL_PATH . '/Graylog2-gelf-php/GELFMessage.php');
-require(LOGGER_PLUGIN_EXTERNAL_PATH . '/Graylog2-gelf-php/GELFMessagePublisher.php');
-
-/**
  * Graylog2 Log Appender
+ * Supported Log4php parameters
+ * - HostName
+ * - Port
+ * - ChunkSize
+ *
  * @package LoggerPlugin
  */
 class LoggerAppenderGraylog2 extends LoggerAppender {
-	/// @var The Publishes that will send messages to Graylog2.
+	/// @var The Publisher that will send messages to Graylog2.
 	protected $GELFMessagePublisher;
 
 	const GRAYLOG2_DEFAULT_PORT = 12201;

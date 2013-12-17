@@ -1,23 +1,9 @@
 <?php if (!defined('APPLICATION')) exit();
 /**
-{licence}
-*/
-
-// Register Appender with the Appenders Manager
-LoggerAppendersManager::RegisterAppender(
-	'LoggerAppenderLoggly',
-	array('Label' => T('Loggly - JSON via HTTPS'),
-				'Description' => T('Sends log events to <a href="http://www.loggly.com/">Loggly</a>, in JSON format, ' .
-													 'using HTTPS.<br /><strong>IMPORTANT</strong>: Logging via HTTPS is very slow! ' .
-													 'It\'s recommended to use Loggly (Remote Syslog) instead, unless the ' .
-													 'security provided by HTTPS is essential.'),
-				// Version is for reference only
-				'Version' => '13.04.07',
-			 )
-);
-
-/**
  * Loggly Log Appender
+ * Supported Log4php parameters
+ * - InputKey
+ * 
  * @package LoggerPlugin
  */
 class LoggerAppenderLoggly extends LoggerAppender {

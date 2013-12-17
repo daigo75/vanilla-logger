@@ -59,7 +59,7 @@ class VanillaDBLogModel extends Gdn_Model {
 			->PrimaryKey('LogEntryID')
 			->Column('LoggerName', 'varchar(100)')
 			->Column('Level', 'varchar(40)')
-			->Column('Message', 'text')
+			->Column('Message', 'varchar(9999)')
 			->Column('Thread', 'varchar(32)')
 			->Column('ClassName', 'varchar(100)')
 			->Column('MethodName', 'varchar(200)')
@@ -130,7 +130,7 @@ class VanillaDBLogModel extends Gdn_Model {
 		$Limit = (is_numeric($Limit) && $Limit > 0) ? $Limit : 1000;
 		$Offset = (is_numeric($Offset) && $Offset > 0) ? $Offset : 0;
 
-		// One day is added to DateTo as the date it represents should be included
+		// On day is added to DateTo as the date it represents should be included
 		// until 23:59:59.000. By adding one day and querying by "< DateTo", we're
 		// sure to get all the data.
 		$DateTo = date('Y-m-d', strtotime($DateTo . ' +1 day'));
@@ -138,8 +138,8 @@ class VanillaDBLogModel extends Gdn_Model {
 		// Return the Jobs Started within the Date Range.
 		$this->PrepareLogQuery();
 		$Result = $this->SQL
-			->Where('TimeStamp >=', "DATE('$DateFrom')", TRUE, FALSE)
-			->Where('TimeStamp <', "DATE('$DateTo')", TRUE, FALSE)
+			->Where('TimeStamp >=', array("DATE('%s')" => $DateFrom,), TRUE, FALSE)
+			->Where('TimeStamp <', array("DATE('%s')" => $DateTo,), TRUE, FALSE)
 			->OrderBy('TimeStamp', 'desc')
 			->Where($Wheres)
 			->Limit($Limit, $Offset)
@@ -166,7 +166,7 @@ class VanillaDBLogModel extends Gdn_Model {
 		}
 
 		// Prepare all the validated fields to be passed to an INSERT/UPDATE query
-		$Fields = $this->Validation->ValidationFields();
+		$Fields = &$this->Validation->ValidationFields();
 
 		$this->AddInsertFields($Fields);
 		return $this->Insert($Fields);

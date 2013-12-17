@@ -1,23 +1,11 @@
 <?php if (!defined('APPLICATION')) exit();
 /**
-{licence}
-*/
-
-// Register Appender with the Appenders Manager
-LoggerAppendersManager::RegisterAppender(
-	'LoggerAppenderRSyslog',
-	array('Label' => T('RSyslog (Remote SysLog)'),
-				'Description' => T('Writes logging events to Remote Syslog Server, such as <a href="http://www.papertrail.com/">PaperTrail</a>.'),
-				// Version is for reference only
-				'Version' => '13.04.07',
-			 )
-);
-
-// Load RSysLog Libraries
-require(LOGGER_PLUGIN_EXTERNAL_PATH . '/rsyslog/rsyslog.php');
-
-/**
  * RSyslog Log Appender
+ * Supported Log4php parameters
+ * - HostName
+ * - Port
+ * - Timeout
+ *
  * @package LoggerPlugin
  */
 class LoggerAppenderRSyslog extends LoggerAppender {

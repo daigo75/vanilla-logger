@@ -1,19 +1,5 @@
 <?php	if (!defined('APPLICATION')) exit();
 /**
-{licence}
-*/
-
-// Register Appender with the Appenders Manager
-LoggerAppendersManager::RegisterAppender(
-	'LoggerAppenderVanillaDB',
-	array('Label' => T('Vanilla Forum Database'),
-				'Description' => T('Writes logging events to a table in this Forum\'s Database.'),
-				// Version is for reference only
-				'Version' => '13.04.07',
-			 )
-);
-
-/**
  * Vanilla DB Logger Appender
  * This Appender is used to write to a table into Vanilla's Database by using
  * the Objects provided by Vanilla's framework. Such objects will be
@@ -80,7 +66,7 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 		parent::__construct($name);
 
 		// Retrieve Vanilla's Database Objects
-		$this->Database = Gdn::Database();
+		$this->Database = &Gdn::Database();
 	}
 
 	/**
@@ -99,7 +85,7 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 		$Fields['Message'] = $event->getMessage();
 		$Fields['Thread'] = $event->getThreadName();
 
-		$LocationInformation = $event->getLocationInformation();
+		$LocationInformation = &$event->getLocationInformation();
 		$Fields['ClassName'] = $LocationInformation->getClassName();
 		$Fields['MethodName'] = $LocationInformation->getMethodName();
 		$Fields['FileName'] = $LocationInformation->getFileName();
@@ -143,7 +129,6 @@ class LoggerAppenderVanillaDB extends LoggerAppender {
 	 * @return void.
 	 */
 	public function append(LoggerLoggingEvent $event) {
-		$LogFields = $this->PrepareLogFields($event);
-		$this->LogModel->Save($LogFields);
+		$this->LogModel->Save($this->PrepareLogFields($event));
 	}
 }
