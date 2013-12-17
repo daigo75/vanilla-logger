@@ -3,21 +3,15 @@
 {licence}
 */
 
-
-// File logger.defines.php must be included by manually specifying the whole
-// path. It will then define some shortcuts for commonly used paths, such as
-// LOGGER_PLUGIN_LIB_PATH, used just below.
-require(PATH_PLUGINS . '/Logger/lib/logger.defines.php');
-// LOGGER_PLUGIN_LIB_PATH is defined in logger.defines.php.
-require(LOGGER_PLUGIN_LIB_PATH . '/logger.validation.php');
-// Main Log4PHP Library
-require(PATH_PLUGINS . '/Logger/lib/external/log4php/Logger.php');
+require('lib/logger.defines.php');
+require('lib/logger.validation.php');
+require('vendor/autoload.php');
 
 // Plugin definition
 $PluginInfo['Logger'] = array(
 	'Name' => 'Logger',
-	'Description' => 'Logger for Vanilla - Basic Version',
-	'Version' => '13.11.19.001',
+	'Description' => 'Logger for Vanilla',
+	'Version' => '13.12.17.001',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
@@ -136,4 +130,3 @@ class LoggerPlugin extends Gdn_Plugin {
 		$Menu->AddLink('Add-ons', T('Logger'), 'plugin/logger', 'Garden.Settings.Manage');
 	}
 }
-n
