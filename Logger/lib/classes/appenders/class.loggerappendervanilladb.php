@@ -1,9 +1,5 @@
 <?php	if (!defined('APPLICATION')) exit();
 /**
-{licence}
-*/
-
-/**
  * Vanilla DB Logger Appender
  * This Appender is used to write to a table into Vanilla's Database by using
  * the Objects provided by Vanilla's framework. Such objects will be
