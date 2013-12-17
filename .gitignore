@@ -1,4 +1,4 @@
 /Logger/install/plugin.schema.php
-/*.komodotools
 
 /Logger/vendor
+/Logger/composer.lock
