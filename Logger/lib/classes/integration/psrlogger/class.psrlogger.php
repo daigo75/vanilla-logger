@@ -1,7 +1,5 @@
 <?php if (!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;

@@ -1,19 +1,22 @@
 <?php if (!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
- 
+
+
 ?>
 <div class="LoggerPlugin">
 	<div class="Content">
 		<fieldset>
 			<legend>
-				<h3><?php echo T('Logger for Vanilla - Basic version'); ?></h3>
+				<h3><?php echo T('Logger for Vanilla'); ?></h3>
 				<p>
 					<?php
-					echo sprintf(T('Basic version is provided without a GUI. If you wish to modify the ' .
-												 'configuration, you can edit file <i>config.xml</i>, located in <i>%s</i>.'),
-											 PATH_PLUGINS . '/Logger/');
+					echo Wrap(sprintf(T('To modify the logger please can edit file <i>config.xml</i>, '.
+															'located in <i>%s</i>.'),
+														PATH_PLUGINS . '/Logger/'),
+										'p');
+					echo Wrap(T('You can find more information on how to write a configuration file ' .
+											'on <a href="http://logging.apache.org/log4php/quickstart.html" ' .
+											'title="Log4php - Quick start">Log4php website</a>.'),
+										'p');
 					?>
 				</p>
 			</legend>
