@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration xmlns="http://logging.apache.org/log4php/">
-	<appender name="default" class="LoggerAppenderVanillaDB">
-		<param name="Table" value="LoggerSysLog" />
-		<param name="createTable" value="true" />
-	</appender>
-	<appender name="whatever" class="LoggerAppenderFile">
-		<param name="file" value="c:\tmp\file.log" />
+	<appender name="degault" class="LoggerAppenderFile">
+		<param name="file" value="C:\wamp\www\vanilla\plugins\Logger\vanilla.log" />
 	</appender>
 
 	<root>
