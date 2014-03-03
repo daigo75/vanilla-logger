@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration xmlns="http://logging.apache.org/log4php/">
-	<appender name="degault" class="LoggerAppenderFile">
+	<appender name="default" class="LoggerAppenderFile">
 		<param name="file" value="C:\wamp\www\vanilla\plugins\Logger\vanilla.log" />
 	</appender>
 
