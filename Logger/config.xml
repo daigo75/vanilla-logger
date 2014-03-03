@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration xmlns="http://logging.apache.org/log4php/">
 	<appender name="default" class="LoggerAppenderFile">
+		<layout class="LoggerLayoutPattern">
+			<param name="conversionPattern" value="%d{m/d/y H:i:s,u} [%t] %p %c %x - %m%n" />
+		</layout>
 		<param name="file" value="C:\wamp\www\vanilla\plugins\Logger\vanilla.log" />
+	</appender>
+	<appender name="errors" class="LoggerAppenderFile">
+		<layout class="LoggerLayoutPattern" threshold="ERROR">
+			<param name="conversionPattern" value="%d{m/d/y H:i:s,u} [%t] %p %c %x - %m%n - File: %file (line %line)" />
+		</layout>
+		<param name="file" value="C:\wamp\www\vanilla\plugins\Logger\vanilla_errors.log" />
 	</appender>
 
 	<root>
 		<level value="DEBUG" />
 		<appender_ref ref="default" />
+		<appender_ref ref="errors" />
 	</root>
 </configuration>
