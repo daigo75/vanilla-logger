@@ -20,7 +20,7 @@ require('vendor/autoload.php');
 $PluginInfo['Logger'] = array(
 	'Name' => 'Logger',
 	'Description' => 'Logger for Vanilla',
-	'Version' => '13.12.18.001',
+	'Version' => '14.06.09.001',
 	'RequiredApplications' => array('Vanilla' => '2.0.10'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => FALSE,
@@ -92,7 +92,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_Index($Sender) {
-		Redirect(LOGGER_GENERALSETTINGS_URL);
+		$this->Controller_Settings($Sender);
 	}
 
 	/**
@@ -103,7 +103,7 @@ class LoggerPlugin extends Gdn_Plugin {
 	public function Controller_Settings($Sender) {
 		$Sender->SetData('CurrentPath', LOGGER_GENERALSETTINGS_URL);
 		// Prevent non-admins from accessing this page
-		$Sender->Permission('Plugins.Logger.Manage');
+		$Sender->Permission('Garden.Settings.Manage');
 
 		$Sender->Render($this->GetView('logger_generalsettings_view.php'));
 	}

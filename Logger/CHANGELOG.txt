@@ -1,5 +1,8 @@
 Logger for Vanilla Forums - Change Log
 
+14.06.09.001
+- Corrected permission checking on plugin settings page (bug #1).
+
 13.12.18.001
 - Refactored entire logger.
 - Dropped GUI entirely.
