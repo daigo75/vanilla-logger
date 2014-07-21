@@ -4,13 +4,13 @@
 		<layout class="LoggerLayoutPattern">
 			<param name="conversionPattern" value="%d{m/d/y H:i:s,u} [%t] %p %c %x - %m%n" />
 		</layout>
-		<param name="file" value="C:\wamp\www\vanilla\plugins\Logger\vanilla.log" />
+		<param name="file" value="vanilla.log" />
 	</appender>
 	<appender name="errors" class="LoggerAppenderFile">
 		<layout class="LoggerLayoutPattern" threshold="ERROR">
 			<param name="conversionPattern" value="%d{m/d/y H:i:s,u} [%t] %p %c %x - %m%n - File: %file (line %line)" />
 		</layout>
-		<param name="file" value="C:\wamp\www\vanilla\plugins\Logger\vanilla_errors.log" />
+		<param name="file" value="vanilla_errors.log" />
 	</appender>
 
 	<root>
